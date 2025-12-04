@@ -18,7 +18,19 @@ class UserController
 
     public function index()
     {
-        $users = $this->userModel->getAll();
+        // Obtener parámetros de filtro
+        $search = $_GET['search'] ?? '';
+        $sort = $_GET['sort'] ?? 'created_at DESC';
+        $agencyId = $_GET['agency_id'] ?? '';
+
+        // Obtener usuarios filtrados
+        $users = $this->userModel->getAll($search, $sort, $agencyId);
+
+        // Obtener lista de agencias para el dropdown de filtro
+        require_once BASE_PATH . '/models/Agency.php';
+        $agencyModel = new Agency($this->pdo);
+        $agencies = $agencyModel->getAll(); // Obtener todas para el select
+
         require_once BASE_PATH . '/views/admin/users/index.php';
     }
 }

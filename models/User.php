@@ -68,13 +68,50 @@ class User
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute($params);
     }
-    public function getAll()
+    public function getAll($search = '', $sort = 'created_at DESC', $agencyId = '')
     {
         $sql = "SELECT u.*, a.nombre as nombre_agencia 
                 FROM usuarios u 
                 LEFT JOIN agencias a ON u.agencia_id = a.id 
-                ORDER BY u.created_at DESC";
-        $stmt = $this->pdo->query($sql);
+                WHERE 1=1";
+
+        $params = [];
+
+        // Filtro por búsqueda (Nombre, Apellido, Email)
+        // Filtro por búsqueda (Nombre, Apellido, Email)
+        if (!empty($search)) {
+            $sql .= " AND (u.nombre LIKE :search1 OR u.apellido LIKE :search2 OR u.email LIKE :search3)";
+            $params['search1'] = "%$search%";
+            $params['search2'] = "%$search%";
+            $params['search3'] = "%$search%";
+        }
+
+        // Filtro por Agencia
+        if (!empty($agencyId)) {
+            $sql .= " AND u.agencia_id = :agency_id";
+            $params['agency_id'] = $agencyId;
+        }
+
+        // Ordenamiento seguro
+        $allowedSorts = [
+            'created_at DESC',
+            'created_at ASC',
+            'nombre ASC',
+            'nombre DESC',
+            'email ASC',
+            'email DESC',
+            'rol ASC',
+            'rol DESC'
+        ];
+
+        if (in_array($sort, $allowedSorts)) {
+            $sql .= " ORDER BY u." . $sort;
+        } else {
+            $sql .= " ORDER BY u.created_at DESC";
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
         return $stmt->fetchAll();
     }
 }

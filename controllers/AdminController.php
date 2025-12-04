@@ -22,8 +22,18 @@ class AdminController
 
     public function index()
     {
-        // Dashboard solo necesita contadores por ahora, pero pasamos agencias para los KPIs
+        // 1. Estadísticas de Agencias
         $agencies = $this->agencyModel->getAll();
+
+        // 2. Estadísticas de Usuarios
+        $userModel = new User($this->pdo);
+        $users = $userModel->getAll();
+        $userCount = count($users);
+
+        // 3. Actividad Reciente (Últimas 5 agencias)
+        // Usamos 'id DESC' como proxy de creación reciente
+        $recentAgencies = array_slice($this->agencyModel->getAll('', 'id DESC'), 0, 5);
+
         require_once BASE_PATH . '/views/admin/dashboard.php';
     }
 
