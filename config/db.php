@@ -1,7 +1,7 @@
 <?php
 // Sistema_New/config/db.php
 
-$host = 'localhost';
+$host = '127.0.0.1';
 $db = 'agencia_turismo_db';
 $user = 'root';
 $pass = '';

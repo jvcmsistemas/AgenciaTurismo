@@ -41,6 +41,9 @@
                             Reservas</a>
                     </li>
                     <li>
+                        <a href="<?php echo BASE_URL; ?>agency/resources"><i class="bi bi-box-seam me-2"></i> Recursos</a>
+                    </li>
+                    <li>
                         <a href="<?php echo BASE_URL; ?>agency/clients"><i class="bi bi-people me-2"></i> Clientes</a>
                     </li>
                     <li>

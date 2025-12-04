@@ -147,6 +147,58 @@ switch ($path) {
         $resController->updateStatus();
         break;
 
+    // RUTAS DE RECURSOS (AGENCIA)
+    case 'agency/resources':
+        require_once BASE_PATH . '/controllers/ResourceController.php';
+        $controller = new ResourceController($pdo);
+        $controller->index();
+        break;
+    case 'agency/resources/store-guide':
+        require_once BASE_PATH . '/controllers/ResourceController.php';
+        $controller = new ResourceController($pdo);
+        $controller->storeGuide();
+        break;
+    case 'agency/resources/delete-guide':
+        require_once BASE_PATH . '/controllers/ResourceController.php';
+        $controller = new ResourceController($pdo);
+        $controller->deleteGuide();
+        break;
+    case 'agency/resources/store-transport':
+        require_once BASE_PATH . '/controllers/ResourceController.php';
+        $controller = new ResourceController($pdo);
+        $controller->storeTransport();
+        break;
+    case 'agency/resources/delete-transport':
+        require_once BASE_PATH . '/controllers/ResourceController.php';
+        $controller = new ResourceController($pdo);
+        $controller->deleteTransport();
+        break;
+    case 'agency/resources/store-provider':
+        require_once BASE_PATH . '/controllers/ResourceController.php';
+        $controller = new ResourceController($pdo);
+        $controller->storeProvider();
+        break;
+    case 'agency/resources/delete-provider':
+        require_once BASE_PATH . '/controllers/ResourceController.php';
+        $controller = new ResourceController($pdo);
+        $controller->deleteProvider();
+        break;
+    case 'agency/resources/update-guide':
+        require_once BASE_PATH . '/controllers/ResourceController.php';
+        $controller = new ResourceController($pdo);
+        $controller->updateGuide();
+        break;
+    case 'agency/resources/update-transport':
+        require_once BASE_PATH . '/controllers/ResourceController.php';
+        $controller = new ResourceController($pdo);
+        $controller->updateTransport();
+        break;
+    case 'agency/resources/update-provider':
+        require_once BASE_PATH . '/controllers/ResourceController.php';
+        $controller = new ResourceController($pdo);
+        $controller->updateProvider();
+        break;
+
     default:
         http_response_code(404);
         echo "404 Not Found";
