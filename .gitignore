@@ -1,0 +1,20 @@
+# Dependencies
+/vendor/
+/node_modules/
+
+# System
+.DS_Store
+Thumbs.db
+
+# Backups
+/Backups/
+*.zip
+*.sql
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# Config (Optional: usually we don't commit real credentials)
+# config/db.php
