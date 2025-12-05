@@ -30,24 +30,47 @@
                 </div>
 
                 <ul class="list-unstyled components">
-                    <li>
-                        <a href="<?php echo BASE_URL; ?>dashboard"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/dashboard') !== false) ? 'active' : ''; ?>" 
+                           href="<?php echo BASE_URL; ?>agency/dashboard">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
                     </li>
-                    <li>
-                        <a href="<?php echo BASE_URL; ?>agency/tours"><i class="bi bi-map me-2"></i> Mis Tours</a>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/departures') !== false) ? 'active' : ''; ?>" 
+                           href="<?php echo BASE_URL; ?>agency/departures">
+                            <i class="bi bi-calendar-week"></i> Salidas
+                        </a>
                     </li>
-                    <li>
-                        <a href="<?php echo BASE_URL; ?>agency/reservations"><i class="bi bi-calendar-check me-2"></i>
-                            Reservas</a>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/tours') !== false) ? 'active' : ''; ?>" 
+                           href="<?php echo BASE_URL; ?>agency/tours">
+                            <i class="bi bi-map"></i> Mis Tours
+                        </a>
                     </li>
-                    <li>
-                        <a href="<?php echo BASE_URL; ?>agency/resources"><i class="bi bi-box-seam me-2"></i> Recursos</a>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/reservations') !== false) ? 'active' : ''; ?>" 
+                           href="<?php echo BASE_URL; ?>agency/reservations">
+                            <i class="bi bi-calendar-check"></i> Reservas
+                        </a>
                     </li>
-                    <li>
-                        <a href="<?php echo BASE_URL; ?>agency/clients"><i class="bi bi-people me-2"></i> Clientes</a>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/resources') !== false) ? 'active' : ''; ?>" 
+                           href="<?php echo BASE_URL; ?>agency/resources">
+                            <i class="bi bi-box-seam"></i> Recursos
+                        </a>
                     </li>
-                    <li>
-                        <a href="<?php echo BASE_URL; ?>agency/profile"><i class="bi bi-person-gear me-2"></i> Perfil</a>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/clients') !== false) ? 'active' : ''; ?>" 
+                           href="<?php echo BASE_URL; ?>agency/clients">
+                            <i class="bi bi-people"></i> Clientes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/profile') !== false) ? 'active' : ''; ?>" 
+                           href="<?php echo BASE_URL; ?>agency/profile">
+                            <i class="bi bi-person-gear"></i> Perfil
+                        </a>
                     </li>
                 </ul>
             </nav>

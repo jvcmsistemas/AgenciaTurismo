@@ -147,6 +147,28 @@ switch ($path) {
         $resController->updateStatus();
         break;
 
+    // RUTAS DE SALIDAS (DEPARTURES)
+    case 'agency/departures':
+        require_once BASE_PATH . '/controllers/DepartureController.php';
+        $controller = new DepartureController($pdo);
+        $controller->index();
+        break;
+    case 'agency/departures/create':
+        require_once BASE_PATH . '/controllers/DepartureController.php';
+        $controller = new DepartureController($pdo);
+        $controller->create();
+        break;
+    case 'agency/departures/store':
+        require_once BASE_PATH . '/controllers/DepartureController.php';
+        $controller = new DepartureController($pdo);
+        $controller->store();
+        break;
+    case 'agency/departures/delete':
+        require_once BASE_PATH . '/controllers/DepartureController.php';
+        $controller = new DepartureController($pdo);
+        $controller->delete($_GET['id']);
+        break;
+
     // RUTAS DE RECURSOS (AGENCIA)
     case 'agency/resources':
         require_once BASE_PATH . '/controllers/ResourceController.php';
@@ -170,19 +192,6 @@ switch ($path) {
         break;
     case 'agency/resources/delete-transport':
         require_once BASE_PATH . '/controllers/ResourceController.php';
-        $controller = new ResourceController($pdo);
-        $controller->deleteTransport();
-        break;
-    case 'agency/resources/store-provider':
-        require_once BASE_PATH . '/controllers/ResourceController.php';
-        $controller = new ResourceController($pdo);
-        $controller->storeProvider();
-        break;
-    case 'agency/resources/delete-provider':
-        require_once BASE_PATH . '/controllers/ResourceController.php';
-        $controller = new ResourceController($pdo);
-        $controller->deleteProvider();
-        break;
     case 'agency/resources/update-guide':
         require_once BASE_PATH . '/controllers/ResourceController.php';
         $controller = new ResourceController($pdo);
@@ -197,6 +206,18 @@ switch ($path) {
         require_once BASE_PATH . '/controllers/ResourceController.php';
         $controller = new ResourceController($pdo);
         $controller->updateProvider();
+        break;
+
+    // RUTAS DE PERFIL
+    case 'agency/profile':
+        require_once BASE_PATH . '/controllers/AgencyController.php';
+        $agencyController = new AgencyController($pdo);
+        $agencyController->profile();
+        break;
+    case 'agency/profile/update':
+        require_once BASE_PATH . '/controllers/AgencyController.php';
+        $agencyController = new AgencyController($pdo);
+        $agencyController->updateProfile();
         break;
 
     default:

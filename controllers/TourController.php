@@ -21,8 +21,11 @@ class TourController
 
     public function index()
     {
-        $agencyId = $_SESSION['agency_id'];
-        $tours = $this->tourModel->getAllByAgency($agencyId);
+        $agencyId = $_SESSION['agencia_id'];
+        $search = $_GET['search'] ?? '';
+        $order = $_GET['order'] ?? 'newest';
+
+        $tours = $this->tourModel->getAllByAgency($agencyId, $search, $order);
         require_once BASE_PATH . '/views/agency/tours/index.php';
     }
 
@@ -37,9 +40,9 @@ class TourController
             $data = [
                 'nombre' => $_POST['nombre'],
                 'descripcion' => $_POST['descripcion'],
-                'duracion' => $_POST['duracion'],
+                'duracion' => ($_POST['duracion_unidad'] === 'horas') ? ($_POST['duracion_valor'] / 24) : $_POST['duracion_valor'],
                 'precio' => $_POST['precio'],
-                'agencia_id' => $_SESSION['agency_id'],
+                'agencia_id' => $_SESSION['agencia_id'],
                 'tags' => $_POST['tags'],
                 'nivel_dificultad' => $_POST['nivel_dificultad'],
                 'ubicacion' => $_POST['ubicacion']
@@ -55,7 +58,7 @@ class TourController
         $tour = $this->tourModel->getById($id);
 
         // Verificar propiedad
-        if (!$tour || $tour['agencia_id'] != $_SESSION['agency_id']) {
+        if (!$tour || $tour['agencia_id'] != $_SESSION['agencia_id']) {
             redirect('agency/tours');
         }
 
@@ -69,12 +72,12 @@ class TourController
             $data = [
                 'nombre' => $_POST['nombre'],
                 'descripcion' => $_POST['descripcion'],
-                'duracion' => $_POST['duracion'],
+                'duracion' => ($_POST['duracion_unidad'] === 'horas') ? ($_POST['duracion_valor'] / 24) : $_POST['duracion_valor'],
                 'precio' => $_POST['precio'],
                 'tags' => $_POST['tags'],
                 'nivel_dificultad' => $_POST['nivel_dificultad'],
                 'ubicacion' => $_POST['ubicacion'],
-                'agencia_id' => $_SESSION['agency_id']
+                'agencia_id' => $_SESSION['agencia_id']
             ];
 
             $this->tourModel->update($id, $data);
@@ -84,7 +87,7 @@ class TourController
 
     public function delete($id)
     {
-        $this->tourModel->delete($id, $_SESSION['agency_id']);
+        $this->tourModel->delete($id, $_SESSION['agencia_id']);
         redirect('agency/tours');
     }
 }

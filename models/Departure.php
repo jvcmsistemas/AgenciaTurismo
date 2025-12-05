@@ -1,0 +1,105 @@
+<?php
+
+class Departure
+{
+    private $pdo;
+
+    public function __construct($pdo)
+    {
+        $this->pdo = $pdo;
+    }
+
+    public function getAllByAgency($agencyId)
+    {
+        $sql = "SELECT s.*, t.nombre as tour_nombre, t.duracion, t.ubicacion, 
+                       g.nombre as guia_nombre, tr.placa as transporte_placa
+                FROM salidas s
+                JOIN tours t ON s.tour_id = t.id
+                LEFT JOIN guias g ON s.guia_id = g.id
+                LEFT JOIN transportes tr ON s.transporte_id = tr.id
+                WHERE s.agencia_id = :agencia_id
+                ORDER BY s.fecha_salida ASC";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['agencia_id' => $agencyId]);
+        return $stmt->fetchAll();
+    }
+
+    public function getById($id)
+    {
+        $sql = "SELECT s.*, t.nombre as tour_nombre 
+                FROM salidas s
+                JOIN tours t ON s.tour_id = t.id
+                WHERE s.id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch();
+    }
+
+    public function create($data)
+    {
+        $sql = "INSERT INTO salidas (agencia_id, tour_id, fecha_salida, guia_id, transporte_id, cupos_totales, cupos_disponibles, precio_actual, estado) 
+                VALUES (:agencia_id, :tour_id, :fecha_salida, :guia_id, :transporte_id, :cupos_totales, :cupos_disponibles, :precio_actual, :estado)";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        // Si no se define precio_actual, usar el del tour (se puede manejar en controlador, pero aquí aseguramos null si no viene)
+        $precio = $data['precio_actual'] ?? null;
+
+        $stmt->execute([
+            'agencia_id' => $data['agencia_id'],
+            'tour_id' => $data['tour_id'],
+            'fecha_salida' => $data['fecha_salida'],
+            'guia_id' => $data['guia_id'] ?: null,
+            'transporte_id' => $data['transporte_id'] ?: null,
+            'cupos_totales' => $data['cupos_totales'],
+            'cupos_disponibles' => $data['cupos_totales'], // Al inicio disponibles = totales
+            'precio_actual' => $precio,
+            'estado' => $data['estado'] ?? 'programada'
+        ]);
+
+        return $this->pdo->lastInsertId();
+    }
+
+    public function update($id, $data)
+    {
+        $sql = "UPDATE salidas SET 
+                tour_id = :tour_id, 
+                fecha_salida = :fecha_salida, 
+                guia_id = :guia_id, 
+                transporte_id = :transporte_id, 
+                cupos_totales = :cupos_totales,
+                precio_actual = :precio_actual,
+                estado = :estado
+                WHERE id = :id AND agencia_id = :agencia_id";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            'tour_id' => $data['tour_id'],
+            'fecha_salida' => $data['fecha_salida'],
+            'guia_id' => $data['guia_id'] ?: null,
+            'transporte_id' => $data['transporte_id'] ?: null,
+            'cupos_totales' => $data['cupos_totales'],
+            'precio_actual' => $data['precio_actual'] ?: null,
+            'estado' => $data['estado'],
+            'id' => $id,
+            'agencia_id' => $data['agencia_id']
+        ]);
+    }
+
+    public function delete($id, $agencyId)
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM salidas WHERE id = :id AND agencia_id = :agencia_id");
+        $stmt->execute(['id' => $id, 'agencia_id' => $agencyId]);
+    }
+
+    // Método para actualizar cupos disponibles (usado al reservar)
+    public function updateSeats($id, $seatsToDeduct)
+    {
+        $sql = "UPDATE salidas SET cupos_disponibles = cupos_disponibles - :seats 
+                WHERE id = :id AND cupos_disponibles >= :seats";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['seats' => $seatsToDeduct, 'id' => $id]);
+        return $stmt->rowCount() > 0; // Retorna true si se pudo actualizar (había cupo)
+    }
+}

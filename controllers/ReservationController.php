@@ -21,7 +21,7 @@ class ReservationController
 
     public function index()
     {
-        $agencyId = $_SESSION['agency_id'];
+        $agencyId = $_SESSION['agencia_id'];
         $reservations = $this->reservationModel->getAllByAgency($agencyId);
         require_once BASE_PATH . '/views/agency/reservations/index.php';
     }

@@ -10,10 +10,43 @@ class Tour
         $this->pdo = $pdo;
     }
 
-    public function getAllByAgency($agencyId)
+    public function getAllByAgency($agencyId, $search = '', $order = 'newest')
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM tours WHERE agencia_id = :agencia_id ORDER BY id DESC");
-        $stmt->execute(['agencia_id' => $agencyId]);
+        $sql = "SELECT * FROM tours WHERE agencia_id = :agencia_id";
+        $params = ['agencia_id' => $agencyId];
+
+        if (!empty($search)) {
+            $sql .= " AND (nombre LIKE :search OR descripcion LIKE :search OR ubicacion LIKE :search)";
+            $params['search'] = "%$search%";
+        }
+
+        switch ($order) {
+            case 'name_asc':
+                $sql .= " ORDER BY nombre ASC";
+                break;
+            case 'name_desc':
+                $sql .= " ORDER BY nombre DESC";
+                break;
+            case 'price_asc':
+                $sql .= " ORDER BY precio ASC";
+                break;
+            case 'price_desc':
+                $sql .= " ORDER BY precio DESC";
+                break;
+            case 'duration_asc':
+                $sql .= " ORDER BY duracion ASC";
+                break;
+            case 'duration_desc':
+                $sql .= " ORDER BY duracion DESC";
+                break;
+            case 'newest':
+            default:
+                $sql .= " ORDER BY id DESC";
+                break;
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
         return $stmt->fetchAll();
     }
 
