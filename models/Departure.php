@@ -123,10 +123,10 @@ class Departure
     // Método para actualizar cupos disponibles (usado al reservar)
     public function updateSeats($id, $seatsToDeduct)
     {
-        $sql = "UPDATE salidas SET cupos_disponibles = cupos_disponibles - :seats 
-                WHERE id = :id AND cupos_disponibles >= :seats";
+        $sql = "UPDATE salidas SET cupos_disponibles = cupos_disponibles - :seats1 
+                WHERE id = :id AND cupos_disponibles >= :seats2";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['seats' => $seatsToDeduct, 'id' => $id]);
+        $stmt->execute(['seats1' => $seatsToDeduct, 'seats2' => $seatsToDeduct, 'id' => $id]);
         return $stmt->rowCount() > 0; // Retorna true si se pudo actualizar (había cupo)
     }
 }

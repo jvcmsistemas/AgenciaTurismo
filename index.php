@@ -161,6 +161,11 @@ switch ($path) {
         $resController = new ReservationController($pdo);
         $resController->updateStatus();
         break;
+    case 'agency/reservations/show':
+        require_once BASE_PATH . '/controllers/ReservationController.php';
+        $resController = new ReservationController($pdo);
+        $resController->show();
+        break;
 
     // RUTAS DE SALIDAS (DEPARTURES)
     case 'agency/departures':
@@ -192,6 +197,43 @@ switch ($path) {
         require_once BASE_PATH . '/controllers/DepartureController.php';
         $controller = new DepartureController($pdo);
         $controller->delete($_GET['id']);
+        break;
+
+    // --- MÓDULO CLIENTES ---
+    case 'agency/clients':
+        require_once BASE_PATH . '/controllers/ClientController.php';
+        $controller = new ClientController($pdo);
+        $controller->index();
+        break;
+    case 'agency/clients/create':
+        require_once BASE_PATH . '/controllers/ClientController.php';
+        $controller = new ClientController($pdo);
+        $controller->create();
+        break;
+    case 'agency/clients/store':
+        require_once BASE_PATH . '/controllers/ClientController.php';
+        $controller = new ClientController($pdo);
+        $controller->store();
+        break;
+    case 'agency/clients/edit':
+        require_once BASE_PATH . '/controllers/ClientController.php';
+        $controller = new ClientController($pdo);
+        $controller->edit($_GET['id']);
+        break;
+    case 'agency/clients/update':
+        require_once BASE_PATH . '/controllers/ClientController.php';
+        $controller = new ClientController($pdo);
+        $controller->update();
+        break;
+    case 'agency/clients/delete':
+        require_once BASE_PATH . '/controllers/ClientController.php';
+        $controller = new ClientController($pdo);
+        $controller->delete($_GET['id']);
+        break;
+    case 'agency/clients/search-api': // Ruta para AJAX
+        require_once BASE_PATH . '/controllers/ClientController.php';
+        $controller = new ClientController($pdo);
+        $controller->searchApi();
         break;
 
     // RUTAS DE RECURSOS (AGENCIA)
@@ -247,6 +289,6 @@ switch ($path) {
 
     default:
         http_response_code(404);
-        echo "404 Not Found";
+        echo "404 Not Found. Path attempted: [" . htmlspecialchars($path) . "]";
         break;
 }

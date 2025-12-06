@@ -31,17 +31,42 @@ class ReservationController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'];
             $status = $_POST['status'];
-            $agencyId = $_SESSION['agency_id'];
+            $agencyId = $_SESSION['agencia_id']; // Fixed typo from 'agency_id'
 
             $this->reservationModel->updateStatus($id, $status, $agencyId);
             redirect('agency/reservations');
         }
+    }
+
+    public function show()
+    {
+        if (!isset($_GET['id'])) {
+            redirect('agency/reservations');
+        }
+
+        $id = $_GET['id'];
+        $reservation = $this->reservationModel->getById($id);
+
+        if (!$reservation || $reservation['agencia_id'] != $_SESSION['agencia_id']) {
+            redirect('agency/reservations');
+        }
+
+        $details = $this->reservationModel->getDetails($id);
+
+        // Obtener datos de la agencia para la factura
+        require_once BASE_PATH . '/models/Agency.php';
+        $agencyModel = new Agency($this->pdo);
+        $agency = $agencyModel->getById($_SESSION['agencia_id']);
+
+        require_once BASE_PATH . '/views/agency/reservations/show.php';
+    }
+
     public function create()
     {
         require_once BASE_PATH . '/models/Tour.php';
         $tourModel = new Tour($this->pdo);
         $tours = $tourModel->getAllByAgency($_SESSION['agencia_id']);
-        
+
         require_once BASE_PATH . '/views/agency/reservations/create.php';
     }
 
@@ -50,19 +75,12 @@ class ReservationController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 // 1. Gestión del Cliente (Buscar o Crear)
-                // Por simplicidad, asumiremos que si viene ID es existente, si no, creamos.
-                // En una implementación real, buscaríamos por DNI/Email primero.
                 $clienteId = $_POST['cliente_id'] ?? null;
-                
+
                 if (!$clienteId) {
-                    // Crear Cliente Rápido
-                    require_once BASE_PATH . '/models/Client.php'; // Asumimos que existe o lo creamos
-                    // Si no existe modelo Cliente, insertamos directo (mala práctica, pero para avanzar)
-                    // Mejor: Crear modelo Cliente si no existe.
-                    // Verificaremos si existe Client.php luego. Por ahora insertamos raw si es necesario
-                    // O mejor, usaremos una lógica simple de inserción aquí para no bloquearnos.
-                    
-                    $stmt = $this->pdo->prepare("INSERT INTO clientes (agencia_id, nombre, apellido, email, telefono) VALUES (?, ?, ?, ?, ?)");
+                    require_once BASE_PATH . '/models/Client.php';
+                    // Creación rápida básica si no existe ID
+                    $stmt = $this->pdo->prepare("INSERT INTO clientes (agencia_id, nombre, apellido, email, telefono, fecha_registro) VALUES (?, ?, ?, ?, ?, CURDATE())");
                     $stmt->execute([
                         $_SESSION['agencia_id'],
                         $_POST['cliente_nombre'],
@@ -73,20 +91,39 @@ class ReservationController
                     $clienteId = $this->pdo->lastInsertId();
                 }
 
-                // 2. Preparar datos de Reserva
+                // 2. Procesar Items del Formulario
+                $items = [];
+                $salidas = $_POST['salidas'] ?? [];
+                $cantidades = $_POST['cantidades'] ?? [];
+                $precios = $_POST['precios'] ?? [];
+
+                // Validar que son arrays y tienen la misma longitud
+                if (is_array($salidas)) {
+                    for ($i = 0; $i < count($salidas); $i++) {
+                        if (!empty($salidas[$i])) {
+                            $items[] = [
+                                'tipo' => 'tour',
+                                'salida_id' => $salidas[$i],
+                                'cantidad' => $cantidades[$i] ?? 1,
+                                'precio_unitario' => $precios[$i] ?? 0
+                            ];
+                        }
+                    }
+                }
+
+                if (empty($items)) {
+                    throw new Exception("Debes agregar al menos un servicio a la reserva.");
+                }
+
+                // 3. Preparar datos de Reserva
                 $data = [
                     'codigo_reserva' => 'RES-' . strtoupper(uniqid()),
                     'cliente_id' => $clienteId,
                     'agencia_id' => $_SESSION['agencia_id'],
-                    'tour_id' => $_POST['tour_id'],
-                    'salida_id' => $_POST['salida_id'],
-                    'fecha_inicio_tour' => $_POST['fecha_salida'], // Viene del input hidden o seleccionado
-                    'fecha_fin_tour' => $_POST['fecha_salida'], // Por ahora mismo día (Full Day)
-                    'cantidad_personas' => $_POST['cantidad'],
-                    'precio_unitario' => $_POST['precio_unitario'],
-                    'precio_total' => $_POST['precio_total'],
-                    'saldo_pendiente' => 0, // Asumimos pago completo o manejo aparte
-                    'notas' => $_POST['notas'],
+                    'items' => $items,
+                    'estado' => 'confirmada',
+                    'saldo_pendiente' => 0,
+                    'notas' => $_POST['notas'] ?? '',
                     'origen' => 'presencial'
                 ];
 
@@ -95,12 +132,9 @@ class ReservationController
                 redirect('agency/reservations?success=created');
 
             } catch (Exception $e) {
-                // Manejo de error (ej. sin cupos)
-                $error = $e->getMessage();
-                require_once BASE_PATH . '/models/Tour.php';
-                $tourModel = new Tour($this->pdo);
-                $tours = $tourModel->getAllByAgency($_SESSION['agencia_id']);
-                require_once BASE_PATH . '/views/agency/reservations/create.php';
+                // En producción: redirect con mensaje de error
+                // Por ahora mostramos el error para depurar si falla
+                die("Error al crear reserva: " . $e->getMessage());
             }
         }
     }
