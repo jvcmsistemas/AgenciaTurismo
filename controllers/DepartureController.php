@@ -29,7 +29,11 @@ class DepartureController
     public function index()
     {
         $agencyId = $_SESSION['agencia_id'];
-        $departures = $this->departureModel->getAllByAgency($agencyId);
+        $search = $_GET['search'] ?? '';
+        $status = $_GET['status'] ?? '';
+        $sort = $_GET['sort'] ?? 'fecha_asc';
+
+        $departures = $this->departureModel->getAllByAgency($agencyId, $search, $status, $sort);
         require_once BASE_PATH . '/views/agency/departures/index.php';
     }
 
@@ -50,9 +54,10 @@ class DepartureController
             $data = [
                 'agencia_id' => $_SESSION['agencia_id'],
                 'tour_id' => $_POST['tour_id'],
-                'fecha_salida' => $_POST['fecha_salida'] . ' ' . $_POST['hora_salida'], // Combinar fecha y hora
-                'guia_id' => $_POST['guia_id'],
-                'transporte_id' => $_POST['transporte_id'],
+                'fecha_salida' => $_POST['fecha_salida'],
+                'hora_salida' => $_POST['hora_salida'], // Hora enviada por separado
+                'guia_id' => !empty($_POST['guia_id']) ? $_POST['guia_id'] : null,
+                'transporte_id' => !empty($_POST['transporte_id']) ? $_POST['transporte_id'] : null,
                 'cupos_totales' => $_POST['cupos_totales'],
                 'precio_actual' => !empty($_POST['precio_actual']) ? $_POST['precio_actual'] : null,
                 'estado' => 'programada'
@@ -60,6 +65,48 @@ class DepartureController
 
             $this->departureModel->create($data);
             redirect('agency/departures');
+        }
+    }
+
+    public function edit($id)
+    {
+        $agencyId = $_SESSION['agencia_id'];
+
+        // Obtener la salida
+        $departure = $this->departureModel->getById($id);
+
+        // Validar propiedad
+        if (!$departure || $departure['agencia_id'] != $agencyId) {
+            redirect('agency/departures');
+        }
+
+        // Obtener datos para los selectores
+        $tours = $this->tourModel->getAllByAgency($agencyId);
+        $guides = $this->guideModel->getAllByAgency($agencyId);
+        $transports = $this->transportModel->getAllByAgency($agencyId);
+
+        require_once BASE_PATH . '/views/agency/departures/edit.php';
+    }
+
+    public function update()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'];
+            $data = [
+                'id' => $id,
+                'agencia_id' => $_SESSION['agencia_id'],
+                'tour_id' => $_POST['tour_id'],
+                'fecha_salida' => $_POST['fecha_salida'],
+                'hora_salida' => $_POST['hora_salida'], // Hora enviada por separado
+                'guia_id' => !empty($_POST['guia_id']) ? $_POST['guia_id'] : null,
+                'transporte_id' => !empty($_POST['transporte_id']) ? $_POST['transporte_id'] : null,
+                'cupos_totales' => $_POST['cupos_totales'],
+                'precio_actual' => !empty($_POST['precio_actual']) ? $_POST['precio_actual'] : null,
+                'estado' => $_POST['estado']
+            ];
+
+            $this->departureModel->update($id, $data);
+            redirect('agency/departures?success=updated');
         }
     }
 

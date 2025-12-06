@@ -11,8 +11,53 @@
         </a>
     </div>
 
-    <!-- Filtros (Próximamente) -->
-    <!-- <div class="card glass-card border-0 shadow-sm mb-4">...</div> -->
+    <!-- Filtros y Buscador -->
+    <div class="card glass-card border-0 shadow-sm mb-4">
+        <div class="card-body p-3">
+            <form action="<?php echo BASE_URL; ?>agency/departures" method="GET" class="row g-3 align-items-center">
+
+                <!-- Buscador -->
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0"><i
+                                class="bi bi-search text-muted"></i></span>
+                        <input type="text" name="search" class="form-control border-start-0"
+                            placeholder="Buscar por tour, guía o placa..."
+                            value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
+                    </div>
+                </div>
+
+                <!-- Filtro Estado -->
+                <div class="col-md-3">
+                    <select name="status" class="form-select" onchange="this.form.submit()">
+                        <option value="">Todos los Estados</option>
+                        <option value="programada" <?php echo (isset($_GET['status']) && $_GET['status'] === 'programada') ? 'selected' : ''; ?>>Programada</option>
+                        <option value="confirmada" <?php echo (isset($_GET['status']) && $_GET['status'] === 'confirmada') ? 'selected' : ''; ?>>Confirmada</option>
+                        <option value="cerrada" <?php echo (isset($_GET['status']) && $_GET['status'] === 'cerrada') ? 'selected' : ''; ?>>Cerrada</option>
+                        <option value="cancelada" <?php echo (isset($_GET['status']) && $_GET['status'] === 'cancelada') ? 'selected' : ''; ?>>Cancelada</option>
+                    </select>
+                </div>
+
+                <!-- Ordenar por -->
+                <div class="col-md-3">
+                    <select name="sort" class="form-select" onchange="this.form.submit()">
+                        <option value="fecha_asc" <?php echo (isset($_GET['sort']) && $_GET['sort'] === 'fecha_asc') ? 'selected' : ''; ?>>Fecha: Próximas primero</option>
+                        <option value="fecha_desc" <?php echo (isset($_GET['sort']) && $_GET['sort'] === 'fecha_desc') ? 'selected' : ''; ?>>Fecha: Últimas primero</option>
+                        <option value="cupos_asc" <?php echo (isset($_GET['sort']) && $_GET['sort'] === 'cupos_asc') ? 'selected' : ''; ?>>Cupos: Menor disponibilidad</option>
+                        <option value="cupos_desc" <?php echo (isset($_GET['sort']) && $_GET['sort'] === 'cupos_desc') ? 'selected' : ''; ?>>Cupos: Mayor disponibilidad</option>
+                    </select>
+                </div>
+
+                <!-- Botón Reset -->
+                <div class="col-md-1">
+                    <a href="<?php echo BASE_URL; ?>agency/departures" class="btn btn-outline-secondary w-100"
+                        title="Limpiar Filtros">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <div class="glass-card border-0 shadow-lg">
         <div class="card-body p-0">
@@ -56,15 +101,18 @@
                                 <tr>
                                     <td class="ps-4">
                                         <div class="d-flex flex-column">
-                                            <span class="fw-bold text-dark fs-5"><?php echo $date->format('d M'); ?></span>
-                                            <span class="text-muted small"><?php echo $date->format('h:i A'); ?></span>
                                             <span
-                                                class="badge bg-light text-dark border mt-1"><?php echo $date->format('Y'); ?></span>
+                                                class="fw-bold text-dark fs-5"><?php echo date('d M', strtotime($departure['fecha_salida'])); ?></span>
+                                            <span
+                                                class="text-muted small"><?php echo date('h:i A', strtotime($departure['hora_salida'])); ?></span>
+                                            <span
+                                                class="badge bg-light text-dark border mt-1"><?php echo date('Y', strtotime($departure['fecha_salida'])); ?></span>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="fw-bold text-dark mb-1">
-                                            <?php echo htmlspecialchars($departure['tour_nombre']); ?></div>
+                                            <?php echo htmlspecialchars($departure['tour_nombre']); ?>
+                                        </div>
                                         <div class="small text-muted"><i
                                                 class="bi bi-geo-alt me-1"></i><?php echo htmlspecialchars($departure['ubicacion']); ?>
                                         </div>
@@ -107,8 +155,9 @@
                                     </td>
                                     <td class="text-end pe-4">
                                         <div class="btn-group">
-                                            <a href="#" class="btn btn-sm btn-light text-primary rounded-circle me-2 shadow-sm"
-                                                title="Editar (Próximamente)">
+                                            <a href="<?php echo BASE_URL; ?>agency/departures/edit?id=<?php echo $departure['id']; ?>"
+                                                class="btn btn-sm btn-light text-primary rounded-circle me-2 shadow-sm"
+                                                title="Editar">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
                                             <a href="<?php echo BASE_URL; ?>agency/departures/delete?id=<?php echo $departure['id']; ?>"

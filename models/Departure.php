@@ -9,7 +9,7 @@ class Departure
         $this->pdo = $pdo;
     }
 
-    public function getAllByAgency($agencyId)
+    public function getAllByAgency($agencyId, $search = '', $status = '', $sort = 'fecha_salida ASC')
     {
         $sql = "SELECT s.*, t.nombre as tour_nombre, t.duracion, t.ubicacion, 
                        g.nombre as guia_nombre, tr.placa as transporte_placa
@@ -17,11 +17,35 @@ class Departure
                 JOIN tours t ON s.tour_id = t.id
                 LEFT JOIN guias g ON s.guia_id = g.id
                 LEFT JOIN transportes tr ON s.transporte_id = tr.id
-                WHERE s.agencia_id = :agencia_id
-                ORDER BY s.fecha_salida ASC";
+                WHERE s.agencia_id = :agencia_id";
+
+        $params = ['agencia_id' => $agencyId];
+
+        if (!empty($search)) {
+            $sql .= " AND (t.nombre LIKE :search1 OR g.nombre LIKE :search2 OR tr.placa LIKE :search3)";
+            $params['search1'] = "%$search%";
+            $params['search2'] = "%$search%";
+            $params['search3'] = "%$search%";
+        }
+
+        if (!empty($status)) {
+            $sql .= " AND s.estado = :status";
+            $params['status'] = $status;
+        }
+
+        // Whitelist sorting to prevent SQL injection
+        $allowedSorts = [
+            'fecha_asc' => 's.fecha_salida ASC, s.hora_salida ASC',
+            'fecha_desc' => 's.fecha_salida DESC, s.hora_salida DESC',
+            'cupos_asc' => 's.cupos_disponibles ASC',
+            'cupos_desc' => 's.cupos_disponibles DESC'
+        ];
+
+        $orderBy = $allowedSorts[$sort] ?? 's.fecha_salida ASC, s.hora_salida ASC';
+        $sql .= " ORDER BY " . $orderBy;
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['agencia_id' => $agencyId]);
+        $stmt->execute($params);
         return $stmt->fetchAll();
     }
 
@@ -38,8 +62,8 @@ class Departure
 
     public function create($data)
     {
-        $sql = "INSERT INTO salidas (agencia_id, tour_id, fecha_salida, guia_id, transporte_id, cupos_totales, cupos_disponibles, precio_actual, estado) 
-                VALUES (:agencia_id, :tour_id, :fecha_salida, :guia_id, :transporte_id, :cupos_totales, :cupos_disponibles, :precio_actual, :estado)";
+        $sql = "INSERT INTO salidas (agencia_id, tour_id, fecha_salida, hora_salida, guia_id, transporte_id, cupos_totales, cupos_disponibles, precio_actual, estado) 
+                VALUES (:agencia_id, :tour_id, :fecha_salida, :hora_salida, :guia_id, :transporte_id, :cupos_totales, :cupos_disponibles, :precio_actual, :estado)";
 
         $stmt = $this->pdo->prepare($sql);
 
@@ -50,6 +74,7 @@ class Departure
             'agencia_id' => $data['agencia_id'],
             'tour_id' => $data['tour_id'],
             'fecha_salida' => $data['fecha_salida'],
+            'hora_salida' => $data['hora_salida'], // Add hora_salida
             'guia_id' => $data['guia_id'] ?: null,
             'transporte_id' => $data['transporte_id'] ?: null,
             'cupos_totales' => $data['cupos_totales'],
@@ -66,6 +91,7 @@ class Departure
         $sql = "UPDATE salidas SET 
                 tour_id = :tour_id, 
                 fecha_salida = :fecha_salida, 
+                hora_salida = :hora_salida,
                 guia_id = :guia_id, 
                 transporte_id = :transporte_id, 
                 cupos_totales = :cupos_totales,
@@ -77,6 +103,7 @@ class Departure
         $stmt->execute([
             'tour_id' => $data['tour_id'],
             'fecha_salida' => $data['fecha_salida'],
+            'hora_salida' => $data['hora_salida'], // Add hora_salida
             'guia_id' => $data['guia_id'] ?: null,
             'transporte_id' => $data['transporte_id'] ?: null,
             'cupos_totales' => $data['cupos_totales'],

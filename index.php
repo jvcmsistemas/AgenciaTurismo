@@ -141,6 +141,21 @@ switch ($path) {
         $resController = new ReservationController($pdo);
         $resController->index();
         break;
+    case 'agency/reservations/create':
+        require_once BASE_PATH . '/controllers/ReservationController.php';
+        $resController = new ReservationController($pdo);
+        $resController->create();
+        break;
+    case 'agency/reservations/store':
+        require_once BASE_PATH . '/controllers/ReservationController.php';
+        $resController = new ReservationController($pdo);
+        $resController->store();
+        break;
+    case 'agency/reservations/get-departures':
+        require_once BASE_PATH . '/controllers/ReservationController.php';
+        $resController = new ReservationController($pdo);
+        $resController->getDepartures();
+        break;
     case 'agency/reservations/update_status':
         require_once BASE_PATH . '/controllers/ReservationController.php';
         $resController = new ReservationController($pdo);
@@ -162,6 +177,16 @@ switch ($path) {
         require_once BASE_PATH . '/controllers/DepartureController.php';
         $controller = new DepartureController($pdo);
         $controller->store();
+        break;
+    case 'agency/departures/edit':
+        require_once BASE_PATH . '/controllers/DepartureController.php';
+        $controller = new DepartureController($pdo);
+        $controller->edit($_GET['id']);
+        break;
+    case 'agency/departures/update':
+        require_once BASE_PATH . '/controllers/DepartureController.php';
+        $controller = new DepartureController($pdo);
+        $controller->update();
         break;
     case 'agency/departures/delete':
         require_once BASE_PATH . '/controllers/DepartureController.php';
