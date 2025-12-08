@@ -166,6 +166,11 @@ switch ($path) {
         $resController = new ReservationController($pdo);
         $resController->show();
         break;
+    case 'agency/reservations/payment/add':
+        require_once BASE_PATH . '/controllers/ReservationController.php';
+        $resController = new ReservationController($pdo);
+        $resController->addPayment();
+        break;
 
     // RUTAS DE SALIDAS (DEPARTURES)
     case 'agency/departures':
@@ -241,6 +246,11 @@ switch ($path) {
         require_once BASE_PATH . '/controllers/ResourceController.php';
         $controller = new ResourceController($pdo);
         $controller->index();
+        break;
+    case 'agency/resources/get-by-type': // API
+        require_once BASE_PATH . '/controllers/ResourceController.php';
+        $controller = new ResourceController($pdo);
+        $controller->getByTypeApi();
         break;
     case 'agency/resources/store-guide':
         require_once BASE_PATH . '/controllers/ResourceController.php';

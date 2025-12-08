@@ -48,14 +48,22 @@ class Reservation
 
     public function getDetails($id)
     {
-        $sql = "SELECT rd.*, t.nombre as servicio_nombre, s.fecha_salida, s.hora_salida 
-                FROM reserva_detalles rd
-                JOIN salidas s ON rd.servicio_id = s.id
-                JOIN tours t ON s.tour_id = t.id
-                WHERE rd.reserva_id = :id AND rd.tipo_servicio = 'tour'";
+        // Consulta Polimórfica para obtener Tours y Otros Servicios
+        $sql = "
+            (SELECT rd.*, t.nombre as servicio_nombre, s.fecha_salida, s.hora_salida 
+             FROM reserva_detalles rd
+             JOIN salidas s ON rd.servicio_id = s.id
+             JOIN tours t ON s.tour_id = t.id
+             WHERE rd.reserva_id = :id_t AND rd.tipo_servicio = 'tour')
+            UNION
+            (SELECT rd.*, p.nombre as servicio_nombre, NULL as fecha_salida, NULL as hora_salida
+             FROM reserva_detalles rd
+             JOIN proveedores p ON rd.servicio_id = p.id
+             WHERE rd.reserva_id = :id_p AND rd.tipo_servicio != 'tour')
+        ";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['id' => $id]);
+        $stmt->execute(['id_t' => $id, 'id_p' => $id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -85,25 +93,39 @@ class Reservation
 
             // 2. Insertar Reserva (Cabecera)
             $sql = "INSERT INTO reservas (codigo_reserva, cliente_id, agencia_id, fecha_hora_reserva, 
-                                        estado, cantidad_personas, precio_total, saldo_pendiente, notas, origen) 
+                                        estado, cantidad_personas, precio_total, descuento, saldo_pendiente, notas, origen) 
                     VALUES (:codigo, :cliente_id, :agencia_id, NOW(), 
                             :estado, :cantidad_total, 
-                            :total, :saldo, :notas, :origen)";
+                            :total, :descuento, :saldo, :notas, :origen)";
 
             // Calcular cantidad total de personas (sum of quantities of tours)
             $cantidadTotal = array_reduce($items, function ($carry, $item) {
                 return $carry + $item['cantidad'];
             }, 0);
 
+            // Lógica de Descuento y Saldo
+            $descuento = $data['descuento'] ?? 0;
+            $precioFinal = $totalPrecio - $descuento;
+            if ($precioFinal < 0)
+                $precioFinal = 0;
+
+            $pagoInicial = $data['pago_inicial'] ?? 0;
+            $saldoPendiente = $precioFinal - $pagoInicial;
+            if ($saldoPendiente < 0)
+                $saldoPendiente = 0;
+
+            $estado = ($saldoPendiente <= 0.01) ? 'confirmada' : 'pendiente';
+
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([
                 'codigo' => $data['codigo_reserva'],
                 'cliente_id' => $data['cliente_id'],
                 'agencia_id' => $data['agencia_id'],
-                'estado' => $data['estado'] ?? 'confirmada',
+                'estado' => $estado,
                 'cantidad_total' => $cantidadTotal,
                 'total' => $totalPrecio,
-                'saldo' => $data['saldo_pendiente'] ?? 0,
+                'descuento' => $descuento,
+                'saldo' => $saldoPendiente,
                 'notas' => $data['notas'] ?? '',
                 'origen' => $data['origen'] ?? 'presencial'
             ]);
@@ -140,5 +162,63 @@ class Reservation
         $sql = "UPDATE reservas SET estado = :estado WHERE id = :id AND agencia_id = :agencia_id";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute(['estado' => $status, 'id' => $id, 'agencia_id' => $agencyId]);
+    }
+    // --- MÓDULO DE PAGOS ---
+
+    public function addPayment($data)
+    {
+        try {
+            $this->pdo->beginTransaction();
+
+            // 1. Insertar el pago
+            $sql = "INSERT INTO pagos (reserva_id, agencia_id, monto, metodo_pago, referencia, notas) 
+                    VALUES (:reserva_id, :agencia_id, :monto, :metodo_pago, :referencia, :notas)";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                'reserva_id' => $data['reserva_id'],
+                'agencia_id' => $data['agencia_id'],
+                'monto' => $data['monto'],
+                'metodo_pago' => $data['metodo_pago'],
+                'referencia' => $data['referencia'] ?? null,
+                'notas' => $data['notas'] ?? null
+            ]);
+
+            // 2. Actualizar saldo en la reserva
+            // Primero obtenemos el saldo actual y total para asegurarnos
+            $stmtRes = $this->pdo->prepare("SELECT precio_total, saldo_pendiente FROM reservas WHERE id = :id FOR UPDATE");
+            $stmtRes->execute(['id' => $data['reserva_id']]);
+            $reserva = $stmtRes->fetch(PDO::FETCH_ASSOC);
+
+            $nuevoSaldo = $reserva['saldo_pendiente'] - $data['monto'];
+            if ($nuevoSaldo < 0)
+                $nuevoSaldo = 0; // Evitar negativos por error
+
+            // Determinar nuevo estado
+            $nuevoEstado = ($nuevoSaldo <= 0) ? 'confirmada' : 'pendiente'; // O 'pagada' si usas ese estado
+
+            // Actualizar reserva
+            $sqlUpdate = "UPDATE reservas SET saldo_pendiente = :saldo, estado = :estado WHERE id = :id";
+            $this->pdo->prepare($sqlUpdate)->execute([
+                'saldo' => $nuevoSaldo,
+                'estado' => $nuevoEstado,
+                'id' => $data['reserva_id']
+            ]);
+
+            $this->pdo->commit();
+            return true;
+
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
+            throw $e;
+        }
+    }
+
+    public function getPayments($reservaId)
+    {
+        $sql = "SELECT * FROM pagos WHERE reserva_id = :id ORDER BY fecha_pago DESC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['id' => $reservaId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

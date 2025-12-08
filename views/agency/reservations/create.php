@@ -1,276 +1,560 @@
 <?php include BASE_PATH . '/views/layouts/header_agency.php'; ?>
 
-<div class="row mb-4 fade-in">
-    <div class="col-12 d-flex justify-content-between align-items-center">
-        <div>
-            <h2 class="fw-bold text-primary"><i class="bi bi-cart-plus me-2"></i>Nueva Reserva</h2>
-            <p class="text-muted">Registra una venta con múltiples items.</p>
-        </div>
-        <a href="<?php echo BASE_URL; ?>agency/reservations" class="btn btn-outline-secondary rounded-pill px-4">
-            <i class="bi bi-arrow-left me-2"></i>Volver
-        </a>
-    </div>
-</div>
+<style>
+    .service-card {
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 2px solid transparent;
+    }
 
-<form action="<?php echo BASE_URL; ?>agency/reservations/store" method="POST" id="reservationForm">
+    .service-card:hover {
+        transform: translateY(-2px);
+        background: #f8f9fa;
+    }
 
-    <!-- SECCIÓN CLIENTE -->
-    <div class="card glass-card border-0 shadow-sm mb-4">
-        <div class="card-header glass-header bg-transparent border-0 pt-4 pb-2">
-            <h5 class="fw-bold text-primary"><i class="bi bi-person-circle me-2"></i>Datos del Cliente</h5>
-        </div>
-        <div class="card-body">
-            <div class="row g-3">
-                <div class="col-md-12">
-                    <label class="form-label fw-bold small text-muted">BUSCAR O CREAR CLIENTE</label>
-                    <div class="position-relative">
-                        <input type="text" class="form-control form-control-lg" id="searchClient"
-                            placeholder="Escribe DNI o Nombre para buscar..." autocomplete="off">
-                        <div id="clientSuggestions" class="list-group position-absolute w-100 shadow-lg"
-                            style="z-index: 1000; display: none;"></div>
+    .service-card.active {
+        border-color: var(--bs-primary);
+        background-color: #e7f1ff;
+    }
+
+    .composer-panel {
+        background: #fff;
+        border-right: 1px solid #eee;
+        min-height: 80vh;
+    }
+
+    .cart-panel {
+        background: #f8f9fa;
+        min-height: 80vh;
+    }
+
+    .cart-table th {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .cart-total-section {
+        background: #fff;
+        border-top: 2px solid #eee;
+    }
+</style>
+
+<div class="container-fluid p-0">
+    <form action="<?php echo BASE_URL; ?>agency/reservations/store" method="POST" id="reservationForm">
+        <div class="row g-0">
+
+            <!-- LEFT PANEL: COMPOSER (Constructor) -->
+            <div class="col-lg-5 p-4 composer-panel">
+
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold mb-0 text-primary"><i class="bi bi-magic me-2"></i>Nueva Reserva</h4>
+                    <a href="<?php echo BASE_URL; ?>agency/reservations"
+                        class="btn btn-sm btn-outline-secondary rounded-pill">
+                        <i class="bi bi-arrow-left"></i> Volver
+                    </a>
+                </div>
+
+                <!-- 1. Cliente -->
+                <div class="card shadow-sm border-0 mb-4 bg-light">
+                    <div class="card-body p-3">
+                        <label class="form-label fw-bold small text-muted text-uppercase mb-2"><i
+                                class="bi bi-person-circle me-1"></i> Cliente</label>
+                        <div class="position-relative">
+                            <input type="text" class="form-control" id="searchClient"
+                                placeholder="Buscar cliente por Nombre o DNI..." autocomplete="off">
+                            <div id="clientSuggestions" class="list-group position-absolute w-100 shadow-lg mt-1"
+                                style="z-index: 1000; display: none;"></div>
+                        </div>
+
+                        <!-- Hidden Inputs Real -->
+                        <input type="hidden" name="cliente_id" id="cliente_id" required>
+                        <div id="clientPreview" class="mt-2 small text-primary fw-bold" style="display:none;">
+                            <i class="bi bi-check-circle-fill"></i> <span id="clientNameDisplay"></span>
+                        </div>
+
+                        <!-- Fallback Fields (Hidden by default, shown if new) -->
+                        <div class="row g-2 mt-2" id="newClientFields" style="display:none;">
+                            <!-- Podríamos expandirlo si queremos creación rápida manual -->
+                            <!-- Por simplicidad en este diseño split, asumimos búsqueda o creación externa, pero dejaremos esto clean -->
+                        </div>
                     </div>
-                    <input type="hidden" name="cliente_id" id="cliente_id">
                 </div>
 
-                <!-- Campos de Cliente (se llenan auto o manual) -->
-                <div class="col-md-6">
-                    <input type="text" class="form-control" name="cliente_nombre" id="cliente_nombre"
-                        placeholder="Nombres" required>
+                <!-- 2. Tipo de Servicio -->
+                <label class="form-label fw-bold small text-muted text-uppercase mb-2">1. Elige Tipo</label>
+                <div class="row g-2 mb-3">
+                    <div class="col-4">
+                        <div class="p-3 border rounded text-center service-card active"
+                            onclick="selectType('tour', this)">
+                            <i class="bi bi-map fs-4 d-block mb-1 text-primary"></i>
+                            <span class="small fw-bold">Tour</span>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 border rounded text-center service-card" onclick="selectType('hotel', this)">
+                            <i class="bi bi-building fs-4 d-block mb-1 text-warning"></i>
+                            <span class="small fw-bold">Hotel</span>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 border rounded text-center service-card"
+                            onclick="selectType('restaurante', this)">
+                            <i class="bi bi-cup-hot fs-4 d-block mb-1 text-danger"></i>
+                            <span class="small fw-bold">Restaur.</span>
+                        </div>
+                    </div>
+                    <!-- Otros tipos ocultos en select si fuera necesario -->
                 </div>
-                <div class="col-md-6">
-                    <input type="text" class="form-control" name="cliente_apellido" id="cliente_apellido"
-                        placeholder="Apellidos" required>
-                </div>
-                <div class="col-md-6">
-                    <input type="email" class="form-control" name="cliente_email" id="cliente_email" placeholder="Email"
-                        required>
-                </div>
-                <div class="col-md-6">
-                    <input type="text" class="form-control" name="cliente_telefono" id="cliente_telefono"
-                        placeholder="Teléfono">
-                </div>
-            </div>
-        </div>
-    </div>
+                <input type="hidden" id="selectedType" value="tour">
 
-    <!-- SECCIÓN ITEMS -->
-    <div class="card glass-card border-0 shadow-sm mb-4">
-        <div
-            class="card-header glass-header bg-transparent border-0 pt-4 pb-2 d-flex justify-content-between align-items-center">
-            <h5 class="fw-bold text-primary"><i class="bi bi-list-check me-2"></i>Detalle de Servicios</h5>
-            <button type="button" class="btn btn-sm btn-primary rounded-circle shadow-sm" onclick="addItemRow()">
-                <i class="bi bi-plus-lg"></i>
-            </button>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0" id="itemsTable">
-                    <thead class="bg-light">
-                        <tr>
-                            <th style="width: 30%;" class="text-secondary small fw-bold"><i class="bi bi-map me-1"></i>EXPERIENCIA (TOUR)</th>
-                            <th style="width: 30%;" class="text-secondary small fw-bold"><i class="bi bi-calendar-event me-1"></i>SALIDA DISPONIBLE</th>
-                            <th style="width: 10%;" class="text-secondary small fw-bold"><i class="bi bi-people me-1"></i>CANT.</th>
-                            <th style="width: 15%;" class="text-secondary small fw-bold"><i class="bi bi-tag me-1"></i>PRECIO (S/)</th>
-                            <th style="width: 10%;" class="text-end text-secondary small fw-bold">SUBTOTAL</th>
-                            <th style="width: 5%;"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Fila Template (se clonará) -->
-                        <tr class="item-row" id="row-0">
-                            <td>
-                                <select class="form-select tour-select border pe-4" onchange="loadDepartures(this)" style="background-color: #f8f9fa;">
-                                    <option value="">Seleccione...</option>
+                <!-- 3. Configuración del Servicio -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body">
+
+                        <!-- SECCION TOUR -->
+                        <div id="config-tour">
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Selecciona Tour</label>
+                                <select class="form-select" id="tourSelect" onchange="loadDepartures(this.value)">
+                                    <option value="">-- Elige Tour --</option>
                                     <?php foreach ($tours as $tour): ?>
                                         <option value="<?php echo $tour['id']; ?>">
                                             <?php echo htmlspecialchars($tour['nombre']); ?></option>
                                     <?php endforeach; ?>
                                 </select>
-                            </td>
-                            <td>
-                                <select class="form-select departure-select" name="salidas[]" onchange="setPrice(this)"
-                                    disabled>
-                                    <option value="">Primero elija tour...</option>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Salida Programada</label>
+                                <select class="form-select" id="departureSelect" disabled onchange="updateTourPrice()">
+                                    <option value="">-- Primero elige Tour --</option>
                                 </select>
-                            </td>
-                            <td>
-                                <input type="number" class="form-control qty-input" name="cantidades[]" value="1"
-                                    min="1" onchange="calcSubtotal(this)" disabled>
-                            </td>
-                            <td>
-                                <input type="number" class="form-control price-input" name="precios[]" step="0.01"
-                                    onchange="calcSubtotal(this)" readonly>
-                            </td>
-                            <td class="fw-bold text-end subtotal-display">S/ 0.00</td>
-                            <td class="text-end">
-                                <button type="button" class="btn btn-sm text-danger" onclick="removeRow(this)"><i
-                                        class="bi bi-trash"></i></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tfoot class="bg-light fw-bold">
-                        <tr>
-                            <td colspan="4" class="text-end text-muted text-uppercase">Total General</td>
-                            <td class="text-end fs-5 text-primary" id="grandTotal">S/ 0.00</td>
-                            <td></td>
-                        </tr>
-                    </tfoot>
-                </table>
+                            </div>
+                        </div>
+
+                        <!-- SECCION PROVEEDOR (Hotel/Rest) -->
+                        <div id="config-provider" style="display:none;">
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Selecciona Proveedor</label>
+                                <select class="form-select" id="providerSelect">
+                                    <option value="">Cargando...</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold">Fecha / Detalle</label>
+                                <input type="text" class="form-control" id="providerDetail"
+                                    placeholder="Ej. Noche del 12/10">
+                            </div>
+                        </div>
+
+                        <!-- PRECIO Y CANTIDAD -->
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Cantidad</label>
+                                <div class="input-group">
+                                    <button class="btn btn-outline-secondary" type="button"
+                                        onclick="adjustQty(-1)">-</button>
+                                    <input type="number" class="form-control text-center fw-bold" id="itemQty" value="1"
+                                        min="1">
+                                    <button class="btn btn-outline-secondary" type="button"
+                                        onclick="adjustQty(1)">+</button>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Precio Unit. (S/)</label>
+                                <input type="number" step="0.01" class="form-control fw-bold" id="itemPrice"
+                                    value="0.00">
+                            </div>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="button" class="btn btn-primary btn-lg shadow-sm" onclick="addItemToCart()">
+                                <i class="bi bi-cart-plus me-2"></i> AGREGAR A LA LISTA
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL: CART (Carrito) -->
+            <div class="col-lg-7 p-4 cart-panel d-flex flex-column">
+
+                <div class="bg-white rounded shadow-sm flex-grow-1 d-flex flex-column overflow-hidden">
+                    <div class="p-3 border-bottom bg-white d-flex justify-content-between align-items-center">
+                        <h6 class="fw-bold mb-0 text-secondary ls-1">DETALLE DE VENTA</h6>
+                        <span class="badge bg-light text-dark border" id="itemCountBadge">0 items</span>
+                    </div>
+
+                    <!-- Table Scrollable -->
+                    <div class="table-responsive flex-grow-1" style="background: #fff;">
+                        <table class="table table-hover align-middle mb-0 cart-table" id="cartTable">
+                            <thead class="bg-light sticky-top">
+                                <tr>
+                                    <th class="ps-4">Descripción</th>
+                                    <th class="text-center" style="width: 15%;">Cant.</th>
+                                    <th class="text-end" style="width: 20%;">Precio</th>
+                                    <th class="text-end" style="width: 20%;">Total</th>
+                                    <th style="width: 5%;"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="cartBody">
+                                <!-- Empty State -->
+                                <tr id="emptyCartRow">
+                                    <td colspan="5" class="text-center py-5 text-muted">
+                                        <i class="bi bi-cart-x display-4 d-block mb-3 opacity-25"></i>
+                                        La lista está vacía. Agrega servicios desde el panel izquierdo.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Footer Totals -->
+                    <div class="cart-total-section p-4">
+                        <div class="row mb-2">
+                            <div class="col-6 text-end text-muted">Subtotal:</div>
+                            <div class="col-6 text-end fw-bold" id="lblSubtotal">S/ 0.00</div>
+                        </div>
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-6 text-end text-danger small">Descuento Global (-):</div>
+                            <div class="col-6 text-end">
+                                <input type="number" name="descuento"
+                                    class="form-control form-control-sm d-inline-block text-end text-danger fw-bold border-0 bg-light"
+                                    style="width: 100px;" value="0.00" min="0" step="0.01" oninput="recalcCart()"
+                                    placeholder="0.00">
+                            </div>
+                        </div>
+                        <div class="row pt-3 border-top pb-3">
+                            <div class="col-6 text-end fs-5 fw-bold text-dark">Total a Pagar:</div>
+                            <div class="col-6 text-end fs-4 fw-bold text-primary" id="lblTotal">S/ 0.00</div>
+                        </div>
+
+                        <!-- Payment Box -->
+                        <div class="bg-light p-3 rounded border">
+                            <h6 class="fw-bold fs-7 text-uppercase mb-2 text-success"><i
+                                    class="bi bi-cash-coin me-1"></i> Confirmar Pago Inicial</h6>
+                            <div class="row g-2">
+                                <div class="col-md-5">
+                                    <select class="form-select form-select-sm" name="metodo_pago">
+                                        <option value="efectivo">Efectivo</option>
+                                        <option value="yape">Yape / Plin</option>
+                                        <option value="tarjeta">Tarjeta</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="number" class="form-control form-control-sm fw-bold text-success"
+                                        name="pago_inicial" placeholder="A cuenta" min="0" step="0.01"
+                                        oninput="calcBalance()">
+                                </div>
+                                <div class="col-md-4 text-end d-flex align-items-center justify-content-end">
+                                    <small class="text-muted me-2">Saldo:</small>
+                                    <span class="fw-bold text-danger" id="lblSaldo">S/ 0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid mt-3">
+                            <button type="submit" class="btn btn-success fw-bold py-2">
+                                CONFIRMAR Y GENERAR <i class="bi bi-arrow-right-circle-fill ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </form>
+</div>
 
-    <!-- NOTAS Y GUARDAR -->
-    <div class="row">
-        <div class="col-md-12 text-end">
-            <button type="submit" class="btn btn-success btn-lg px-5 shadow rounded-pill">
-                <i class="bi bi-check-circle-fill me-2"></i>Confirmar Reserva
-            </button>
-        </div>
-    </div>
-</form>
-
+<!-- SCRIPTS -->
 <script>
-    // --- LÓGICA DE AUTOCOMPLETADO DE CLIENTE ---
-    const searchInput = document.getElementById('searchClient');
-    const suggestionsBox = document.getElementById('clientSuggestions');
+    // --- STATE ---
+    let cart = []; // Array of objects: {type, id, name, detail, qty, price, subtotal, detail_id(if tour)}
+    let currentType = 'tour';
 
-    searchInput.addEventListener('input', async function () {
-        const query = this.value;
-        if (query.length < 2) {
-            suggestionsBox.style.display = 'none';
-            return;
+    // --- COMPOSER LOGIC ---
+
+    function selectType(type, element) {
+        currentType = type;
+        document.getElementById('selectedType').value = type;
+
+        // UI Active Class
+        document.querySelectorAll('.service-card').forEach(el => el.classList.remove('active'));
+        if (element) element.classList.add('active');
+
+        // Toggle Config Views
+        const tourConfig = document.getElementById('config-tour');
+        const providerConfig = document.getElementById('config-provider');
+
+        if (type === 'tour') {
+            tourConfig.style.display = 'block';
+            providerConfig.style.display = 'none';
+            // document.getElementById('itemPrice').readOnly = true; // Permitemos editar precio
+            document.getElementById('itemPrice').readOnly = false;
+        } else {
+            tourConfig.style.display = 'none';
+            providerConfig.style.display = 'block';
+            document.getElementById('itemPrice').readOnly = false; // Providers manual price
+            document.getElementById('itemPrice').value = '';
+            document.getElementById('itemPrice').focus();
+
+            loadProviders(type);
         }
-
-        try {
-            const response = await fetch(`<?php echo BASE_URL; ?>agency/clients/search-api?q=${query}`);
-            const clients = await response.json();
-
-            suggestionsBox.innerHTML = '';
-            if (clients.length > 0) {
-                suggestionsBox.style.display = 'block';
-                clients.forEach(client => {
-                    const item = document.createElement('a');
-                    item.className = 'list-group-item list-group-item-action';
-                    item.innerHTML = `<strong>${client.nombre} ${client.apellido}</strong> <small class='text-muted'>(${client.dni})</small>`;
-                    item.onclick = () => fillClientData(client);
-                    suggestionsBox.appendChild(item);
-                });
-            } else {
-                suggestionsBox.style.display = 'none';
-            }
-        } catch (e) {
-            console.error('Error fetching clients', e);
-        }
-    });
-
-    function fillClientData(client) {
-        document.getElementById('cliente_id').value = client.id;
-        document.getElementById('cliente_nombre').value = client.nombre;
-        document.getElementById('cliente_apellido').value = client.apellido;
-        document.getElementById('cliente_email').value = client.email;
-        document.getElementById('cliente_telefono').value = client.telefono;
-        suggestionsBox.style.display = 'none';
-        searchInput.value = ''; // Limpiar buscador
     }
 
-    // --- LÓGICA DE ITEMS (Venta) ---
+    // --- DATA LOADING ---
 
-    async function loadDepartures(select) {
-        const row = select.closest('tr');
-        const departureSelect = row.querySelector('.departure-select');
-        const qtyInput = row.querySelector('.qty-input');
-        const tourId = select.value;
-
-        departureSelect.innerHTML = '<option>Cargando...</option>';
-        departureSelect.disabled = true;
+    // TOURS: Ya cargados en PHP loop, solo manejamos Departures
+    async function loadDepartures(tourId) {
+        const depSelect = document.getElementById('departureSelect');
+        depSelect.innerHTML = '<option>Cargando...</option>';
+        depSelect.disabled = true;
 
         if (!tourId) return;
 
         try {
-            const response = await fetch(`<?php echo BASE_URL; ?>agency/reservations/get-departures?tour_id=${tourId}`);
-            const departures = await response.json();
+            const res = await fetch(`<?php echo BASE_URL; ?>agency/reservations/get-departures?tour_id=${tourId}`);
+            const data = await res.json();
 
-            departureSelect.innerHTML = '<option value="">Seleccione Salida...</option>';
-            departures.forEach(dep => {
-                const date = new Date(dep.fecha_salida + 'T' + dep.hora_salida);
-                const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                const option = document.createElement('option');
-                option.value = dep.id;
-                option.dataset.price = dep.precio_actual > 0 ? dep.precio_actual : 0; // Se debería traer precio tour base si es 0, pero asumimos lógica
-                // AJUSTE: Necesitamos precio del tour si el de salida es 0. 
-                // Por ahora asumimos que la API trae el precio correcto o lo ajustamos.
-                option.textContent = `${dateStr} - Cupos: ${dep.cupos_disponibles}`;
-                departureSelect.appendChild(option);
+            depSelect.innerHTML = '<option value="">-- Selecciona Salida --</option>';
+            data.forEach(d => {
+                const date = new Date(d.fecha_salida + 'T' + d.hora_salida);
+                const str = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const opt = document.createElement('option');
+                opt.value = d.id;
+                opt.dataset.price = d.precio_actual;
+                opt.text = `${str} (Cupos: ${d.cupos_disponibles})`;
+                depSelect.appendChild(opt);
             });
-            departureSelect.disabled = false;
-        } catch (e) {
-            console.error(e);
-            departureSelect.innerHTML = '<option>Error al cargar</option>';
+            depSelect.disabled = false;
+        } catch (e) { console.error(e); }
+    }
+
+    function updateTourPrice() {
+        const depSelect = document.getElementById('departureSelect');
+        const opt = depSelect.options[depSelect.selectedIndex];
+        if (opt && opt.dataset.price) {
+            document.getElementById('itemPrice').value = parseFloat(opt.dataset.price).toFixed(2);
         }
     }
 
-    function setPrice(select) {
-        const row = select.closest('tr');
-        const priceInput = row.querySelector('.price-input');
-        const qtyInput = row.querySelector('.qty-input');
-        const selectedOption = select.options[select.selectedIndex];
+    // PROVIDERS
+    async function loadProviders(type) {
+        const sel = document.getElementById('providerSelect');
+        sel.innerHTML = '<option>Cargando...</option>';
 
-        let price = parseFloat(selectedOption.dataset.price) || 0;
-        // Fix temporal: si precio es 0, poner 100 por defecto para probar (idealmente traer precio base del tour)
-        if (price === 0) price = 100.00;
+        try {
+            const res = await fetch(`<?php echo BASE_URL; ?>agency/resources/get-by-type?type=${type}`);
+            const data = await res.json();
 
-        priceInput.value = price.toFixed(2);
-        qtyInput.disabled = false;
-        calcSubtotal(qtyInput);
+            sel.innerHTML = '<option value="">-- Elige Opción --</option>';
+            data.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.id;
+                opt.text = p.nombre;
+                sel.appendChild(opt);
+            });
+        } catch (e) { console.error(e); }
     }
 
-    function calcSubtotal(element) {
-        const row = element.closest('tr');
-        const qty = parseInt(row.querySelector('.qty-input').value) || 0;
-        const price = parseFloat(row.querySelector('.price-input').value) || 0;
-        const subtotal = qty * price;
+    // --- CART LOGIC ---
 
-        row.querySelector('.subtotal-display').textContent = 'S/ ' + subtotal.toFixed(2);
-        calcGrandTotal();
+    function adjustQty(delta) {
+        const el = document.getElementById('itemQty');
+        let v = parseInt(el.value) || 1;
+        v += delta;
+        if (v < 1) v = 1;
+        el.value = v;
     }
 
-    function calcGrandTotal() {
-        let total = 0;
-        document.querySelectorAll('.item-row').forEach(row => {
-            const qty = parseInt(row.querySelector('.qty-input').value) || 0;
-            const price = parseFloat(row.querySelector('.price-input').value) || 0;
-            total += qty * price;
-        });
-        document.getElementById('grandTotal').textContent = 'S/ ' + total.toFixed(2);
-    }
+    function addItemToCart() {
+        // 1. Gather Data
+        const type = currentType;
+        const qty = parseInt(document.getElementById('itemQty').value) || 1;
+        const price = parseFloat(document.getElementById('itemPrice').value) || 0;
 
-    function addItemRow() {
-        const tbody = document.querySelector('#itemsTable tbody');
-        const firstRow = tbody.querySelector('tr');
-        const newRow = firstRow.cloneNode(true);
+        let id = 0; // The Main Service ID (Provider ID or Tour ID logic)
+        let name = '';
+        let detail = ''; // Description
+        let detail_id = 0; // Departure ID for tours
 
-        // Limpiar valores
-        newRow.querySelector('.tour-select').value = '';
-        newRow.querySelector('.departure-select').innerHTML = '<option value="">Primero elija tour...</option>';
-        newRow.querySelector('.departure-select').disabled = true;
-        newRow.querySelector('.qty-input').value = 1;
-        newRow.querySelector('.qty-input').disabled = true;
-        newRow.querySelector('.price-input').value = '';
-        newRow.querySelector('.subtotal-display').textContent = 'S/ 0.00';
+        if (type === 'tour') {
+            const tourSel = document.getElementById('tourSelect');
+            const depSel = document.getElementById('departureSelect');
 
-        tbody.appendChild(newRow);
-    }
+            if (!tourSel.value || !depSel.value) { alert('Selecciona el Tour y la Salida'); return; }
 
-    function removeRow(btn) {
-        const row = btn.closest('tr');
-        if (document.querySelectorAll('.item-row').length > 1) {
-            row.remove();
-            calcGrandTotal();
+            id = 0; // For Tour logic, we send Departure ID as detail. Logic in Controller: tipo='tour' -> detail has value.
+            // Wait, old controller logic: if type=tour, servicio_id comes from 'detalles[]' (which is DepartureID).
+            // So we need to map correctly. 
+            // Controller: $servicioId = $detalles[$i] (Departure) if tour.
+
+            detail_id = depSel.value;
+            name = tourSel.options[tourSel.selectedIndex].text;
+            detail = depSel.options[depSel.selectedIndex].text;
+
         } else {
-            alert("Debe haber al menos un item.");
+            const provSel = document.getElementById('providerSelect');
+            const detailInput = document.getElementById('providerDetail');
+
+            if (!provSel.value) { alert('Selecciona el Proveedor'); return; }
+
+            id = provSel.value;
+            name = provSel.options[provSel.selectedIndex].text;
+            detail = detailInput.value || 'General';
+            detail_id = 0;
+        }
+
+        // 2. Add to Array
+        cart.push({
+            type: type,
+            id: id,            // Provider ID (or 0 for tour)
+            detail_id: detail_id, // Departure ID (or 0 for prov)
+            name: name,
+            detail: detail,
+            qty: qty,
+            price: price
+        });
+
+        // 3. Render & Clear
+        renderCart();
+
+        // Reset Inputs
+        document.getElementById('itemQty').value = 1;
+        if (type !== 'tour') document.getElementById('providerDetail').value = '';
+    }
+
+    function removeItem(index) {
+        cart.splice(index, 1);
+        renderCart();
+    }
+
+    function renderCart() {
+        const tbody = document.getElementById('cartBody');
+        tbody.innerHTML = '';
+
+        if (cart.length === 0) {
+            tbody.innerHTML = `<tr id="emptyCartRow"><td colspan="5" class="text-center py-5 text-muted"><i class="bi bi-cart-x display-4 d-block mb-3 opacity-25"></i>Lista vacía.</td></tr>`;
+            updateTotals(0);
+            return;
+        }
+
+        let subtotalSum = 0;
+
+        cart.forEach((item, idx) => {
+            const itemSubtotal = item.qty * item.price;
+            subtotalSum += itemSubtotal;
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="ps-4">
+                    <div class="fw-bold text-dark mb-0">${item.name}</div>
+                    <small class="text-muted"><span class="badge bg-light text-secondary border me-1">${item.type.toUpperCase()}</span> ${item.detail}</small>
+                    <!-- HIDDEN INPUTS FOR POST -->
+                    <input type="hidden" name="tipos[]" value="${item.type}">
+                    <input type="hidden" name="servicios[]" value="${item.id}"> 
+                    <input type="hidden" name="detalles[]" value="${item.detail_id}">
+                    <input type="hidden" name="cantidades[]" value="${item.qty}">
+                    <input type="hidden" name="precios[]" value="${item.price}">
+                </td>
+                <td class="text-center fw-bold">${item.qty}</td>
+                <td class="text-end">S/ ${item.price.toFixed(2)}</td>
+                <td class="text-end fw-bold text-dark">S/ ${itemSubtotal.toFixed(2)}</td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-sm text-danger p-0" onclick="removeItem(${idx})"><i class="bi bi-x-circle-fill"></i></button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+
+        document.getElementById('itemCountBadge').textContent = `${cart.length} items`;
+        updateTotals(subtotalSum);
+    }
+
+    function updateTotals(subtotal) {
+        document.getElementById('lblSubtotal').textContent = 'S/ ' + subtotal.toFixed(2);
+
+        const discountInput = document.querySelector('input[name="descuento"]');
+        let discount = parseFloat(discountInput.value) || 0;
+
+        if (discount > subtotal) {
+            discount = subtotal;
+            // discountInput.value = discount.toFixed(2);
+        }
+
+        const total = subtotal - discount;
+        document.getElementById('lblTotal').textContent = 'S/ ' + total.toFixed(2);
+
+        // Update Balance
+        const paidInput = document.querySelector('input[name="pago_inicial"]');
+        let paid = parseFloat(paidInput.value) || 0;
+        if (paid > total) paid = total;
+
+        const balance = total - paid;
+        const balEl = document.getElementById('lblSaldo');
+        balEl.textContent = 'S/ ' + balance.toFixed(2);
+
+        if (balance <= 0) {
+            balEl.classList.remove('text-danger');
+            balEl.classList.add('text-success');
+        } else {
+            balEl.classList.remove('text-success');
+            balEl.classList.add('text-danger');
         }
     }
-</script>
 
+    function recalcCart() {
+        // Triggered by oninput in discount/paid
+        // We need to re-sum everything from UI or Global State? 
+        // Better re-use renderCart() logic but separated.
+        // Quickest: Get subtotal from Label text? No, unsafe. 
+        // Re-calculta from cart state.
+        let subtotal = 0;
+        cart.forEach(i => subtotal += i.qty * i.price);
+        updateTotals(subtotal);
+    }
+
+    // Alias for payment input
+    function calcBalance() { recalcCart(); }
+
+    // --- CLIENT SEARCH ---
+    const searchInput = document.getElementById('searchClient');
+    const suggestionsBox = document.getElementById('clientSuggestions');
+
+    searchInput.addEventListener('input', async function () {
+        const q = this.value;
+        if (q.length < 2) { suggestionsBox.style.display = 'none'; return; }
+
+        try {
+            const res = await fetch(`<?php echo BASE_URL; ?>agency/clients/search-api?q=${q}`);
+            const data = await res.json();
+            suggestionsBox.innerHTML = '';
+
+            if (data.length > 0) {
+                suggestionsBox.style.display = 'block';
+                data.forEach(c => {
+                    const a = document.createElement('a');
+                    a.className = 'list-group-item list-group-item-action small';
+                    a.innerHTML = `<i class="bi bi-person me-2"></i><strong>${c.nombre} ${c.apellido}</strong> <span class="text-muted">(${c.dni})</span>`;
+                    a.onclick = () => selectClient(c);
+                    suggestionsBox.appendChild(a);
+                });
+            } else { suggestionsBox.style.display = 'none'; }
+        } catch (e) { }
+    });
+
+    function selectClient(c) {
+        document.getElementById('cliente_id').value = c.id;
+        document.getElementById('searchClient').style.display = 'none';
+        document.getElementById('clientSuggestions').style.display = 'none';
+
+        const preview = document.getElementById('clientPreview');
+        preview.style.display = 'block';
+        document.getElementById('clientNameDisplay').textContent = `${c.nombre} ${c.apellido} (${c.dni})`;
+
+        // Add edit button logic if needed
+    }
+
+</script>
 <?php include BASE_PATH . '/views/layouts/footer.php'; ?>

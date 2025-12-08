@@ -165,4 +165,37 @@ class ResourceController
             redirect('agency/resources?tab=providers');
         }
     }
+
+    // --- API JSON Methods ---
+    public function getByTypeApi()
+    {
+        header('Content-Type: application/json');
+
+        $type = $_GET['type'] ?? '';
+        $agencyId = $_SESSION['agencia_id'];
+
+        // Si el tipo es 'tour', devolvemos tours (aunque usemos otro endpoint generalmente)
+        // Aquí nos enfocamos en proveedores
+
+        try {
+            $sql = "SELECT id, nombre, tipo FROM proveedores WHERE agencia_id = :agid AND estado = 'activo'";
+            $params = ['agid' => $agencyId];
+
+            if ($type && $type !== 'all') {
+                $sql .= " AND tipo = :tipo";
+                $params['tipo'] = $type;
+            }
+
+            $sql .= " ORDER BY nombre ASC";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+
+            echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+    }
 }

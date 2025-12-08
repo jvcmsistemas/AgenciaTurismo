@@ -58,6 +58,9 @@ class ReservationController
         $agencyModel = new Agency($this->pdo);
         $agency = $agencyModel->getById($_SESSION['agencia_id']);
 
+        // Obtener historial de pagos
+        $payments = $this->reservationModel->getPayments($id);
+
         require_once BASE_PATH . '/views/agency/reservations/show.php';
     }
 
@@ -75,35 +78,52 @@ class ReservationController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 // 1. Gestión del Cliente (Buscar o Crear)
+                // 1. Gestión del Cliente (Buscar o Crear)
                 $clienteId = $_POST['cliente_id'] ?? null;
 
-                if (!$clienteId) {
+                if (empty($clienteId)) {
+                    // Si no hay ID, verificar si hay datos para crear uno nuevo
+                    if (empty($_POST['cliente_nombre'])) {
+                        throw new Exception("Debes seleccionar un cliente válido.");
+                    }
+
+                    // Si hay nombre, creamos (Lógica legacy o para futuro)
                     require_once BASE_PATH . '/models/Client.php';
-                    // Creación rápida básica si no existe ID
                     $stmt = $this->pdo->prepare("INSERT INTO clientes (agencia_id, nombre, apellido, email, telefono, fecha_registro) VALUES (?, ?, ?, ?, ?, CURDATE())");
                     $stmt->execute([
                         $_SESSION['agencia_id'],
-                        $_POST['cliente_nombre'],
-                        $_POST['cliente_apellido'],
-                        $_POST['cliente_email'],
-                        $_POST['cliente_telefono']
+                        $_POST['cliente_nombre'] ?? 'Sin Nombre',
+                        $_POST['cliente_apellido'] ?? '',
+                        $_POST['cliente_email'] ?? '',
+                        $_POST['cliente_telefono'] ?? ''
                     ]);
                     $clienteId = $this->pdo->lastInsertId();
                 }
 
                 // 2. Procesar Items del Formulario
                 $items = [];
-                $salidas = $_POST['salidas'] ?? [];
+                $tipos = $_POST['tipos'] ?? [];
+                $servicios = $_POST['servicios'] ?? []; // Provider ID en caso de Hotel/Rest, Tour ID en caso de Tour (pero Tour ID no se usa directo en detalles)
+                $detalles = $_POST['detalles'] ?? [];   // Departure ID en caso de Tour
                 $cantidades = $_POST['cantidades'] ?? [];
                 $precios = $_POST['precios'] ?? [];
 
-                // Validar que son arrays y tienen la misma longitud
-                if (is_array($salidas)) {
-                    for ($i = 0; $i < count($salidas); $i++) {
-                        if (!empty($salidas[$i])) {
+                // Validar
+                if (is_array($tipos)) {
+                    for ($i = 0; $i < count($tipos); $i++) {
+                        $tipo = $tipos[$i];
+                        $servicioId = 0;
+
+                        if ($tipo === 'tour') {
+                            $servicioId = $detalles[$i] ?? 0; // Para tours, el ID clave es la salida
+                        } else {
+                            $servicioId = $servicios[$i] ?? 0; // Para otros, es el proveedor
+                        }
+
+                        if ($servicioId > 0) {
                             $items[] = [
-                                'tipo' => 'tour',
-                                'salida_id' => $salidas[$i],
+                                'tipo' => $tipo,
+                                'salida_id' => $servicioId, // Usamos 'salida_id' genéricamente para pasar al modelo (que luego lo mapea a servicio_id)
                                 'cantidad' => $cantidades[$i] ?? 1,
                                 'precio_unitario' => $precios[$i] ?? 0
                             ];
@@ -112,7 +132,7 @@ class ReservationController
                 }
 
                 if (empty($items)) {
-                    throw new Exception("Debes agregar al menos un servicio a la reserva.");
+                    throw new Exception("Debes agregar al menos un servicio válido a la reserva.");
                 }
 
                 // 3. Preparar datos de Reserva
@@ -121,15 +141,18 @@ class ReservationController
                     'cliente_id' => $clienteId,
                     'agencia_id' => $_SESSION['agencia_id'],
                     'items' => $items,
-                    'estado' => 'confirmada',
-                    'saldo_pendiente' => 0,
                     'notas' => $_POST['notas'] ?? '',
-                    'origen' => 'presencial'
+                    'origen' => 'presencial',
+                    'descuento' => $_POST['descuento'] ?? 0,
+                    // Datos de Pago Inicial
+                    'pago_inicial' => $_POST['pago_inicial'] ?? 0,
+                    'metodo_pago' => $_POST['metodo_pago'] ?? 'efectivo',
+                    'referencia_pago' => $_POST['referencia'] ?? null
                 ];
 
-                $this->reservationModel->create($data);
+                $reservaId = $this->reservationModel->create($data); // Ahora devuelve ID
 
-                redirect('agency/reservations?success=created');
+                redirect('agency/reservations/show?id=' . $reservaId . '&success=created'); // Redirigir al detalle creado
 
             } catch (Exception $e) {
                 // En producción: redirect con mensaje de error
@@ -155,5 +178,30 @@ class ReservationController
         $departures = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         echo json_encode($departures);
+    }
+
+    // --- MÓDULO DE PAGOS ---
+    public function addPayment()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                $data = [
+                    'reserva_id' => $_POST['reserva_id'],
+                    'agencia_id' => $_SESSION['agencia_id'],
+                    'monto' => $_POST['monto'],
+                    'metodo_pago' => $_POST['metodo_pago'],
+                    'referencia' => $_POST['referencia'],
+                    'notas' => $_POST['notas']
+                ];
+
+                $this->reservationModel->addPayment($data);
+
+                redirect('agency/reservations/show?id=' . $_POST['reserva_id'] . '&success=payment_added');
+
+            } catch (Exception $e) {
+                // En un caso real, manejaríamos mejor el error (flash message)
+                redirect('agency/reservations/show?id=' . $_POST['reserva_id'] . '&error=' . urlencode($e->getMessage()));
+            }
+        }
     }
 }
