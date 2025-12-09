@@ -13,7 +13,8 @@
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>public/css/style.css">
 </head>
 
-<body>
+<body
+    class="<?php echo ($_SESSION['user_role'] ?? '') === 'administrador_general' ? 'superadmin-theme' : 'agency-theme'; ?>">
 
     <?php
     // Detectar si es página de login para no mostrar sidebar
@@ -39,7 +40,28 @@
                             <a href="<?php echo BASE_URL; ?>admin/agencies"><i class="bi bi-building me-2"></i> Agencias</a>
                         </li>
                         <li>
-                            <a href="<?php echo BASE_URL; ?>admin/users"><i class="bi bi-people me-2"></i> Usuarios</a>
+                            <a href="<?php echo BASE_URL; ?>admin/users"><i class="bi bi-people me-2"></i> Usuarios Globales</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo BASE_URL; ?>admin/payments"><i class="bi bi-cash-stack me-2"></i> Pagos &
+                                Facturación</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo BASE_URL; ?>admin/plans"><i class="bi bi-journal-check me-2"></i> Planes
+                                Suscripción</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo BASE_URL; ?>admin/security"><i class="bi bi-shield-lock me-2"></i> Seguridad &
+                                Auditoría</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo BASE_URL; ?>admin/settings"><i class="bi bi-gear me-2"></i> Configuración</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo BASE_URL; ?>admin/reports"><i class="bi bi-bar-chart me-2"></i> Reportes</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo BASE_URL; ?>admin/support"><i class="bi bi-life-preserver me-2"></i> Soporte</a>
                         </li>
                     <?php else: ?>
                         <li>
@@ -62,15 +84,27 @@
             <div id="content">
                 <nav class="navbar navbar-expand-lg navbar-light glass-header navbar-custom">
                     <div class="container-fluid">
-                        <button type="button" id="sidebarCollapse" class="btn btn-light text-primary">
+                        <button type="button" id="sidebarCollapse" class="btn btn-default">
                             <i class="bi bi-list fs-4"></i>
                         </button>
 
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                            <ul class="nav navbar-nav ms-auto">
+                            <ul class="nav navbar-nav ms-auto align-items-center">
+                                <?php if (($_SESSION['user_role'] ?? '') === 'administrador_general'): ?>
+                                    <li class="nav-item me-3">
+                                        <div class="theme-toggle-container">
+                                            <span class="theme-toggle-label">☀️</span>
+                                            <label class="theme-toggle-switch">
+                                                <input type="checkbox" id="themeToggle">
+                                                <span class="theme-toggle-slider"></span>
+                                            </label>
+                                            <span class="theme-toggle-label">🌙</span>
+                                        </div>
+                                    </li>
+                                <?php endif; ?>
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle fw-bold text-primary" href="#" id="navbarDropdown"
-                                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a class="nav-link dropdown-toggle fw-bold" href="#" id="navbarDropdown" role="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="bi bi-person-circle me-1"></i> <?php echo $_SESSION['user_name']; ?>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end glass-card border-0"

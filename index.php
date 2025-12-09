@@ -103,6 +103,38 @@ switch ($path) {
         $userController->index();
         break;
 
+    // ADMIN: PLANES DE SUSCRIPCIÓN
+    case 'admin/plans':
+        require_once BASE_PATH . '/controllers/PlansController.php';
+        $controller = new PlansController($pdo);
+        $controller->index();
+        break;
+    case 'admin/plans/create':
+        require_once BASE_PATH . '/controllers/PlansController.php';
+        $controller = new PlansController($pdo);
+        $controller->create();
+        break;
+    case 'admin/plans/store':
+        require_once BASE_PATH . '/controllers/PlansController.php';
+        $controller = new PlansController($pdo);
+        $controller->store();
+        break;
+    case 'admin/plans/edit':
+        require_once BASE_PATH . '/controllers/PlansController.php';
+        $controller = new PlansController($pdo);
+        $controller->edit($_GET['id']);
+        break;
+    case 'admin/plans/update':
+        require_once BASE_PATH . '/controllers/PlansController.php';
+        $controller = new PlansController($pdo);
+        $controller->update();
+        break;
+    case 'admin/plans/delete':
+        require_once BASE_PATH . '/controllers/PlansController.php';
+        $controller = new PlansController($pdo);
+        $controller->delete($_GET['id']);
+        break;
+
     // RUTAS DE AGENCIA
     case 'agency/tours':
         require_once BASE_PATH . '/controllers/TourController.php';

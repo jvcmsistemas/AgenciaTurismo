@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>public/css/style.css">
 </head>
 
-<body>
+<body class="agency-theme">
 
     <?php
     // Detectar si es página de login para no mostrar sidebar
@@ -31,47 +31,90 @@
 
                 <ul class="list-unstyled components">
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/dashboard') !== false) ? 'active' : ''; ?>" 
-                           href="<?php echo BASE_URL; ?>agency/dashboard">
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/dashboard') !== false) ? 'active' : ''; ?>"
+                            href="<?php echo BASE_URL; ?>agency/dashboard">
                             <i class="bi bi-speedometer2"></i> Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/departures') !== false) ? 'active' : ''; ?>" 
-                           href="<?php echo BASE_URL; ?>agency/departures">
-                            <i class="bi bi-calendar-week"></i> Salidas
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/tours') !== false) ? 'active' : ''; ?>" 
-                           href="<?php echo BASE_URL; ?>agency/tours">
-                            <i class="bi bi-map"></i> Mis Tours
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/reservations') !== false) ? 'active' : ''; ?>" 
-                           href="<?php echo BASE_URL; ?>agency/reservations">
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/reservations') !== false) ? 'active' : ''; ?>"
+                            href="<?php echo BASE_URL; ?>agency/reservations">
                             <i class="bi bi-calendar-check"></i> Reservas
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/resources') !== false) ? 'active' : ''; ?>" 
-                           href="<?php echo BASE_URL; ?>agency/resources">
-                            <i class="bi bi-box-seam"></i> Recursos
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/payments') !== false) ? 'active' : ''; ?>"
+                            href="<?php echo BASE_URL; ?>agency/payments">
+                            <i class="bi bi-cash-coin"></i> Pagos
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/clients') !== false) ? 'active' : ''; ?>" 
-                           href="<?php echo BASE_URL; ?>agency/clients">
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/clients') !== false) ? 'active' : ''; ?>"
+                            href="<?php echo BASE_URL; ?>agency/clients">
                             <i class="bi bi-people"></i> Clientes
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/profile') !== false) ? 'active' : ''; ?>" 
-                           href="<?php echo BASE_URL; ?>agency/profile">
-                            <i class="bi bi-person-gear"></i> Perfil
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/tours') !== false) ? 'active' : ''; ?>"
+                            href="<?php echo BASE_URL; ?>agency/tours">
+                            <i class="bi bi-map"></i> Tours
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/departures') !== false) ? 'active' : ''; ?>"
+                            href="<?php echo BASE_URL; ?>agency/departures">
+                            <i class="bi bi-calendar-week"></i> Salidas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/guides') !== false) ? 'active' : ''; ?>"
+                            href="<?php echo BASE_URL; ?>agency/guides">
+                            <i class="bi bi-person-badge"></i> Guías
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/transports') !== false) ? 'active' : ''; ?>"
+                            href="<?php echo BASE_URL; ?>agency/transports">
+                            <i class="bi bi-truck"></i> Transportes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/providers') !== false) ? 'active' : ''; ?>"
+                            href="<?php echo BASE_URL; ?>agency/providers">
+                            <i class="bi bi-shop"></i> Proveedores
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/reports') !== false) ? 'active' : ''; ?>"
+                            href="<?php echo BASE_URL; ?>agency/reports">
+                            <i class="bi bi-bar-chart"></i> Reportes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/audit') !== false) ? 'active' : ''; ?>"
+                            href="<?php echo BASE_URL; ?>agency/audit">
+                            <i class="bi bi-eye"></i> Auditoría
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/users') !== false) ? 'active' : ''; ?>"
+                            href="<?php echo BASE_URL; ?>agency/users">
+                            <i class="bi bi-person-gear"></i> Usuarios Agencia
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/settings') !== false) ? 'active' : ''; ?>"
+                            href="<?php echo BASE_URL; ?>agency/settings">
+                            <i class="bi bi-gear"></i> Configuración
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-2 <?php echo (strpos($_SERVER['REQUEST_URI'], 'agency/support') !== false) ? 'active' : ''; ?>"
+                            href="<?php echo BASE_URL; ?>agency/support">
+                            <i class="bi bi-life-preserver"></i> Soporte
+                        </a>
+                    </li>
+                    <!-- Elemento Profile (movido al dropdown en responsive, pero mantenido aquí si se desea) -->
                 </ul>
             </nav>
 

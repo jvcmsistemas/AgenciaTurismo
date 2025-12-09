@@ -9,6 +9,9 @@
 <!-- Bootstrap Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- Theme Toggle -->
+<script src="<?php echo BASE_URL; ?>public/js/theme-toggle.js"></script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const sidebarCollapse = document.getElementById('sidebarCollapse');
