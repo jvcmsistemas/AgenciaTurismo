@@ -5,34 +5,36 @@ include BASE_PATH . '/views/layouts/header.php';
 
 <div class="row mb-4 animate-fade-in">
     <div class="col-md-6">
-        <h2 class="text-white">💰 Planes de Suscripción</h2>
+        <h2 class="mb-0 text-primary fw-bold">💰 Planes de Suscripción</h2>
         <p class="text-muted">Gestiona los planes disponibles y sus características</p>
     </div>
     <div class="col-md-6 text-end">
-        <a href="<?= BASE_URL ?>admin/plans/create" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>Nuevo Plan
+        <a href="<?= BASE_URL ?>admin/plans/create" class="btn btn-primary shadow-sm hover-scale">
+            <i class="bi bi-plus-lg me-2"></i>Nuevo Plan
         </a>
     </div>
 </div>
 
 <?php if (isset($_GET['error'])): ?>
-    <div class="alert alert-danger animate-fade-in"><?= htmlspecialchars($_GET['error']) ?></div>
+    <div class="alert alert-danger animate-fade-in shadow-sm border-0">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i><?= htmlspecialchars($_GET['error']) ?>
+    </div>
 <?php endif; ?>
 
-<div class="card animate-fade-in-up">
+<div class="card glass-card border-0 animate-fade-in-up">
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead>
                     <tr>
-                        <th>Orden</th>
+                        <th class="ps-4">Orden</th>
                         <th>Plan</th>
                         <th>Precio</th>
                         <th>Duración</th>
                         <th>Límites (C/T/U)</th>
                         <th>Features</th>
                         <th>Estado</th>
-                        <th class="text-end">Acciones</th>
+                        <th class="text-end pe-4">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,11 +46,11 @@ include BASE_PATH . '/views/layouts/header.php';
                         <?php foreach ($plans as $plan): ?>
                             <tr class="<?= $plan['destacado'] ? 'fw-bold' : '' ?>"
                                 style="<?= $plan['destacado'] ? 'background-color: rgba(233, 69, 96, 0.05) !important;' : '' ?>">
-                                <td><?= $plan['orden'] ?></td>
+                                <td class="ps-4"><?= $plan['orden'] ?></td>
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <div>
-                                            <div class="fw-bold"><?= htmlspecialchars($plan['nombre']) ?></div>
+                                            <div class="fw-bold text-dark"><?= htmlspecialchars($plan['nombre']) ?></div>
                                             <div class="small text-muted"><?= htmlspecialchars($plan['codigo']) ?></div>
                                         </div>
                                         <?php if ($plan['destacado']): ?>
@@ -60,46 +62,48 @@ include BASE_PATH . '/views/layouts/header.php';
                                     <?php if ($plan['precio'] == 0): ?>
                                         <span class="badge bg-success">Gratis</span>
                                     <?php else: ?>
-                                        $<?= number_format($plan['precio'], 2) ?>
+                                        <span class="fw-bold text-success">$<?= number_format($plan['precio'], 2) ?></span>
                                     <?php endif; ?>
                                 </td>
-                                <td><?= $plan['duracionmeses'] ?> meses</td>
+                                <td><span class="badge bg-light text-dark border"><?= $plan['duracionmeses'] ?> meses</span></td>
                                 <td>
-                                    <small title="Clientes / Tours / Usuarios">
-                                        <i class="fas fa-users me-1"></i><?= $plan['limiteclientes'] ?? '∞' ?> /
-                                        <i class="fas fa-map-marked-alt me-1"></i><?= $plan['limitetours'] ?? '∞' ?> /
-                                        <i class="fas fa-user-shield me-1"></i><?= $plan['limiteusuarios'] ?? '∞' ?>
+                                    <small title="Clientes / Tours / Usuarios" class="text-muted d-flex gap-3">
+                                        <span><i class="bi bi-people me-1"></i><?= $plan['limiteclientes'] ?? '∞' ?></span>
+                                        <span><i class="bi bi-map me-1"></i><?= $plan['limitetours'] ?? '∞' ?></span>
+                                        <span><i class="bi bi-shield-lock me-1"></i><?= $plan['limiteusuarios'] ?? '∞' ?></span>
                                     </small>
                                 </td>
                                 <td>
-                                    <div class="d-flex gap-2">
+                                    <div class="d-flex gap-1">
                                         <?php if ($plan['incluye_api']): ?>
-                                            <span class="badge bg-info" title="API Include">API</span>
+                                            <span class="badge bg-info bg-opacity-10 text-info border border-info" title="API Include">API</span>
                                         <?php endif; ?>
                                         <?php if ($plan['incluye_integraciones']): ?>
-                                            <span class="badge bg-primary" title="Integraciones">INT</span>
+                                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary" title="Integraciones">INT</span>
                                         <?php endif; ?>
                                         <?php if ($plan['incluye_soporte_premium']): ?>
-                                            <span class="badge bg-warning" title="Soporte Premium">SOP</span>
+                                            <span class="badge bg-warning bg-opacity-10 text-warning border border-warning" title="Soporte Premium">SOP</span>
                                         <?php endif; ?>
                                     </div>
                                 </td>
                                 <td>
                                     <?php if ($plan['activo']): ?>
-                                        <span class="badge bg-success">Activo</span>
+                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Activo</span>
                                     <?php else: ?>
-                                        <span class="badge bg-secondary">Inactivo</span>
+                                        <span class="badge bg-secondary rounded-pill px-3">Inactivo</span>
                                     <?php endif; ?>
                                 </td>
-                                <td class="text-end">
+                                <td class="text-end pe-4">
                                     <a href="<?= BASE_URL ?>admin/plans/edit?id=<?= $plan['id'] ?>"
-                                        class="btn btn-sm btn-outline-info me-1">
-                                        <i class="fas fa-edit"></i>
+                                        class="btn btn-sm btn-outline-primary border-0 me-1" title="Editar">
+                                        <i class="bi bi-pencil-square fs-5"></i>
                                     </a>
-                                    <a href="<?= BASE_URL ?>admin/plans/delete?id=<?= $plan['id'] ?>"
-                                        class="btn btn-sm btn-outline-danger"
-                                        onclick="return confirm('¿Estás seguro de eliminar este plan? No se puede deshacer si tiene agencias asociadas.')">
-                                        <i class="fas fa-trash"></i>
+                                    <!-- Use single quotes for onclick JS string to avoid syntax issues with newlines -->
+                                    <a href="<?= BASE_URL ?>admin/plans/delete?id=<?= $plan['id'] ?>" 
+                                        class="btn btn-sm btn-outline-danger border-0" 
+                                        title="Eliminar"
+                                        onclick="return confirm('¿Estás seguro de eliminar este plan? Esta acción no se puede deshacer.');">
+                                        <i class="bi bi-trash fs-5"></i>
                                     </a>
                                 </td>
                             </tr>

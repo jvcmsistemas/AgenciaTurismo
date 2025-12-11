@@ -1,41 +1,50 @@
 <?php include BASE_PATH . '/views/layouts/header.php'; ?>
 
 <div class="login-page-admin">
-    <div class="glass-card login-card bg-dark bg-opacity-50 text-white border-secondary">
-        <div class="text-center mb-4">
-            <h3 class="login-title fw-bold">Administración</h3>
-            <p class="text-white-50">Acceso Restringido</p>
+    <div class="glass-card login-card">
+        <div class="text-center mb-5">
+            <h2 class="login-title fw-bold text-white mb-1">TURISMO</h2>
+            <p class="text-white-50 small text-uppercase letter-spacing-2">Sistema de Gestión</p>
         </div>
 
         <?php if (isset($error)): ?>
-            <div class="alert alert-danger border-0 shadow-sm"><?php echo $error; ?></div>
+            <div
+                class="alert alert-danger border-0 bg-danger bg-opacity-25 text-white shadow-sm mb-4 d-flex align-items-center">
+                <i class="bi bi-exclamation-circle-fill me-2"></i>
+                <div><?php echo $error; ?></div>
+            </div>
         <?php endif; ?>
 
         <form action="" method="POST">
             <div class="mb-4">
-                <label for="email" class="form-label text-white-50 small fw-bold">EMAIL</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-dark border-secondary text-white-50 rounded-start"><i
-                            class="bi bi-shield-lock"></i></span>
-                    <input type="email" class="form-control bg-dark border-secondary text-white ps-2" id="email"
-                        name="email" placeholder="admin@agencia.com" required>
+                <div class="login-input-group d-flex align-items-center">
+                    <i class="bi bi-person-badge fs-5"></i>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Usuario Administrador"
+                        required>
                 </div>
             </div>
-            <div class="mb-4">
-                <label for="password" class="form-label text-white-50 small fw-bold">CONTRASEÑA</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-dark border-secondary text-white-50 rounded-start"><i
-                            class="bi bi-key"></i></span>
-                    <input type="password" class="form-control bg-dark border-secondary text-white ps-2" id="password"
-                        name="password" placeholder="••••••••" required>
+
+            <div class="mb-5">
+                <div class="login-input-group d-flex align-items-center">
+                    <i class="bi bi-lock-fill fs-5"></i>
+                    <input type="password" class="form-control" id="password" name="password"
+                        placeholder="Contraseña de Acceso" required>
                 </div>
             </div>
+
             <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary btn-lg text-white">ACCEDER</button>
+                <button type="submit"
+                    class="btn btn-primary btn-lg rounded-pill shadow-lg hover-scale fw-bold text-uppercase"
+                    style="letter-spacing: 1px;">
+                    Ingresar
+                </button>
             </div>
-            <div class="text-center mt-3">
-                <a href="<?php echo BASE_URL; ?>login" class="text-decoration-none small text-white-50 hover-white">Ir
-                    al Login de Agencias</a>
+
+            <div class="text-center mt-5">
+                <a href="<?php echo BASE_URL; ?>login"
+                    class="text-decoration-none small text-white-50 hover-white transition-all">
+                    <i class="bi bi-arrow-left me-1"></i>Acceso a Agencias
+                </a>
             </div>
         </form>
     </div>

@@ -5,7 +5,7 @@ include BASE_PATH . '/views/layouts/header.php';
 
 <div class="row mb-4 animate-fade-in">
     <div class="col-md-6">
-        <h2 class="text-white">✨ Crear Nuevo Plan</h2>
+        <h2 class="mb-0">✨ Crear Nuevo Plan</h2>
         <p class="text-muted">Define un nuevo paquete de suscripción</p>
     </div>
     <div class="col-md-6 text-end">

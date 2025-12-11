@@ -3,21 +3,27 @@
 
 require_once BASE_PATH . '/models/Agency.php';
 require_once BASE_PATH . '/models/User.php';
+require_once BASE_PATH . '/models/Payment.php';
+require_once BASE_PATH . '/models/Ticket.php';
 
 class AdminController
 {
     private $pdo;
     private $agencyModel;
+    private $paymentModel;
+    private $ticketModel;
 
     public function __construct($pdo)
     {
         // Verificar acceso de Super Admin
         if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'administrador_general') {
-            redirect('dashboard'); // O mostrar error 403
+            redirect('admin/login');
         }
 
         $this->pdo = $pdo;
         $this->agencyModel = new Agency($pdo);
+        $this->paymentModel = new Payment($pdo);
+        $this->ticketModel = new Ticket($pdo);
     }
 
     public function index()
@@ -30,9 +36,26 @@ class AdminController
         $users = $userModel->getAll();
         $userCount = count($users);
 
-        // 3. Actividad Reciente (Últimas 5 agencias)
-        // Usamos 'id DESC' como proxy de creación reciente
+        // 3. Ingresos Mensuales (KPI)
+        // Usamos el metodo getIncomeByPeriod del Report o Payment model. 
+        // Payment model tiene getPaymentsByMethod, create... 
+        // Vamos a hacer una query simple aqui o llamar a Report si fuera necesario.
+        // Haremos una query rapida para "Total Pagos Mes Actual"
+        $currentMonth = date('Y-m');
+        $stmt = $this->pdo->prepare("SELECT SUM(monto) FROM pagos WHERE DATE_FORMAT(created_at, '%Y-%m') = :mes AND estado = 'completado'");
+        $stmt->execute(['mes' => $currentMonth]);
+        $monthlyRevenue = $stmt->fetchColumn() ?: 0;
+
+        // 4. Tickets Abiertos
+        // Ticket model tiene getAll($filters)
+        $openTickets = $this->ticketModel->getAll(['estado' => 'abierto']);
+        $openTicketsCount = count($openTickets);
+
+        // 5. Actividad Reciente (Agencias)
         $recentAgencies = array_slice($this->agencyModel->getAll('', 'id DESC'), 0, 5);
+
+        // 6. Tickets Recientes
+        $recentTickets = array_slice($openTickets, 0, 5);
 
         require_once BASE_PATH . '/views/admin/dashboard.php';
     }
@@ -178,5 +201,53 @@ class AdminController
                 $date->modify('+1 month');
         }
         return $date->format('Y-m-d');
+    }
+
+    // --- PERFIL DE SUPERADMIN ---
+    public function profile()
+    {
+        $userId = $_SESSION['user_id'];
+        $userModel = new User($this->pdo);
+        $user = $userModel->getById($userId);
+        require_once BASE_PATH . '/views/admin/profile/index.php';
+    }
+
+    public function updateProfile()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $userId = $_SESSION['user_id'];
+            $userModel = new User($this->pdo);
+
+            try {
+                // Datos básicos
+                $data = [
+                    'nombre' => $_POST['nombre'],
+                    'apellido' => $_POST['apellido'],
+                    'email' => $_POST['email']
+                ];
+
+                // Cambio de contraseña si se proporciona
+                if (!empty($_POST['password'])) {
+                    if ($_POST['password'] !== $_POST['password_confirm']) {
+                        throw new Exception("Las contraseñas no coinciden.");
+                    }
+                    $data['password'] = $_POST['password'];
+                }
+
+                $userModel->update($userId, $data);
+
+                // Actualizar sesión si cambió el nombre
+                $_SESSION['user_name'] = $data['nombre'];
+
+                // Redirigir con éxito (podrías añadir flash messages después)
+                redirect('admin/profile'); // TODO: Add success param
+
+            } catch (Exception $e) {
+                // Manejo de error
+                $error = $e->getMessage();
+                $user = $userModel->getById($userId); // Recargar usuario para la vista
+                require_once BASE_PATH . '/views/admin/profile/index.php';
+            }
+        }
     }
 }

@@ -14,16 +14,43 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const sidebarCollapse = document.getElementById('sidebarCollapse');
-        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('sidebarCollapse');
+        const closeBtn = document.getElementById('sidebarCloseMobile');
+        const body = document.body;
 
-        if (sidebarCollapse) {
-            sidebarCollapse.addEventListener('click', function () {
-                sidebar.classList.toggle('active');
+        const createOverlay = () => {
+            let overlay = document.getElementById('sidebar-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'sidebar-overlay';
+                overlay.style.position = 'fixed';
+                overlay.style.top = '0';
+                overlay.style.left = '0';
+                overlay.style.width = '100vw';
+                overlay.style.height = '100vh';
+                overlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
+                overlay.style.zIndex = '9990';
+                overlay.style.display = 'none';
+                overlay.style.backdropFilter = 'blur(2px)';
+                overlay.onclick = window.closeMobileMenu; // Direct assignment
+                document.body.appendChild(overlay);
+            }
+        };
+
+        // Initialize Overlay immediately
+        createOverlay();
+
+        // Handle links
+        const sidebarLinks = document.querySelectorAll('#sidebar a:not([data-bs-toggle])');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) window.closeMobileMenu();
             });
-        }
+        });
     });
 </script>
+
+
 </body>
 
 </html>

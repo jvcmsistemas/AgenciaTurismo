@@ -183,7 +183,8 @@ ul {
    COMPONENTS - USING VARIABLES ONLY
    ======================================== */
 
-/* Sidebar */
+/* Sidebar Toggle Logic */
+/* Desktop: Sidebar is visible by default. .active hides it (collapses left). */
 #sidebar {
   min-width: var(--sidebar-width);
   max-width: var(--sidebar-width);
@@ -191,7 +192,47 @@ ul {
   color: var(--text-primary);
   border-right: 1px solid var(--border-color);
   transition: all 0.3s;
+  margin-left: 0;
+  /* Visible by default on desktop */
 }
+
+#sidebar.active {
+  margin-left: calc(var(--sidebar-width) * -1);
+  /* Collapsed on desktop */
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  #sidebar {
+    margin-left: calc(var(--sidebar-width) * -1);
+    /* Hidden by default on mobile */
+    position: fixed;
+    z-index: 1000;
+    height: 100vh;
+  }
+
+  #sidebar.active {
+    margin-left: 0;
+    /* Visible on mobile when active */
+  }
+
+  /* Overlay effect when sidebar is open on mobile */
+  #sidebar.active::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-width);
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+
+  .navbar-custom {
+    padding: 0 12px;
+  }
+}
+
 
 /* Agency Special Case for Sidebar Text */
 body.agency-theme #sidebar {
@@ -325,10 +366,20 @@ body:not(.agency-theme) #sidebar ul li a.active {
 }
 
 /* Forms */
+.form-label {
+  color: var(--text-primary) !important;
+  font-weight: 500;
+}
+
 .form-control {
   background-color: var(--input-bg) !important;
   border: 1px solid var(--input-border);
   color: var(--text-primary) !important;
+}
+
+.form-control::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 0.8;
 }
 
 .form-control:focus {
@@ -337,6 +388,11 @@ body:not(.agency-theme) #sidebar ul li a.active {
   border-color: var(--brand-primary);
   box-shadow: 0 0 0 2px rgba(233, 69, 96, 0.2);
 }
+
+.form-text {
+  color: var(--text-muted) !important;
+}
+
 
 /* Buttons */
 .btn-primary {
@@ -438,19 +494,184 @@ input:checked+.theme-toggle-slider:before {
 }
 
 /* Mobile Responsive */
+
+
+/* ========================================
+   UTILITY CLASSES & LOGIN
+   ======================================== */
+.glass-card {
+  background: rgba(15, 23, 42, 0.85);
+  /* Much darker/opaque for visibility */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+body.superadmin-light-theme .glass-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+}
+
+.login-page-admin {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background animated circles for premium feel */
+.login-page-admin::before {
+  content: '';
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 50%;
+  height: 50%;
+  background: radial-gradient(circle, rgba(233, 69, 96, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+  border-radius: 50%;
+  z-index: 0;
+  animation: float 10s infinite ease-in-out;
+}
+
+.login-page-admin::after {
+  content: '';
+  position: absolute;
+  bottom: -10%;
+  right: -10%;
+  width: 50%;
+  height: 50%;
+  background: radial-gradient(circle, rgba(0, 212, 255, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+  border-radius: 50%;
+  z-index: 0;
+  animation: float 15s infinite ease-in-out reverse;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(20px, 30px);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  /* Constrain width */
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  border-radius: 24px;
+  z-index: 10;
+  position: relative;
+}
+
+.login-title {
+  letter-spacing: 1px;
+  font-weight: 800;
+}
+
+/* Custom Input Styles for Login */
+.login-input-group {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50px;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.login-input-group:focus-within {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 15px rgba(233, 69, 96, 0.3);
+}
+
+.login-input-group input {
+  background: transparent !important;
+  border: none;
+  color: white !important;
+  padding-left: 10px;
+}
+
+.login-input-group input:focus {
+  box-shadow: none;
+}
+
+.login-input-group i {
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.3s;
+}
+
+.login-input-group:focus-within i {
+  color: var(--brand-secondary);
+}
+
+.hover-scale {
+  transition: transform 0.2s;
+}
+
+.hover-scale:hover {
+  transform: translateY(-5px);
+}
+
+/* ========================================
+   SIDEBAR TOGGLE LOGIC (BODY CLASS)
+   ======================================== */
+
+/* DESKTOP (Default: Visible) */
+#sidebar {
+  min-width: var(--sidebar-width);
+  max-width: var(--sidebar-width);
+  background-color: var(--sidebar-bg);
+  color: var(--text-primary);
+  border-right: 1px solid var(--border-color);
+  transition: all 0.3s;
+  margin-left: 0;
+}
+
+/* Hide Sidebar on Desktop when toggled */
+body.sidebar-toggled #sidebar {
+  margin-left: calc(var(--sidebar-width) * -1) !important;
+}
+
+/* MOBILE (Default: Hidden) */
 @media (max-width: 768px) {
   #sidebar {
-    margin-left: calc(var(--sidebar-width) * -1);
-    position: fixed;
-    z-index: 1000;
+    position: fixed !important;
+    top: 0;
+    left: 0;
     height: 100vh;
+    z-index: 9999 !important;
+    margin-left: 0 !important;
+    left: -100% !important;
+    transform: none !important;
+    transition: left 0.3s ease-in-out;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.5);
+    background-color: #0f3460 !important;
+    color: #ffffff !important;
+    overflow-y: auto;
   }
 
-  #sidebar.active {
-    margin-left: 0;
+  /* Show Sidebar when mobile-sidebar-active class is present */
+  body.mobile-sidebar-active #sidebar {
+    left: 0 !important;
   }
+
+
 
   .navbar-custom {
-    padding: 0 12px;
+    position: relative;
+    z-index: 1050;
   }
 }

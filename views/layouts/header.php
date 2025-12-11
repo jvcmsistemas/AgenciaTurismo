@@ -10,11 +10,41 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>public/css/style.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>public/css/style.css?v=<?php echo time() . rand(1, 1000); ?>">
+
+    <script>
+        // Global function for absolute reliability
+        window.toggleMobileMenu = function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Activate Sidebar
+            document.body.classList.add('mobile-sidebar-active');
+
+            // Show Overlay
+            const overlay = document.getElementById('sidebar-overlay');
+            if (overlay) overlay.style.display = 'block';
+        };
+
+        window.closeMobileMenu = function (e) {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+
+            document.body.classList.remove('mobile-sidebar-active');
+
+            const overlay = document.getElementById('sidebar-overlay');
+            if (overlay) overlay.style.display = 'none';
+        }
+    </script>
 </head>
 
-<body
-    class="<?php echo ($_SESSION['user_role'] ?? '') === 'administrador_general' ? 'superadmin-theme' : 'agency-theme'; ?>">
+<body class="<?php
+$theme = 'agency-theme';
+if (strpos($_SERVER['REQUEST_URI'], 'admin/login') !== false || ($_SESSION['user_role'] ?? '') === 'administrador_general') {
+    $theme = 'superadmin-theme';
+}
+echo $theme;
+?>">
 
     <?php
     // Detectar si es página de login para no mostrar sidebar
@@ -25,9 +55,13 @@
         <div class="wrapper">
             <!-- Sidebar -->
             <nav id="sidebar">
-                <div class="sidebar-header">
+                <div class="sidebar-header position-relative">
                     <h4 class="fw-bold mb-0">Turismo Oxapampa</h4>
                     <small class="text-white-50">Sistema de Gestión</small>
+                    <!-- Mobile Close Button -->
+                    <button type="button" id="sidebarCloseMobile"
+                        class="btn-close btn-close-white position-absolute top-0 end-0 m-3 d-md-none" aria-label="Close"
+                        onclick="closeMobileMenu(event)"></button>
                 </div>
 
                 <ul class="list-unstyled components">
@@ -84,7 +118,8 @@
             <div id="content">
                 <nav class="navbar navbar-expand-lg navbar-light glass-header navbar-custom">
                     <div class="container-fluid">
-                        <button type="button" id="sidebarCollapse" class="btn btn-default">
+                        <button type="button" id="sidebarCollapse" class="btn btn-outline-primary"
+                            onclick="toggleMobileMenu(event)">
                             <i class="bi bi-list fs-4"></i>
                         </button>
 
@@ -109,7 +144,8 @@
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end glass-card border-0"
                                         aria-labelledby="navbarDropdown">
-                                        <li><a class="dropdown-item" href="#">Perfil</a></li>
+                                        <li><a class="dropdown-item" href="<?php echo BASE_URL; ?>admin/profile">Perfil</a>
+                                        </li>
                                         <li>
                                             <hr class="dropdown-divider">
                                         </li>

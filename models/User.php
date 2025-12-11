@@ -17,7 +17,7 @@ class User
         return $stmt->fetch();
     }
 
-    public function findById($id)
+    public function getById($id)
     {
         $stmt = $this->pdo->prepare("SELECT * FROM usuarios WHERE id = :id LIMIT 1");
         $stmt->execute(['id' => $id]);

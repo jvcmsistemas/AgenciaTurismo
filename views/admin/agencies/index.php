@@ -60,7 +60,7 @@
                     <?php else: ?>
                         <?php foreach ($agencies as $agency): ?>
                             <tr>
-                                <td class="ps-4">
+                                <td class="ps-4 py-3">
                                     <div class="d-flex align-items-center">
                                         <div class="avatar-initial rounded-circle bg-primary text-white me-3 d-flex align-items-center justify-content-center"
                                             style="width: 40px; height: 40px;">
@@ -68,20 +68,20 @@
                                         </div>
                                         <div>
                                             <h6 class="mb-0 fw-bold text-dark">
-                                                <?php echo htmlspecialchars($agency['nombre']); ?>
+                                                <?php echo htmlspecialchars($agency['nombre'] ?? ''); ?>
                                             </h6>
                                             <small class="text-muted">ID: #<?php echo $agency['id']; ?></small>
                                         </div>
                                     </div>
                                 </td>
-                                <td>
+                                <td class="py-3">
                                     <h6 class="mb-0 text-dark">
-                                        <?php echo htmlspecialchars($agency['dueno_nombre'] . ' ' . $agency['dueno_apellido']); ?>
+                                        <?php echo htmlspecialchars(($agency['dueno_nombre'] ?? '') . ' ' . ($agency['dueno_apellido'] ?? '')); ?>
                                     </h6>
                                     <small
                                         class="text-muted"><?php echo htmlspecialchars($agency['dueno_email'] ?? 'Sin email'); ?></small>
                                 </td>
-                                <td>
+                                <td class="py-3">
                                     <?php
                                     $planColors = [
                                         'prueba' => 'secondary',
@@ -95,7 +95,7 @@
                                         <?php echo htmlspecialchars($agency['tipo_suscripcion'] ?? 'Sin Plan'); ?>
                                     </span>
                                 </td>
-                                <td>
+                                <td class="py-3">
                                     <?php
                                     if (!empty($agency['fecha_vencimiento'])) {
                                         $vencimiento = new DateTime($agency['fecha_vencimiento']);
@@ -122,17 +122,17 @@
                                         <span class="text-muted">-</span>
                                     <?php } ?>
                                 </td>
-                                <td>
+                                <td class="py-3">
                                     <?php if ($agency['estado'] === 'activa'): ?>
                                         <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Activa</span>
                                     <?php else: ?>
                                         <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3">Inactiva</span>
                                     <?php endif; ?>
                                 </td>
-                                <td class="text-end pe-4">
+                                <td class="text-end pe-4 py-3">
                                     <div class="dropdown">
                                         <button class="btn btn-sm btn-light rounded-circle" type="button"
-                                            data-bs-toggle="dropdown">
+                                            data-bs-toggle="dropdown" data-bs-boundary="viewport">
                                             <i class="bi bi-three-dots-vertical"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end border-0 shadow">

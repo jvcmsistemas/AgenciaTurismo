@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Sidebar Mobile</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --brand-primary: #e94560;
+            --sidebar-bg: #0f3460;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+        }
+
+        .wrapper {
+            display: flex;
+            width: 100%;
+            align-items: stretch;
+        }
+
+        #sidebar {
+            min-width: var(--sidebar-width);
+            max-width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            color: white;
+            min-height: 100vh;
+            margin-left: 0;
+            /* Desktop visible */
+            transition: all 0.3s;
+        }
+
+        #content {
+            width: 100%;
+            padding: 20px;
+        }
+
+        /* Desktop Collapse */
+        #sidebar.active {
+            margin-left: calc(var(--sidebar-width) * -1);
+        }
+
+        /* MOBILE LOGIC TO TEST */
+        @media (max-width: 768px) {
+            #sidebar {
+                position: fixed !important;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                margin-left: 0 !important;
+                z-index: 2000 !important;
+                transform: translateX(-100%);
+                /* Hidden */
+                transition: transform 0.3s ease-in-out;
+            }
+
+            #sidebar.active {
+                transform: translateX(0);
+                /* Visible */
+            }
+
+            #sidebar.active::before {
+                content: "";
+                position: fixed;
+                top: 0;
+                left: var(--sidebar-width);
+                width: 200vw;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1999;
+            }
+        }
+    </style>
+
+    <script>
+        function toggleSidebar() {
+            var el = document.getElementById('sidebar');
+            console.log('Toggling sidebar. Current classes:', el.className);
+            el.classList.toggle('active');
+            console.log('New classes:', el.className);
+
+            // Debugging Visual Feedback
+            var feedback = document.getElementById('debug-log');
+            if (feedback) {
+                feedback.innerHTML += 'Clicked. Active: ' + el.classList.contains('active') + '<br>';
+                feedback.innerHTML += 'Transform: ' + window.getComputedStyle(el).transform + '<br>';
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar">
+            <div class="p-4">
+                <h4>Sidebar</h4>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-white">Link 1</a></li>
+                    <li><a href="#" class="text-white">Link 2</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <div id="content">
+            <nav class="navbar navbar-light bg-light">
+                <div class="container-fluid">
+                    <button type="button" class="btn btn-primary" onclick="toggleSidebar()">
+                        <i class="bi bi-list"></i> Toggle
+                    </button>
+                </div>
+            </nav>
+
+            <div class="container mt-4">
+                <h2>Mobile Sidebar Test</h2>
+                <p>Resize window to < 768px (Mobile) and click Toggle.</p>
+                        <div id="debug-log" class="alert alert-info font-monospace" style="font-size:12px;"></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

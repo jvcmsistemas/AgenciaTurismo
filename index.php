@@ -62,6 +62,19 @@ switch ($path) {
         $auth = new AuthController($pdo);
         $auth->showResetPassword();
         break;
+
+    // ADMIN: PERFIL
+    case 'admin/profile':
+        require_once BASE_PATH . '/controllers/AdminController.php';
+        $admin = new AdminController($pdo);
+        $admin->profile();
+        break;
+    case 'admin/profile/update':
+        require_once BASE_PATH . '/controllers/AdminController.php';
+        $admin = new AdminController($pdo);
+        $admin->updateProfile();
+        break;
+
     case 'admin/dashboard':
         require_once BASE_PATH . '/controllers/AdminController.php';
         $admin = new AdminController($pdo);
@@ -133,6 +146,72 @@ switch ($path) {
         require_once BASE_PATH . '/controllers/PlansController.php';
         $controller = new PlansController($pdo);
         $controller->delete($_GET['id']);
+        break;
+
+    case 'admin/payments':
+        require_once BASE_PATH . '/controllers/PaymentsController.php';
+        $controller = new PaymentsController($pdo);
+        $controller->index();
+        break;
+
+    case 'admin/security':
+        require_once BASE_PATH . '/controllers/SecurityController.php';
+        $controller = new SecurityController($pdo);
+        $controller->index();
+        break;
+
+    case 'admin/settings':
+        require_once BASE_PATH . '/controllers/SettingsController.php';
+        $controller = new SettingsController($pdo);
+        $controller->index();
+        break;
+
+    case 'admin/settings/update':
+        require_once BASE_PATH . '/controllers/SettingsController.php';
+        $controller = new SettingsController($pdo);
+        $controller->update();
+        break;
+
+    case 'admin/settings/backup':
+        require_once BASE_PATH . '/controllers/SettingsController.php';
+        $controller = new SettingsController($pdo);
+        $controller->backup();
+        break;
+
+    case 'admin/reports':
+        require_once BASE_PATH . '/controllers/ReportsController.php';
+        $controller = new ReportsController($pdo);
+        $controller->index();
+        break;
+
+    case 'admin/support':
+        require_once BASE_PATH . '/controllers/SupportController.php';
+        $controller = new SupportController($pdo);
+        $controller->index();
+        break;
+
+    case 'admin/support/show':
+        require_once BASE_PATH . '/controllers/SupportController.php';
+        $controller = new SupportController($pdo);
+        $controller->show();
+        break;
+
+    case 'admin/support/create':
+        require_once BASE_PATH . '/controllers/SupportController.php';
+        $controller = new SupportController($pdo);
+        $controller->create();
+        break;
+
+    case 'admin/support/reply':
+        require_once BASE_PATH . '/controllers/SupportController.php';
+        $controller = new SupportController($pdo);
+        $controller->reply();
+        break;
+
+    case 'admin/support/close':
+        require_once BASE_PATH . '/controllers/SupportController.php';
+        $controller = new SupportController($pdo);
+        $controller->close();
         break;
 
     // RUTAS DE AGENCIA

@@ -5,7 +5,7 @@ include BASE_PATH . '/views/layouts/header.php';
 
 <div class="row mb-4 animate-fade-in">
     <div class="col-md-6">
-        <h2 class="text-white">✏️ Editar Plan</h2>
+        <h2 class="mb-0">✏️ Editar Plan</h2>
         <p class="text-muted">Modificando: <strong><?= htmlspecialchars($plan['nombre']) ?></strong></p>
     </div>
     <div class="col-md-6 text-end">

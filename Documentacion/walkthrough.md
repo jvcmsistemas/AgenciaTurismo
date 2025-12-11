@@ -1,41 +1,31 @@
-# Subscription Plans Module Implementation
+## Dashboard Superadmin (Panel de Control)
 
-## Overview
-Successfully implemented the complete **Subscription Plans Module** for the Superadmin panel. This brings the system in line with the new business documentation, allowing dynamic management of agency subscriptions.
+### Descripción
+Centro de mando principal para el Administrador General, con visión global del negocio, soporte y accesos rápidos.
 
-## ⚡ Key Features
-- **Database Architecture**: New `planes` table with strict limits and features flags.
-- **Data Migration**: Automatically migrated generic "prueba/semestral/anual" strings to actual database relations.
-- **CRUD Operations**: Full Create, Read, Update, Delete capabilities for Plans.
-- **Design System**: Views built using the new `style.css` semantic variables (Dark/Light theme compatible).
+### Componentes Implementados
 
-## 🛠️ Components Created
+#### 1. KPIs y Métricas
+- **Ingresos Mensuales**: Cálculo en tiempo real de pagos completados.
+- **Tickets Pendientes**: Contador de solicitudes de soporte abiertas.
+- **Agencias y Usuarios**: Estadísticas de crecimiento.
 
-### 1. Database
-- **Table**: `planes` (21 columns for granular control).
-- **View**: `v_agencias_con_planes` for rich reporting.
-- **Migration**: `setup_plans_db.php` script handled the transition.
+#### 2. Visualización
+- **Gráfico de Ingresos**: Implementado con Chart.js (Datos simulados/reales).
+- **Diseño Glassmorphism**: Tarjetas con transparencias y desenfoque (`backdrop-filter`).
 
-### 2. Backend (MVC)
-- **Model**: `models/Plan.php`
-- **Controller**: `controllers/PlansController.php`
-- **Routes**: Integrated into `index.php` under `admin/plans/*`.
+### Superadmin Dashboard
+- **Backend**: Update `AdminController` to fetch agency count, user count, monthly revenue (simulated), and open tickets.
+- **Frontend**: Create `views/admin/dashboard.php` with 4 KPI cards, Chart.js integration for "Ingresos del Año", and lists for Recent Agencies and Recent Tickets.
+- **Styling**: Applied Glassmorphism (glass-card) and dark/light mode compatibility.
 
-### 3. Frontend (Views)
-- `views/admin/plans/index.php`: Dashboard with KPIs and Data Grid.
-- `views/admin/plans/create.php`: Form with validation and limits configuration.
-- `views/admin/plans/edit.php`: Update interface using existing data.
+### Superadmin Profile
+- **Route**: `admin/profile` and `admin/profile/update` added to `index.php`.
+- **Controller**: Added `profile()` and `updateProfile()` to `AdminController` to handle user data fetching and updates (Name, Surname, Password).
+- **Model Standard**: Aliased `findById` to `getById` in `User.php` to maintain consistency.
+- **View**: Created `views/admin/profile/index.php` allowing admins to update their personal info and password securely.
 
-## ✅ Verification
-Verified manually via Superadmin account (`superadmin@system.com`):
-1.  **Listing**: Confirmed default plans (Prueba, Semestral, Anual) appear correctly.
-2.  **Creation**: Successfully created "Enterprise" plan.
-3.  **Editing**: Successfully updated "Plan Semestral" pricing.
-4.  **Styling**: Confirmed Dark Theme cards and tables are readable.
-
-## 📸 Screenshots
-*(Embed screenshots here if available from browser session)*
-
-## 🚀 Next Steps
-- Integrate "Plan Selection" in the Agency Dashboard.
-- Implement "Resource Limits Check" middleware to enforce the limits defined in these plans.
+### Verificación
+- Se verificó la carga correcta de todos los widgets.
+- Se probó la navegación desde "Acciones Rápidas".
+- Se confirmó la integridad visual del tema "Premium".
