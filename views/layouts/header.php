@@ -13,25 +13,54 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>public/css/style.css?v=<?php echo time() . rand(1, 1000); ?>">
 
+    <style>
+        /* CRITICAL: Force Sidebar Mobile Styles Inline (Bypasses external CSS issues) */
+        @media (max-width: 768px) {
+            #sidebar {
+                position: fixed !important;
+                top: 0;
+                left: -100% !important;
+                /* Start hidden */
+                height: 100vh;
+                z-index: 10001 !important;
+                /* Above overlay (9990) */
+                margin-left: 0 !important;
+                transition: left 0.3s ease-in-out;
+                background-color: #0f3460 !important;
+                color: #ffffff !important;
+                overflow-y: auto;
+                width: 280px !important;
+            }
+
+            /* Logic for Open State */
+            body.mobile-sidebar-active #sidebar {
+                left: 0 !important;
+            }
+        }
+    </style>
+
     <script>
-        // Global function for absolute reliability
-        window.toggleMobileMenu = function (e) {
+        // Universal Sidebar Handler
+        window.handleSidebarToggle = function (e) {
             e.preventDefault();
             e.stopPropagation();
 
-            // Activate Sidebar
-            document.body.classList.add('mobile-sidebar-active');
-
-            // Show Overlay
-            const overlay = document.getElementById('sidebar-overlay');
-            if (overlay) overlay.style.display = 'block';
+            if (window.innerWidth > 768) {
+                // Desktop: Toggle Collapse
+                document.body.classList.toggle('sidebar-toggled');
+            } else {
+                // Mobile: Open Overlay Mode
+                document.body.classList.add('mobile-sidebar-active');
+                const overlay = document.getElementById('sidebar-overlay');
+                if (overlay) overlay.style.display = 'block';
+            }
         };
 
+        // Mobile Only Close Function
         window.closeMobileMenu = function (e) {
             if (e) { e.preventDefault(); e.stopPropagation(); }
 
             document.body.classList.remove('mobile-sidebar-active');
-
             const overlay = document.getElementById('sidebar-overlay');
             if (overlay) overlay.style.display = 'none';
         }
@@ -119,7 +148,7 @@ echo $theme;
                 <nav class="navbar navbar-expand-lg navbar-light glass-header navbar-custom">
                     <div class="container-fluid">
                         <button type="button" id="sidebarCollapse" class="btn btn-outline-primary"
-                            onclick="toggleMobileMenu(event)">
+                            onclick="handleSidebarToggle(event)">
                             <i class="bi bi-list fs-4"></i>
                         </button>
 
