@@ -110,6 +110,11 @@ switch ($path) {
         $admin = new AdminController($pdo);
         $admin->update();
         break;
+    case 'admin/agencies/toggle_status':
+        require_once BASE_PATH . '/controllers/AdminController.php';
+        $admin = new AdminController($pdo);
+        $admin->toggleStatus();
+        break;
     case 'admin/users':
         require_once BASE_PATH . '/controllers/UserController.php';
         $userController = new UserController($pdo);

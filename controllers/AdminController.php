@@ -172,13 +172,11 @@ class AdminController
         }
     }
 
-    public function toggleStatus($id)
+    public function toggleStatus()
     {
-        // Lógica simple para alternar estado (demo)
-        // En producción recibiríamos el estado por POST
-        // Aquí asumiremos que viene por POST
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $status = $_POST['status']; // activa, inactiva, suspendida
+            $id = $_POST['id'];
+            $status = $_POST['status'];
             $this->agencyModel->updateStatus($id, $status);
             redirect('admin/agencies');
         }
