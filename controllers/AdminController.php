@@ -100,7 +100,7 @@ class AdminController
                     'email' => $_POST['email_agencia'],
                     'dueno_id' => $userId,
                     'tipo_suscripcion' => $_POST['tipo_suscripcion'],
-                    'fecha_vencimiento' => $this->calculateExpirationDate($_POST['tipo_suscripcion'])
+                    'fecha_vencimiento' => !empty($_POST['fecha_vencimiento']) ? $_POST['fecha_vencimiento'] : $this->calculateExpirationDate($_POST['tipo_suscripcion'])
                 ];
                 $agencyId = $this->agencyModel->create($agencyData);
 
@@ -109,7 +109,7 @@ class AdminController
                 $stmt->execute(['agencia_id' => $agencyId, 'id' => $userId]);
 
                 $this->pdo->commit();
-                redirect('admin/dashboard');
+                redirect('admin/agencies');
 
             } catch (Exception $e) {
                 $this->pdo->rollBack();
@@ -161,7 +161,7 @@ class AdminController
                 $userModel->update($duenoId, $userData);
 
                 $this->pdo->commit();
-                redirect('admin/dashboard');
+                redirect('admin/agencies');
 
             } catch (Exception $e) {
                 $this->pdo->rollBack();
@@ -180,7 +180,7 @@ class AdminController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $status = $_POST['status']; // activa, inactiva, suspendida
             $this->agencyModel->updateStatus($id, $status);
-            redirect('admin/dashboard');
+            redirect('admin/agencies');
         }
     }
 

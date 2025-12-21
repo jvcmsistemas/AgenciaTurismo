@@ -84,8 +84,8 @@
                                 <td class="py-3">
                                     <?php
                                     $planColors = [
-                                        'prueba' => 'secondary',
-                                        'basico' => 'info',
+                                        'prueba' => 'info',
+                                        'basico' => 'primary',
                                         'premium' => 'warning'
                                     ];
                                     $planColor = $planColors[$agency['tipo_suscripcion'] ?? ''] ?? 'secondary';

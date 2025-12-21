@@ -127,8 +127,8 @@
                                     <div class="flex-grow-1">
                                         <small class="text-muted d-block text-uppercase"
                                             style="font-size: 0.7rem; letter-spacing: 1px;">Válido Hasta</small>
-                                        <input type="date" name="fecha_vencimiento"
-                                            class="form-control border-0 p-0 fw-bold text-dark"
+                                        <input type="date" name="fecha_vencimiento" id="fecha_vencimiento"
+                                            class="form-control border-0 p-0 fw-bold text-primary"
                                             value="<?php echo date('Y-m-d', strtotime($agency['fecha_vencimiento'])); ?>">
                                         <small class="text-muted fst-italic" style="font-size: 0.75rem;">
                                             Actual:
@@ -215,6 +215,39 @@
             input.type = "password";
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const planSelect = document.querySelector('select[name="tipo_suscripcion"]');
+        const dateInput = document.getElementById('fecha_vencimiento');
+
+        // Save initial date to prevent accumulation errors
+        // If empty, use today
+        const originalDateValue = dateInput.value || new Date().toISOString().split('T')[0];
+
+        planSelect.addEventListener('change', function () {
+            // Re-parse original date every time
+            const parts = originalDateValue.split('-');
+            // Month is 0-indexed in JS Date constructor
+            const baseDate = new Date(parts[0], parts[1] - 1, parts[2]);
+
+            const plan = this.value;
+
+            if (plan === 'prueba') {
+                baseDate.setMonth(baseDate.getMonth() + 1);
+            } else if (plan === 'basico') {
+                baseDate.setMonth(baseDate.getMonth() + 6);
+            } else if (plan === 'premium') {
+                baseDate.setFullYear(baseDate.getFullYear() + 1);
+            }
+
+            // Format to YYYY-MM-DD
+            const y = baseDate.getFullYear();
+            const m = String(baseDate.getMonth() + 1).padStart(2, '0');
+            const d = String(baseDate.getDate()).padStart(2, '0');
+
+            dateInput.value = `${y}-${m}-${d}`;
+        });
+    });
 </script>
 
 <style>
