@@ -90,8 +90,11 @@
                                     ];
                                     $planColor = $planColors[$agency['tipo_suscripcion'] ?? ''] ?? 'secondary';
                                     ?>
-                                    <span
-                                        class="badge bg-<?php echo $planColor; ?> bg-opacity-10 text-<?php echo $planColor; ?> rounded-pill px-3 text-uppercase">
+                                    <span class="badge rounded-pill px-3 text-uppercase <?php
+                                    echo $agency['tipo_suscripcion'] === 'basico'
+                                        ? 'bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25'
+                                        : 'bg-' . $planColor . ' bg-opacity-10 text-' . $planColor;
+                                    ?>">
                                         <?php echo htmlspecialchars($agency['tipo_suscripcion'] ?? 'Sin Plan'); ?>
                                     </span>
                                 </td>
