@@ -16,6 +16,7 @@
         <?php endif; ?>
 
         <form action="" method="POST">
+            <?php echo csrf_field(); ?>
             <div class="mb-4">
                 <div class="login-input-group d-flex align-items-center">
                     <i class="bi bi-person-badge fs-5"></i>

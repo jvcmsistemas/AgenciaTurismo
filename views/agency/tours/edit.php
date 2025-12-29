@@ -16,6 +16,7 @@
             <div class="card glass-card border-0 shadow-lg">
                 <div class="card-body p-4">
                     <form action="<?php echo BASE_URL; ?>agency/tours/update" method="POST">
+                        <?php echo csrf_field(); ?>
                         <input type="hidden" name="id" value="<?php echo $tour['id']; ?>">
 
                         <div class="row g-3">

@@ -42,6 +42,7 @@
 
 <div class="container-fluid p-0">
     <form action="<?php echo BASE_URL; ?>agency/reservations/store" method="POST" id="reservationForm">
+        <?php echo csrf_field(); ?>
         <div class="row g-0">
 
             <!-- LEFT PANEL: COMPOSER (Constructor) -->
@@ -121,7 +122,8 @@
                                     <option value="">-- Elige Tour --</option>
                                     <?php foreach ($tours as $tour): ?>
                                         <option value="<?php echo $tour['id']; ?>">
-                                            <?php echo htmlspecialchars($tour['nombre']); ?></option>
+                                            <?php echo htmlspecialchars($tour['nombre']); ?>
+                                        </option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>

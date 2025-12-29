@@ -36,6 +36,7 @@
                 </div>
 
                 <form action="<?php echo BASE_URL; ?>admin/profile/update" method="POST">
+                    <?php echo csrf_field(); ?>
                     <h5 class="text-primary fw-bold mb-4"><i class="bi bi-person me-2"></i>Información Personal</h5>
 
                     <div class="row g-3 mb-4">

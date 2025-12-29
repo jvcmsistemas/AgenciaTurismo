@@ -8,6 +8,7 @@
 </div>
 
 <form action="<?php echo BASE_URL; ?>agency/clients/store" method="POST">
+    <?php echo csrf_field(); ?>
     <div class="card glass-card border-0 shadow-sm">
         <div class="card-header glass-header bg-transparent border-0 pt-4 pb-2">
             <h5 class="fw-bold text-primary"><i class="bi bi-person-vcard me-2"></i>Datos Personales</h5>

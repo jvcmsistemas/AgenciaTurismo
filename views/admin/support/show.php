@@ -25,9 +25,11 @@ include BASE_PATH . '/views/layouts/header.php';
                 </div>
                 <hr>
                 <p class="mb-1"><small class="text-muted">Agencia:</small> <br>
-                    <strong><?= htmlspecialchars($ticket['agencia']) ?></strong></p>
+                    <strong><?= htmlspecialchars($ticket['agencia']) ?></strong>
+                </p>
                 <p class="mb-1"><small class="text-muted">Estado:</small> <br>
-                    <strong><?= strtoupper(str_replace('_', ' ', $ticket['estado'])) ?></strong></p>
+                    <strong><?= strtoupper(str_replace('_', ' ', $ticket['estado'])) ?></strong>
+                </p>
                 <p class="mb-1"><small class="text-muted">Creado:</small> <br>
                     <?= date('d/m/Y H:i', strtotime($ticket['created_at'])) ?></p>
 
@@ -78,6 +80,7 @@ include BASE_PATH . '/views/layouts/header.php';
             <div class="card-footer bg-white">
                 <?php if ($ticket['estado'] !== 'cerrado'): ?>
                     <form action="<?= BASE_URL ?>admin/support/reply" method="POST">
+                        <?php echo csrf_field(); ?>
                         <input type="hidden" name="ticket_id" value="<?= $ticket['id'] ?>">
                         <div class="input-group">
                             <textarea name="message" class="form-control" placeholder="Escribe tu respuesta..." rows="2"

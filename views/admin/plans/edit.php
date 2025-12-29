@@ -20,6 +20,7 @@ include BASE_PATH . '/views/layouts/header.php';
 <?php endif; ?>
 
 <form action="<?= BASE_URL ?>admin/plans/update" method="POST" class="animate-fade-in-up">
+    <?php echo csrf_field(); ?>
     <input type="hidden" name="id" value="<?= $plan['id'] ?>">
 
     <div class="row">

@@ -148,6 +148,7 @@
                                             <li>
                                                 <form action="<?php echo BASE_URL; ?>admin/agencies/toggle_status" method="POST"
                                                     class="d-inline">
+                                                    <?php echo csrf_field(); ?>
                                                     <input type="hidden" name="id" value="<?php echo $agency['id']; ?>">
                                                     <input type="hidden" name="status"
                                                         value="<?php echo $agency['estado'] === 'activa' ? 'inactiva' : 'activa'; ?>">

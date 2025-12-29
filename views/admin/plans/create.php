@@ -20,6 +20,7 @@ include BASE_PATH . '/views/layouts/header.php';
 <?php endif; ?>
 
 <form action="<?= BASE_URL ?>admin/plans/store" method="POST" class="animate-fade-in-up">
+    <?php echo csrf_field(); ?>
     <div class="row">
         <!-- Información Básica -->
         <div class="col-md-8">

@@ -16,6 +16,7 @@
             <div class="card glass-card border-0 shadow-lg">
                 <div class="card-body p-4">
                     <form action="<?php echo BASE_URL; ?>agency/departures/store" method="POST">
+                        <?php echo csrf_field(); ?>
 
                         <!-- Paso 1: Selección de Tour -->
                         <h5 class="fw-bold text-dark mb-3"><i class="bi bi-map me-2 text-success"></i>1. ¿Qué
@@ -77,7 +78,8 @@
                                         <option value="">-- Sin asignar por ahora --</option>
                                         <?php foreach ($guides as $guide): ?>
                                             <option value="<?php echo $guide['id']; ?>">
-                                                <?php echo htmlspecialchars($guide['nombre']); ?></option>
+                                                <?php echo htmlspecialchars($guide['nombre']); ?>
+                                            </option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>

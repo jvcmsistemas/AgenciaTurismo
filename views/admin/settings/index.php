@@ -30,6 +30,7 @@ include BASE_PATH . '/views/layouts/header.php';
 <?php endif; ?>
 
 <form action="<?= BASE_URL ?>admin/settings/update" method="POST">
+    <?php echo csrf_field(); ?>
     <div class="row animate-fade-in-up">
 
         <!-- Identidad (Grupo: General) -->

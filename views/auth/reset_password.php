@@ -20,6 +20,7 @@
                     <?php endif; ?>
 
                     <form action="<?php echo BASE_URL; ?>reset-password/update" method="POST">
+                        <?php echo csrf_field(); ?>
                         <input type="hidden" name="token" value="<?php echo htmlspecialchars($token); ?>">
                         <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>">
 

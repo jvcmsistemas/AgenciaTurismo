@@ -238,6 +238,7 @@
 <div class="modal fade" id="modalGuide" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <form class="modal-content glass-card border-0 shadow-lg" id="formGuide" action="<?php echo BASE_URL; ?>agency/resources/store-guide" method="POST">
+            <?php echo csrf_field(); ?>
             <input type="hidden" name="id" id="guide_id">
             <div class="modal-header border-0 pb-0">
                 <div>
@@ -298,6 +299,7 @@
 <div class="modal fade" id="modalTransport" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <form class="modal-content glass-card border-0 shadow-lg" id="formTransport" action="<?php echo BASE_URL; ?>agency/resources/store-transport" method="POST">
+            <?php echo csrf_field(); ?>
             <input type="hidden" name="id" id="transport_id">
             <div class="modal-header border-0 pb-0">
                 <div>
@@ -361,6 +363,7 @@
 <div class="modal fade" id="modalProvider" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <form class="modal-content glass-card border-0 shadow-lg" id="formProvider" action="<?php echo BASE_URL; ?>agency/resources/store-provider" method="POST">
+            <?php echo csrf_field(); ?>
             <input type="hidden" name="id" id="provider_id">
             <div class="modal-header border-0 pb-0">
                 <div>

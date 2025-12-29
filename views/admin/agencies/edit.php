@@ -27,6 +27,7 @@
 
         <form action="<?php echo BASE_URL; ?>admin/agencies/update" method="POST"
             class="card glass-card border-0 shadow-lg overflow-hidden">
+            <?php echo csrf_field(); ?>
             <input type="hidden" name="id" value="<?php echo $agency['id']; ?>">
             <input type="hidden" name="dueno_id" value="<?php echo $agency['dueno_id']; ?>">
 

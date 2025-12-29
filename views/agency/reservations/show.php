@@ -293,6 +293,7 @@
                     aria-label="Close"></button>
             </div>
             <form action="<?php echo BASE_URL; ?>agency/reservations/payment/add" method="POST">
+                <?php echo csrf_field(); ?>
                 <div class="modal-body p-4">
                     <input type="hidden" name="reserva_id" value="<?php echo $reservation['id']; ?>">
 

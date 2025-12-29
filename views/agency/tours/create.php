@@ -16,6 +16,7 @@
             <div class="card glass-card border-0 shadow-lg">
                 <div class="card-body p-4">
                     <form action="<?php echo BASE_URL; ?>agency/tours/store" method="POST">
+                        <?php echo csrf_field(); ?>
                         <div class="row g-3">
                             <!-- Nombre -->
                             <div class="col-md-12">

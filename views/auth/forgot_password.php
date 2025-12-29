@@ -35,6 +35,7 @@
                     <?php endif; ?>
 
                     <form action="<?php echo BASE_URL; ?>forgot-password/send" method="POST">
+                        <?php echo csrf_field(); ?>
                         <div class="mb-4">
                             <div class="input-group glass-input-group">
                                 <span class="input-group-text bg-transparent border-0 text-white-50">

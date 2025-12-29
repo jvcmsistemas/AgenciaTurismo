@@ -15,6 +15,7 @@
 <?php endif; ?>
 
 <form action="<?php echo BASE_URL; ?>agency/profile/update" method="POST">
+    <?php echo csrf_field(); ?>
     <!-- Campos ocultos para mantener datos que no se editan aquí pero requiere el modelo -->
     <input type="hidden" name="tipo_suscripcion" value="<?php echo $agency['tipo_suscripcion']; ?>">
     <input type="hidden" name="fecha_vencimiento" value="<?php echo $agency['fecha_vencimiento']; ?>">

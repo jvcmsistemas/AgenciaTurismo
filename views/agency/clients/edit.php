@@ -8,6 +8,7 @@
 </div>
 
 <form action="<?php echo BASE_URL; ?>agency/clients/update" method="POST">
+    <?php echo csrf_field(); ?>
     <input type="hidden" name="id" value="<?php echo $client['id']; ?>">
 
     <div class="card glass-card border-0 shadow-sm">

@@ -154,6 +154,7 @@
                                                 <li>
                                                     <form action="<?php echo BASE_URL; ?>agency/reservations/update_status"
                                                         method="POST">
+                                                        <?php echo csrf_field(); ?>
                                                         <input type="hidden" name="id" value="<?php echo $res['id']; ?>">
                                                         <button type="submit" name="status" value="confirmada"
                                                             class="dropdown-item rounded py-2 d-flex align-items-center mb-1 text-success">

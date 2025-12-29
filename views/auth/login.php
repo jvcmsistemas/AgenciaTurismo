@@ -12,6 +12,7 @@
         <?php endif; ?>
 
         <form action="" method="POST">
+            <?php echo csrf_field(); ?>
             <div class="mb-4">
                 <label for="email" class="form-label text-muted small fw-bold">EMAIL</label>
                 <div class="input-group">

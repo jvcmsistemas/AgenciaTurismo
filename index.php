@@ -22,6 +22,14 @@ $path = strtok($path, '?'); // Remove query string
 // Iniciar sesión PHP
 session_start();
 
+// --- PROTECCIÓN CSRF GLOBAL ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!is_csrf_valid()) {
+        http_response_code(403);
+        die("Error de seguridad: Token CSRF inválido o ausente.");
+    }
+}
+
 switch ($path) {
     case '':
     case 'index.php':

@@ -113,6 +113,7 @@ include BASE_PATH . '/views/layouts/header.php';
 <div class="modal fade" id="newTicketModal" tabindex="-1">
     <div class="modal-dialog">
         <form action="<?= BASE_URL ?>admin/support/create" method="POST" class="modal-content">
+            <?php echo csrf_field(); ?>
             <div class="modal-header">
                 <h5 class="modal-title">Nuevo Ticket</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>

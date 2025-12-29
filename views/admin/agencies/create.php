@@ -27,6 +27,7 @@
 
         <form action="<?php echo BASE_URL; ?>admin/agencies/store" method="POST"
             class="card glass-card border-0 shadow-lg overflow-hidden">
+            <?php echo csrf_field(); ?>
 
             <!-- Progress Header (Visual only) -->
             <div class="card-header bg-primary bg-gradient text-white p-4 border-0">
