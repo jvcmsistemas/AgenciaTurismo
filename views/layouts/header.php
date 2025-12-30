@@ -131,13 +131,17 @@ echo $theme;
                             <a href="<?php echo BASE_URL; ?>dashboard"><i class="bi bi-speedometer2 me-2"></i> Inicio</a>
                         </li>
                         <li>
-                            <a href="#"><i class="bi bi-calendar-check me-2"></i> Reservas</a>
+                            <a href="<?php echo BASE_URL; ?>agency/reservations"><i class="bi bi-calendar-check me-2"></i>
+                                Reservas</a>
                         </li>
                         <li>
-                            <a href="#"><i class="bi bi-map me-2"></i> Tours</a>
+                            <a href="<?php echo BASE_URL; ?>agency/tours"><i class="bi bi-map me-2"></i> Tours</a>
                         </li>
                         <li>
-                            <a href="#"><i class="bi bi-people me-2"></i> Clientes</a>
+                            <a href="<?php echo BASE_URL; ?>agency/clients"><i class="bi bi-people me-2"></i> Clientes</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo BASE_URL; ?>agency/resources"><i class="bi bi-briefcase me-2"></i> Recursos</a>
                         </li>
                     <?php endif; ?>
                 </ul>

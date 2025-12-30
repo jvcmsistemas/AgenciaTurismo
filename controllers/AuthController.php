@@ -31,23 +31,55 @@ class AuthController
                     // Verificar que NO sea administrador
                     if ($user['rol'] === 'administrador_general') {
                         $error = "Acceso restringido. Los administradores deben usar el Portal Administrativo.";
+                    } elseif ($user['agencia_estado'] !== 'activa') {
+                        $error = "Su cuenta de agencia está " . ($user['agencia_estado'] ?? 'inactiva') . ". Por favor, contacte al soporte.";
+                        $this->auditAccess($user['id'], 'bloqueado_agencia_inactiva');
                     } else {
                         // Login exitoso para Agencias
                         $_SESSION['user_id'] = $user['id'];
-                        $_SESSION['user_name'] = $user['nombre'];
+                        $_SESSION['user_name'] = $user['nombre'] . ' ' . $user['apellido'];
                         $_SESSION['user_role'] = $user['rol'];
                         $_SESSION['agencia_id'] = $user['agencia_id'];
+
+                        // Regenerar ID de sesión por seguridad
+                        session_regenerate_id(true);
+
+                        // Actualizar último acceso
+                        $this->userModel->updateLastLogin($user['id']);
+
+                        // Auditoría de acceso exitoso
+                        $this->auditAccess($user['id'], 'exitoso');
 
                         redirect('dashboard');
                     }
                 } else {
                     $error = "Credenciales incorrectas.";
+                    // Auditoría de acceso fallido (si el usuario existe)
+                    if ($user) {
+                        $this->auditAccess($user['id'], 'fallido');
+                    }
                 }
             }
         }
 
-        // Cargar vista
-        require_once BASE_PATH . '/views/auth/login.php';
+        // Cargar vista premium para Agencias
+        require_once BASE_PATH . '/views/auth/login_agency.php';
+    }
+
+    private function auditAccess($userId, $estado)
+    {
+        try {
+            $stmt = $this->pdo->prepare("INSERT INTO logs_acceso (usuario_id, accion, recurso, ip_origen, user_agent, estado) 
+                                        VALUES (:usuario_id, 'login', 'portal_agencia', :ip, :ua, :estado)");
+            $stmt->execute([
+                'usuario_id' => $userId,
+                'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+                'ua' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
+                'estado' => $estado
+            ]);
+        } catch (Exception $e) {
+            // No bloquear el login si falla la auditoría, pero registrar error si es necesario
+        }
     }
 
     public function loginAdmin()

@@ -12,16 +12,28 @@ class User
 
     public function findByEmail($email)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM usuarios WHERE email = :email LIMIT 1");
+        $stmt = $this->pdo->prepare("SELECT u.*, a.estado as agencia_estado, a.nombre as agencia_nombre 
+                                    FROM usuarios u 
+                                    LEFT JOIN agencias a ON u.agencia_id = a.id 
+                                    WHERE u.email = :email LIMIT 1");
         $stmt->execute(['email' => $email]);
         return $stmt->fetch();
     }
 
     public function getById($id)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM usuarios WHERE id = :id LIMIT 1");
+        $stmt = $this->pdo->prepare("SELECT u.*, a.estado as agencia_estado 
+                                    FROM usuarios u 
+                                    LEFT JOIN agencias a ON u.agencia_id = a.id 
+                                    WHERE u.id = :id LIMIT 1");
         $stmt->execute(['id' => $id]);
         return $stmt->fetch();
+    }
+
+    public function updateLastLogin($id)
+    {
+        $stmt = $this->pdo->prepare("UPDATE usuarios SET ultimo_acceso = CURRENT_TIMESTAMP WHERE id = :id");
+        return $stmt->execute(['id' => $id]);
     }
 
     // Método para crear usuarios (útil para futuros registros)
