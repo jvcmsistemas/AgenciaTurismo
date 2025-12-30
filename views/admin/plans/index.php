@@ -65,7 +65,9 @@ include BASE_PATH . '/views/layouts/header.php';
                                         <span class="fw-bold text-success">$<?= number_format($plan['precio'], 2) ?></span>
                                     <?php endif; ?>
                                 </td>
-                                <td><span class="badge bg-light text-dark border"><?= $plan['duracionmeses'] ?> meses</span></td>
+                                <td><span
+                                        class="badge bg-info bg-opacity-10 text-info border border-info"><?= $plan['duracionmeses'] ?>
+                                        meses</span></td>
                                 <td>
                                     <small title="Clientes / Tours / Usuarios" class="text-muted d-flex gap-3">
                                         <span><i class="bi bi-people me-1"></i><?= $plan['limiteclientes'] ?? '∞' ?></span>
@@ -76,13 +78,16 @@ include BASE_PATH . '/views/layouts/header.php';
                                 <td>
                                     <div class="d-flex gap-1">
                                         <?php if ($plan['incluye_api']): ?>
-                                            <span class="badge bg-info bg-opacity-10 text-info border border-info" title="API Include">API</span>
+                                            <span class="badge bg-info bg-opacity-10 text-info border border-info"
+                                                title="API Include">API</span>
                                         <?php endif; ?>
                                         <?php if ($plan['incluye_integraciones']): ?>
-                                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary" title="Integraciones">INT</span>
+                                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary"
+                                                title="Integraciones">INT</span>
                                         <?php endif; ?>
                                         <?php if ($plan['incluye_soporte_premium']): ?>
-                                            <span class="badge bg-warning bg-opacity-10 text-warning border border-warning" title="Soporte Premium">SOP</span>
+                                            <span class="badge bg-warning bg-opacity-10 text-warning border border-warning"
+                                                title="Soporte Premium">SOP</span>
                                         <?php endif; ?>
                                     </div>
                                 </td>
@@ -99,9 +104,8 @@ include BASE_PATH . '/views/layouts/header.php';
                                         <i class="bi bi-pencil-square fs-5"></i>
                                     </a>
                                     <!-- Use single quotes for onclick JS string to avoid syntax issues with newlines -->
-                                    <a href="<?= BASE_URL ?>admin/plans/delete?id=<?= $plan['id'] ?>" 
-                                        class="btn btn-sm btn-outline-danger border-0" 
-                                        title="Eliminar"
+                                    <a href="<?= BASE_URL ?>admin/plans/delete?id=<?= $plan['id'] ?>"
+                                        class="btn btn-sm btn-outline-danger border-0" title="Eliminar"
                                         onclick="return confirm('¿Estás seguro de eliminar este plan? Esta acción no se puede deshacer.');">
                                         <i class="bi bi-trash fs-5"></i>
                                     </a>
