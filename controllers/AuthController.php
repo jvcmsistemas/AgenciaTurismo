@@ -48,16 +48,14 @@ class AuthController
                         $this->userModel->updateLastLogin($user['id']);
 
                         // Auditoría de acceso exitoso
-                        $this->auditAccess($user['id'], 'exitoso');
+                        $this->auditAccess($user['id'], 'exitoso', 'portal_agencia');
 
                         redirect('dashboard');
                     }
                 } else {
                     $error = "Credenciales incorrectas.";
-                    // Auditoría de acceso fallido (si el usuario existe)
-                    if ($user) {
-                        $this->auditAccess($user['id'], 'fallido');
-                    }
+                    // Auditoría de acceso fallido
+                    $this->auditAccess(null, 'fallido', 'portal_agencia', ['email' => $email]);
                 }
             }
         }
@@ -66,19 +64,21 @@ class AuthController
         require_once BASE_PATH . '/views/auth/login_agency.php';
     }
 
-    private function auditAccess($userId, $estado)
+    private function auditAccess($userId, $estado, $recurso = 'portal_agencia', $detalles = null)
     {
         try {
-            $stmt = $this->pdo->prepare("INSERT INTO logs_acceso (usuario_id, accion, recurso, ip_origen, user_agent, estado) 
-                                        VALUES (:usuario_id, 'login', 'portal_agencia', :ip, :ua, :estado)");
+            $stmt = $this->pdo->prepare("INSERT INTO logs_acceso (usuario_id, accion, recurso, ip_origen, user_agent, estado, detalles) 
+                                        VALUES (:usuario_id, 'login', :recurso, :ip, :ua, :estado, :detalles)");
             $stmt->execute([
                 'usuario_id' => $userId,
+                'recurso' => $recurso,
                 'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
                 'ua' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
-                'estado' => $estado
+                'estado' => $estado,
+                'detalles' => $detalles ? json_encode($detalles) : null
             ]);
         } catch (Exception $e) {
-            // No bloquear el login si falla la auditoría, pero registrar error si es necesario
+            // No bloquear el login si falla la auditoría
         }
     }
 
@@ -102,12 +102,26 @@ class AuthController
                         $_SESSION['user_name'] = $user['nombre'];
                         $_SESSION['user_role'] = $user['rol'];
                         $_SESSION['agencia_id'] = $user['agencia_id'];
+
+                        // Regenerar ID de sesión por seguridad
+                        session_regenerate_id(true);
+
+                        // Actualizar último acceso
+                        $this->userModel->updateLastLogin($user['id']);
+
+                        // Auditoría de acceso exitoso
+                        $this->auditAccess($user['id'], 'exitoso', 'portal_admin');
+
                         redirect('admin/dashboard');
                     } else {
                         $error = "Acceso no autorizado para este rol.";
+                        // Auditoría de acceso no autorizado
+                        $this->auditAccess($user['id'], 'no_autorizado', 'portal_admin');
                     }
                 } else {
                     $error = "Credenciales incorrectas.";
+                    // Auditoría de acceso fallido
+                    $this->auditAccess(null, 'fallido', 'portal_admin', ['email' => $email]);
                 }
             }
         }

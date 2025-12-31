@@ -129,4 +129,23 @@ class Departure
         $stmt->execute(['seats1' => $seatsToDeduct, 'seats2' => $seatsToDeduct, 'id' => $id]);
         return $stmt->rowCount() > 0; // Retorna true si se pudo actualizar (había cupo)
     }
+
+    /**
+     * Obtiene las próximas salidas de la agencia (próximas 48 horas)
+     */
+    public function getUpcoming($agencyId)
+    {
+        $sql = "SELECT s.*, t.nombre as tour_nombre, g.nombre as guia_nombre
+                FROM salidas s
+                JOIN tours t ON s.tour_id = t.id
+                LEFT JOIN guias g ON s.guia_id = g.id
+                WHERE s.agencia_id = :agencia_id 
+                AND s.fecha_salida BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 2 DAY)
+                AND s.estado != 'cancelada'
+                ORDER BY s.fecha_salida ASC, s.hora_salida ASC";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['agencia_id' => $agencyId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

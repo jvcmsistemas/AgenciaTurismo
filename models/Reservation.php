@@ -221,4 +221,27 @@ class Reservation
         $stmt->execute(['id' => $reservaId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Obtiene alertas de reservas con pago pendiente que inician pronto (próximos 7 días)
+     */
+    public function getPendingAlerts($agencyId)
+    {
+        $sql = "SELECT r.*, c.nombre as cliente_nombre, c.apellido as cliente_apellido,
+                       (SELECT MIN(s.fecha_salida) 
+                        FROM reserva_detalles rd 
+                        JOIN salidas s ON rd.servicio_id = s.id 
+                        WHERE rd.reserva_id = r.id AND rd.tipo_servicio = 'tour') as fecha_inicio_tour
+                FROM reservas r
+                LEFT JOIN clientes c ON r.cliente_id = c.id
+                WHERE r.agencia_id = :agencia_id 
+                AND r.saldo_pendiente > 0 
+                AND r.estado != 'cancelada'
+                HAVING fecha_inicio_tour BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+                ORDER BY fecha_inicio_tour ASC";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['agencia_id' => $agencyId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

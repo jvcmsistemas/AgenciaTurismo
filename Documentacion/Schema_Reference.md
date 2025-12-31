@@ -34,7 +34,16 @@ TOURS en tu agencia:
       - Diferentes por cada tour personalizado
 ```
 
+## Database Schema Reference - Sistema de Gestión Turística V2
+
+## Test Credentials (Development)
+- **General Admin**: `admin@sistema.com` / `admin123`
+- **Agency Owner**: `dueno@agencia.com` / `password123`
+- **Agency Employee**: `empleado@agencia.com` / `password123`
+
 ---
+
+## 1. Table: `usuarios` (Users)
 
 ## 🔍 TABLA AUDITORIA - CAMPOS COMPLETOS
 

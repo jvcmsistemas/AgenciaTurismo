@@ -88,53 +88,64 @@
 
 <style>
     :root {
-        --primary-glass: #00d4ff;
-        --secondary-glass: #e94560;
-        --bg-glass: rgba(15, 23, 42, 0.7);
-        --border-glass: rgba(255, 255, 255, 0.1);
+        --primary-glass: #10b981;
+        /* Emerald 500 */
+        --secondary-glass: #34d399;
+        /* Emerald 400 */
+        --accent-glass: #059669;
+        /* Emerald 600 */
+        --bg-glass: rgba(6, 78, 59, 0.4);
+        /* Dark Greenish Tint */
+        --border-glass: rgba(255, 255, 255, 0.15);
     }
 
     .login-page-agency {
         min-height: 100vh;
-        background: url('<?php echo BASE_URL; ?>public/img/agency_login_background.png') no-repeat center center fixed;
+        background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+            url('<?php echo BASE_URL; ?>public/img/agency_login_background.png') no-repeat center center fixed;
         background-size: cover;
         position: relative;
         overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .login-page-agency::before {
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.4) 0%, rgba(15, 23, 42, 0.9) 100%);
-        backdrop-filter: blur(2px);
+        background: radial-gradient(circle at 30% 20%, rgba(16, 185, 129, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(5, 150, 105, 0.1) 0%, transparent 50%);
+        backdrop-filter: blur(8px);
     }
 
-    /* Floating Shapes */
+    /* Floating Shapes - More organic for Nature */
     .bg-shape {
         position: absolute;
-        border-radius: 50%;
-        filter: blur(80px);
+        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+        /* Organic blob */
+        filter: blur(100px);
         z-index: 1;
-        opacity: 0.3;
-        animation: float-shapes 20s infinite alternate-reverse ease-in-out;
+        opacity: 0.4;
+        animation: float-shapes 25s infinite alternate ease-in-out;
     }
 
     .shape-1 {
-        width: 400px;
-        height: 400px;
+        width: 500px;
+        height: 500px;
         background: var(--primary-glass);
-        top: -100px;
-        left: -100px;
+        top: -150px;
+        left: -150px;
     }
 
     .shape-2 {
-        width: 300px;
-        height: 300px;
-        background: var(--secondary-glass);
-        bottom: -50px;
-        right: -50px;
-        animation-delay: -5s;
+        width: 400px;
+        height: 400px;
+        background: var(--accent-glass);
+        bottom: -100px;
+        right: -100px;
+        animation-delay: -7s;
     }
 
     @keyframes float-shapes {
@@ -147,12 +158,12 @@
         }
     }
 
-    /* Glass Card Premium */
-    .glass-card-premium {
-        background: var(--bg-glass);
+    /* Glass Card Premium - Forced Override of global .card */
+    .glass-card-premium.card {
+        background: var(--bg-glass) !important;
         backdrop-filter: blur(25px);
         -webkit-backdrop-filter: blur(25px);
-        border: 1px solid var(--border-glass);
+        border: 1px solid var(--border-glass) !important;
         border-radius: 24px;
         position: relative;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
@@ -170,16 +181,17 @@
 
     /* Form Elements Glass */
     .form-label-glass {
-        color: rgba(255, 255, 255, 0.8);
+        color: rgba(255, 255, 255, 0.9) !important;
         font-size: 0.85rem;
         font-weight: 600;
         letter-spacing: 0.5px;
         margin-bottom: 0.5rem;
+        display: block;
     }
 
     .input-group-glass {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid var(--border-glass);
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid var(--border-glass) !important;
         border-radius: 12px;
         transition: all 0.3s ease;
         display: flex;
@@ -187,39 +199,43 @@
     }
 
     .input-group-glass:focus-within {
-        border-color: var(--primary-glass);
-        box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
-        background: rgba(255, 255, 255, 0.08);
+        border-color: var(--primary-glass) !important;
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+        background: rgba(255, 255, 255, 0.08) !important;
     }
 
     .input-group-text-glass {
-        background: transparent;
-        border: none;
-        color: rgba(255, 255, 255, 0.4);
+        background: transparent !important;
+        border: none !important;
+        color: rgba(255, 255, 255, 0.6) !important;
         padding: 0.75rem 1rem;
     }
 
     .form-control-glass {
-        background: transparent;
-        border: none;
-        color: white;
+        background: transparent !important;
+        border: none !important;
+        color: white !important;
         padding: 0.75rem 0.5rem;
         width: 100%;
     }
 
+    .form-control-glass::placeholder {
+        color: rgba(255, 255, 255, 0.3) !important;
+    }
+
     .btn-link-glass {
-        background: transparent;
-        border: none;
-        color: rgba(255, 255, 255, 0.4);
+        background: transparent !important;
+        border: none !important;
+        color: rgba(255, 255, 255, 0.4) !important;
         padding: 0 1rem;
     }
 
     .btn-link-glass:hover {
-        color: var(--primary-glass);
+        color: var(--primary-glass) !important;
     }
 
     .text-primary-glass {
-        color: var(--primary-glass);
+        color: var(--primary-glass) !important;
         text-decoration: none;
         font-weight: 500;
         font-size: 0.8rem;
@@ -231,23 +247,23 @@
 
     /* Checkbox Glass */
     .form-check-input-glass {
-        background-color: rgba(255, 255, 255, 0.1);
-        border: 1px solid var(--border-glass);
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid var(--border-glass) !important;
     }
 
     .form-check-label-glass {
-        color: rgba(255, 255, 255, 0.6);
+        color: rgba(255, 255, 255, 0.7) !important;
         font-size: 0.9rem;
     }
 
-    /* Button Premium */
+    /* Button Premium - Switched to Emerald Theme */
     .btn-primary-premium {
-        background: linear-gradient(135deg, #00d4ff 0%, #008eb3 100%);
-        border: none;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        border: none !important;
         border-radius: 12px;
         padding: 0.8rem;
         font-weight: 700;
-        color: white;
+        color: white !important;
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
@@ -256,17 +272,18 @@
 
     .btn-primary-premium:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+        box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
         filter: brightness(1.1);
     }
 
     /* Alert Glass */
     .alert-danger-glass {
-        background: rgba(233, 69, 96, 0.15);
-        color: #ff4d6d;
+        background: rgba(239, 68, 68, 0.2) !important;
+        color: #fecaca !important;
         backdrop-filter: blur(10px);
         padding: 1rem;
         border-radius: 12px;
+        border: 1px solid rgba(239, 68, 68, 0.3) !important;
     }
 
     /* Animations */

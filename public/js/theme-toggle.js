@@ -1,47 +1,49 @@
 // Theme Toggle Functionality
-// Handles switching between dark and light themes for Superadmin panel
+// Handles switching between dark and light themes for both Superadmin and Agency portals
 
 (function () {
     'use strict';
 
-    // Get theme toggle element
     const themeToggle = document.getElementById('themeToggle');
+    if (!themeToggle) return;
 
-    if (!themeToggle) {
-        return; // Theme toggle not present on this page
-    }
-
+    // Determine current role based on body class
+    const isSuperAdmin = document.body.classList.contains('superadmin-theme') || 
+                       document.body.classList.contains('superadmin-light-theme');
+    
+    const rolePrefix = isSuperAdmin ? 'superadmin' : 'agency';
+    const storageKey = `${rolePrefix}-theme`;
+    
     // Get stored theme preference or default to 'dark'
-    const currentTheme = localStorage.getItem('superadmin-theme') || 'dark';
+    const storedTheme = localStorage.getItem(storageKey) || 'dark';
 
     // Apply the stored theme on page load
-    applyTheme(currentTheme);
+    applyTheme(rolePrefix, storedTheme);
 
-    // Set toggle state based on current theme
-    themeToggle.checked = (currentTheme === 'dark');
+    // Set toggle state based on current theme (Checked = Dark)
+    themeToggle.checked = (storedTheme === 'dark');
 
     // Listen for toggle changes
     themeToggle.addEventListener('change', function () {
         const newTheme = this.checked ? 'dark' : 'light';
-        applyTheme(newTheme);
-        localStorage.setItem('superadmin-theme', newTheme);
+        applyTheme(rolePrefix, newTheme);
+        localStorage.setItem(storageKey, newTheme);
     });
 
     /**
-     * Apply theme to body element
-     * @param {string} theme - 'dark' or 'light'
+     * Apply theme classes to body element
      */
-    function applyTheme(theme) {
+    function applyTheme(prefix, theme) {
         const body = document.body;
+        const mainClass = `${prefix}-theme`;
+        const lightClass = `${prefix}-light-theme`;
 
         if (theme === 'dark') {
-            body.classList.remove('superadmin-light-theme');
-            body.classList.add('superadmin-theme');
+            body.classList.remove(lightClass);
+            body.classList.add(mainClass);
         } else {
-            body.classList.remove('superadmin-theme');
-            body.classList.add('superadmin-light-theme');
+            body.classList.remove(mainClass);
+            body.classList.add(lightClass);
         }
     }
-
-
 })();

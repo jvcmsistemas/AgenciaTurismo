@@ -40,7 +40,7 @@ class AgencyController
         $totalTours = count($tours);
         $totalReservations = count($reservations);
 
-        // Calculate total revenue from confirmed reservations
+        // Calculate total revenue from confirmed/completed reservations
         $totalRevenue = 0;
         foreach ($reservations as $res) {
             if ($res['estado'] === 'confirmada' || $res['estado'] === 'completada') {
@@ -50,6 +50,13 @@ class AgencyController
 
         // Get recent reservations (last 5)
         $recentReservations = array_slice($reservations, 0, 5);
+
+        // --- Fetch Dashboard Alerts ---
+        require_once BASE_PATH . '/models/Departure.php';
+        $departureModel = new Departure($this->pdo);
+
+        $upcomingDepartures = $departureModel->getUpcoming($agencyId);
+        $pendingPaymentAlerts = $this->reservationModel->getPendingAlerts($agencyId);
 
         require_once BASE_PATH . '/views/dashboard/index.php';
     }

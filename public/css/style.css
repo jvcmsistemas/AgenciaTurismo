@@ -106,25 +106,60 @@ body.superadmin-light-theme {
   --status-warning-text: #d97706;
 }
 
-/* 🌿 AGENCY THEME (Green) */
+/* 🌿 AGENCY DARK THEME (Emerald - Default) */
 body.agency-theme {
   /* Backgrounds */
-  --bg-primary: #f0f9ff;
-  --bg-secondary: #ffffff;
-  --bg-tertiary: #f8fafc;
+  --bg-primary: #06110a; /* Very Dark Emerald */
+  --bg-secondary: #0a1f14; /* Card Surface */
+  --bg-tertiary: #042f2e; /* Sidebar/Secondary BG */
 
   /* Text */
-  --text-primary: #1e293b;
-  --text-secondary: #64748b;
-  --text-muted: #94a3b8;
+  --text-primary: #ecfdf5;
+  --text-secondary: #a7f3d0;
+  --text-muted: #34d399;
 
   /* Borders */
-  --border-color: #cbd5e1;
+  --border-color: #064e40;
 
   /* Brand/Accents */
   --brand-primary: #10b981;
-  /* Green Primary */
   --brand-secondary: #34d399;
+
+  /* Components Specific */
+  --sidebar-bg: #064e3b;
+  --navbar-bg: #0a1f14;
+  --card-bg: #0a1f14;
+  --table-bg: #0a1f14;
+  --table-header-bg: #064e3b;
+  --input-bg: #042f2e;
+  --input-border: #065f46;
+  --hover-bg: rgba(16, 185, 129, 0.15);
+
+  /* Status */
+  --status-success-bg: rgba(16, 185, 129, 0.1);
+  --status-success-text: #34d399;
+  --status-warning-bg: rgba(245, 158, 11, 0.1);
+  --status-warning-text: #fbbf24;
+}
+
+/* ☀️ AGENCY LIGHT THEME */
+body.agency-light-theme {
+  /* Backgrounds */
+  --bg-primary: #f0fdf4;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f5f9;
+
+  /* Text */
+  --text-primary: #064e3b;
+  --text-secondary: #166534;
+  --text-muted: #64748b;
+
+  /* Borders */
+  --border-color: #d1fae5;
+
+  /* Brand/Accents */
+  --brand-primary: #10b981;
+  --brand-secondary: #059669;
 
   /* Components Specific */
   --sidebar-bg: #10b981;
@@ -134,7 +169,7 @@ body.agency-theme {
   --table-header-bg: #f1f5f9;
   --input-bg: #ffffff;
   --input-border: #cbd5e1;
-  --hover-bg: rgba(255, 255, 255, 0.2);
+  --hover-bg: rgba(16, 185, 129, 0.1);
 
   /* Status */
   --status-success-bg: #ecfdf5;

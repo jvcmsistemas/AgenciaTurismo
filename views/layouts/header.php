@@ -78,6 +78,17 @@ echo $theme;
     <?php
     // Detectar si es página de login para no mostrar sidebar
     $isLoginPage = strpos($_SERVER['REQUEST_URI'], 'login') !== false;
+
+    // Función simple para determinar clase activa
+    function isActive($path)
+    {
+        $uri = $_SERVER['REQUEST_URI'];
+        // Si el path es 'dashboard', verificar que termine en /dashboard o sea la raíz del sitio si redirige
+        if ($path === 'dashboard') {
+            return (strpos($uri, '/dashboard') !== false) ? 'active' : '';
+        }
+        return (strpos($uri, $path) !== false) ? 'active' : '';
+    }
     ?>
 
     <?php if (!$isLoginPage && isset($_SESSION['user_id'])): ?>
@@ -127,20 +138,20 @@ echo $theme;
                             <a href="<?php echo BASE_URL; ?>admin/support"><i class="bi bi-life-preserver me-2"></i> Soporte</a>
                         </li>
                     <?php else: ?>
-                        <li>
+                        <li class="<?php echo isActive('dashboard'); ?>">
                             <a href="<?php echo BASE_URL; ?>dashboard"><i class="bi bi-speedometer2 me-2"></i> Inicio</a>
                         </li>
-                        <li>
+                        <li class="<?php echo isActive('agency/reservations'); ?>">
                             <a href="<?php echo BASE_URL; ?>agency/reservations"><i class="bi bi-calendar-check me-2"></i>
                                 Reservas</a>
                         </li>
-                        <li>
+                        <li class="<?php echo isActive('agency/tours'); ?>">
                             <a href="<?php echo BASE_URL; ?>agency/tours"><i class="bi bi-map me-2"></i> Tours</a>
                         </li>
-                        <li>
+                        <li class="<?php echo isActive('agency/clients'); ?>">
                             <a href="<?php echo BASE_URL; ?>agency/clients"><i class="bi bi-people me-2"></i> Clientes</a>
                         </li>
-                        <li>
+                        <li class="<?php echo isActive('agency/resources'); ?>">
                             <a href="<?php echo BASE_URL; ?>agency/resources"><i class="bi bi-briefcase me-2"></i> Recursos</a>
                         </li>
                     <?php endif; ?>
@@ -158,7 +169,7 @@ echo $theme;
 
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="nav navbar-nav ms-auto align-items-center">
-                                <?php if (($_SESSION['user_role'] ?? '') === 'administrador_general'): ?>
+                                <?php if (isset($_SESSION['user_id'])): ?>
                                     <li class="nav-item me-3">
                                         <div class="theme-toggle-container">
                                             <span class="theme-toggle-label">☀️</span>
