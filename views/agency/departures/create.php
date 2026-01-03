@@ -113,42 +113,51 @@
                             </div>
                         </div>
 
-                        <!-- Paso 4: Capacidad y Precio -->
-                        <div class="row g-3 bg-light-dynamic p-3 rounded-3 border border-dynamic">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold text-dark">Cupos Totales</label>
-                                <div class="input-group">
-                                    <span
-                                        class="input-group-text bg-dynamic border-dynamic border-end-0 text-primary"><i
-                                            class="bi bi-people-fill"></i></span>
-                                    <input type="number" class="form-control border-start-0 border-dynamic bg-dynamic"
-                                        name="cupos_totales" id="cupos_totales" required min="1" value="10">
-                                </div>
-                                <div class="form-text small">Se actualiza al elegir transporte.</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold text-dark">Precio Oferta (Opcional)</label>
-                                <div class="input-group">
-                                    <span
-                                        class="input-group-text bg-dynamic border-dynamic border-end-0 text-primary fw-bold">
-                                        <?php echo CURRENCY_SYMBOL; ?></span>
-                                    <input type="number" class="form-control border-start-0 border-dynamic bg-dynamic"
-                                        name="precio_actual" min="0" step="0.01"
-                                        placeholder="Dejar vacío para usar precio base">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mt-4">
-                            <button type="submit" class="btn btn-success w-100 py-3 rounded-pill fw-bold shadow">
-                                <i class="bi bi-check-circle-fill me-2"></i>Programar Salida
-                            </button>
-                        </div>
-                    </form>
                 </div>
+
+                <!-- Paso 5: Costos Operativos -->
+                <div class="row g-3 bg-light-dynamic p-3 rounded-3 border border-dynamic mt-3">
+                    <h6 class="fw-bold text-secondary mb-2"><i class="bi bi-cash-stack me-2"></i>Costos Operativos
+                        (Egresos)</h6>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold text-dark">Costo Guía</label>
+                        <div class="input-group input-group-sm">
+                            <span
+                                class="input-group-text bg-dynamic border-dynamic"><?php echo CURRENCY_SYMBOL; ?></span>
+                            <input type="number" class="form-control bg-dynamic border-dynamic" name="costo_guia"
+                                step="0.01" value="0.00">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold text-dark">Costo Transporte</label>
+                        <div class="input-group input-group-sm">
+                            <span
+                                class="input-group-text bg-dynamic border-dynamic"><?php echo CURRENCY_SYMBOL; ?></span>
+                            <input type="number" class="form-control bg-dynamic border-dynamic" name="costo_transporte"
+                                step="0.01" value="0.00">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold text-dark">Otros Costos</label>
+                        <div class="input-group input-group-sm">
+                            <span
+                                class="input-group-text bg-dynamic border-dynamic"><?php echo CURRENCY_SYMBOL; ?></span>
+                            <input type="number" class="form-control bg-dynamic border-dynamic" name="costo_otros"
+                                step="0.01" value="0.00">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-success w-100 py-3 rounded-pill fw-bold shadow">
+                        <i class="bi bi-check-circle-fill me-2"></i>Programar Salida
+                    </button>
+                </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <script>

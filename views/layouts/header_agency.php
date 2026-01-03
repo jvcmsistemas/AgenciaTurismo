@@ -173,7 +173,12 @@ echo $theme;
                         <li class="nav-section-label">Administración y Finanzas</li>
                         <li class="<?php echo isActive('agency/payments'); ?>">
                             <a href="<?php echo BASE_URL; ?>agency/payments">
-                                <i class="bi bi-cash-stack me-2 text-brand"></i> Flujo de Pagos
+                                <i class="bi bi-cash-stack me-2 text-brand"></i> Flujo de Pagos (Ingresos)
+                            </a>
+                        </li>
+                        <li class="<?php echo isActive('agency/expenses'); ?>">
+                            <a href="<?php echo BASE_URL; ?>agency/expenses">
+                                <i class="bi bi-wallet2 me-2 text-brand"></i> Gestión de Egresos
                             </a>
                         </li>
                         <li class="sidebar-divider"></li>
@@ -203,8 +208,8 @@ echo $theme;
 
                     <?php if ($_SESSION['user_role'] === 'dueno_agencia'): ?>
                         <li class="<?php echo isActive('agency/reports'); ?>">
-                            <a href="<?php echo BASE_URL; ?>agency/reports">
-                                <i class="bi bi-bar-chart-steps me-2"></i> Informes y Métricas
+                            <a href="<?php echo BASE_URL; ?>agency/reports/profitability">
+                                <i class="bi bi-bar-chart-steps me-2 text-brand"></i> Informes y Métricas
                             </a>
                         </li>
                         <li class="<?php echo isActive('agency/users'); ?>">

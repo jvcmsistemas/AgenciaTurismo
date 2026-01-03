@@ -116,6 +116,9 @@ class Departure
             'cupos_totales' => $data['cupos_totales'],
             'cupos_disponibles' => $data['cupos_totales'], // Al inicio disponibles = totales
             'precio_actual' => $precio,
+            'costo_guia' => $data['costo_guia'] ?? 0,
+            'costo_transporte' => $data['costo_transporte'] ?? 0,
+            'costo_otros' => $data['costo_otros'] ?? 0,
             'estado' => $data['estado'] ?? 'programada'
         ]);
 
@@ -157,6 +160,9 @@ class Departure
                     cupos_totales = :cupos_totales,
                     cupos_disponibles = :cupos_disponibles,
                     precio_actual = :precio_actual,
+                    costo_guia = :costo_guia,
+                    costo_transporte = :costo_transporte,
+                    costo_otros = :costo_otros,
                     estado = :estado
                     WHERE id = :id AND agencia_id = :agencia_id";
 
@@ -170,6 +176,9 @@ class Departure
                 'cupos_totales' => $nuevoCuposTotales,
                 'cupos_disponibles' => $nuevoCuposDisponibles,
                 'precio_actual' => $data['precio_actual'] ?: null,
+                'costo_guia' => $data['costo_guia'] ?? 0,
+                'costo_transporte' => $data['costo_transporte'] ?? 0,
+                'costo_otros' => $data['costo_otros'] ?? 0,
                 'estado' => $data['estado'],
                 'id' => $id,
                 'agencia_id' => $data['agencia_id']

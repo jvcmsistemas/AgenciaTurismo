@@ -119,6 +119,41 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Card Costos Operativos -->
+            <div class="card glass-card border-0 mt-3">
+                <div class="card-header glass-header bg-transparent border-0 pt-4 pb-2">
+                    <h5 class="fw-bold text-secondary"><i class="bi bi-cash-stack me-2"></i>Costos Operativos (Egresos)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">Costo Guía</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text"><?php echo CURRENCY_SYMBOL; ?></span>
+                                <input type="number" step="0.01" class="form-control" name="costo_guia" 
+                                       value="<?php echo $departure['costo_guia'] ?? '0.00'; ?>">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">Costo Transporte</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text"><?php echo CURRENCY_SYMBOL; ?></span>
+                                <input type="number" step="0.01" class="form-control" name="costo_transporte" 
+                                       value="<?php echo $departure['costo_transporte'] ?? '0.00'; ?>">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">Otros Costos</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text"><?php echo CURRENCY_SYMBOL; ?></span>
+                                <input type="number" step="0.01" class="form-control" name="costo_otros" 
+                                       value="<?php echo $departure['costo_otros'] ?? '0.00'; ?>">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

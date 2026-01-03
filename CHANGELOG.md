@@ -9,6 +9,16 @@ Registro de mejoras, correcciones y nuevas funcionalidades implementadas en el s
 - **Formateador Centralizado**: Implementada la función `formatCurrency()` para asegurar que todos los montos en el Dashboard, Tour, Salidas y Reservas tengan el mismo formato profesional.
 - **Iconografía Localizada**: Reemplazados los iconos de dólar (`$`) por el símbolo de Soles en todos los formularios de creación y edición.
 
+### 💰 Gestión de Egresos Premium
+- **Buscador de Salidas Dinámico**: Inserción de un sistema de búsqueda inteligente en el modal de registro que permite encontrar salidas por destino o fecha, eliminando los combos infinitos.
+- **Flujo de Edición Completo**: Implementación de la capacidad de modificar egresos existentes con un modal dedicado y actualización en tiempo real en la base de datos.
+- **Solidificación de Interfaz**: Eliminada la transparencia problemática en modales y listas de búsqueda para garantizar legibilidad absoluta en modo oscuro.
+- **Correcciones UI/UX**:
+    - Restaurada la visibilidad del título principal "Gestión de Egresos".
+    - Forzado de colores de alto contraste en selectores de "Categoría Financiera" para compatibilidad total con navegadores.
+    - Notificaciones animadas (SweetAlert2) tras registrar o actualizar transacciones.
+- **Seguridad**: Activación de validación CSRF en el formulario de egresos para prevenir ataques maliciosos externos.
+
 ### 💳 Gestión de Pagos Estética y Funcional
 - **Badges Semánticos**: Implementadas etiquetas de color para métodos de pago con alto contraste:
     - **Efectivo**: Verde.

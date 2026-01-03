@@ -457,6 +457,38 @@ switch ($path) {
         $controller->index();
         break;
 
+    case 'agency/reports/profitability':
+        require_once BASE_PATH . '/controllers/AgencyReportsController.php';
+        $controller = new AgencyReportsController($pdo);
+        $controller->profitability();
+        break;
+
+    case 'agency/expenses':
+        require_once BASE_PATH . '/controllers/AgencyExpensesController.php';
+        $controller = new AgencyExpensesController($pdo);
+        $controller->index();
+        break;
+    case 'agency/expenses/store':
+        require_once BASE_PATH . '/controllers/AgencyExpensesController.php';
+        $controller = new AgencyExpensesController($pdo);
+        $controller->store();
+        break;
+    case 'agency/expenses/update':
+        require_once BASE_PATH . '/controllers/AgencyExpensesController.php';
+        $controller = new AgencyExpensesController($pdo);
+        $controller->update();
+        break;
+    case 'agency/expenses/update-status':
+        require_once BASE_PATH . '/controllers/AgencyExpensesController.php';
+        $controller = new AgencyExpensesController($pdo);
+        $controller->updateStatus();
+        break;
+    case 'agency/expenses/delete':
+        require_once BASE_PATH . '/controllers/AgencyExpensesController.php';
+        $controller = new AgencyExpensesController($pdo);
+        $controller->delete();
+        break;
+
     // Rutas semánticas (Redirigir a Staff de Guías)
     case 'agency/guides':
         require_once BASE_PATH . '/controllers/ResourceController.php';
