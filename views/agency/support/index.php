@@ -101,68 +101,60 @@
 <div class="row g-4 mb-5">
     <!-- Columna Izquierda: FAQs por Categorías -->
     <div class="col-lg-8">
-        <div class="d-flex align-items-center mb-4">
-            <h3 class="fw-bold text-dark mb-0"><i class="bi bi-grid-fill me-2 text-brand"></i>Temas Populares</h3>
-            <div class="ms-auto">
+        <div class="d-flex align-items-center mb-4 px-2">
+            <h3 class="fw-bold text-dark mb-0"><i class="bi bi-grid-fill me-2 text-primary"></i>Temas Populares</h3>
+            <div class="ms-auto d-none d-sm-block">
                 <button class="btn btn-sm btn-outline-primary rounded-pill px-3 active filter-btn"
                     data-category="all">Todos</button>
                 <button class="btn btn-sm btn-outline-primary rounded-pill px-3 filter-btn"
                     data-category="reservas">Reservas</button>
                 <button class="btn btn-sm btn-outline-primary rounded-pill px-3 filter-btn"
                     data-category="pagos">Pagos</button>
-                <button class="btn btn-sm btn-outline-primary rounded-pill px-3 filter-btn" data-category="cuenta">Mi
-                    Cuenta</button>
+                <button class="btn btn-sm btn-outline-primary rounded-pill px-3 filter-btn"
+                    data-category="cuenta">Cuenta</button>
             </div>
         </div>
 
-        <div class="row g-3" id="faqContainer">
+        <div class="accordion accordion-flush glass-card rounded-4 shadow-sm overflow-hidden" id="faqAccordion">
             <?php if (empty($faqs)): ?>
-                <div class="col-12 text-center py-5 glass-card rounded-4">
+                <div class="text-center py-5">
                     <i class="bi bi-emoji-smile text-muted display-4"></i>
                     <p class="mt-3 text-muted">Aún no hay preguntas frecuentes registradas.</p>
                 </div>
             <?php else: ?>
-                <?php foreach ($faqs as $faq): ?>
-                    <div class="col-md-6 faq-item" data-category="<?php echo strtolower($faq['categoria'] ?? 'general'); ?>">
-                        <div class="card h-100 glass-card border-0 shadow-sm hover-up transition-base cursor-pointer"
-                            data-bs-toggle="modal" data-bs-target="#faqModal<?php echo $faq['id']; ?>">
-                            <div class="card-body p-4">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="btn btn-sm btn-light-primary rounded-3 me-3">
-                                        <i class="bi <?php echo getCategoryIcon($faq['categoria']); ?> fs-4"></i>
+                <?php foreach ($faqs as $index => $faq): ?>
+                    <div class="accordion-item bg-transparent border-dynamic border-opacity-10 faq-item"
+                        data-category="<?php echo strtolower($faq['categoria'] ?? 'general'); ?>">
+                        <h2 class="accordion-header" id="heading<?php echo $faq['id']; ?>">
+                            <button
+                                class="accordion-button collapsed bg-transparent py-4 px-4 fw-bold text-dark transition-base shadow-none"
+                                type="button" data-bs-toggle="collapse" data-bs-target="#collapse<?php echo $faq['id']; ?>">
+                                <div class="d-flex align-items-center w-100 pe-3">
+                                    <div class="btn btn-sm btn-light-primary rounded-3 me-3 flex-shrink-0">
+                                        <i class="bi <?php echo getCategoryIcon($faq['categoria']); ?> fs-5"></i>
                                     </div>
-                                    <span class="badge bg-light text-primary rounded-pill text-uppercase small">
+                                    <div class="flex-grow-1 faq-question">
+                                        <?php echo htmlspecialchars($faq['pregunta']); ?>
+                                    </div>
+                                    <span
+                                        class="badge bg-light text-primary rounded-pill text-uppercase ms-2 d-none d-sm-inline-block small"
+                                        style="font-size: 0.6rem;">
                                         <?php echo htmlspecialchars($faq['categoria']); ?>
                                     </span>
                                 </div>
-                                <h5 class="fw-bold mb-0 faq-question">
-                                    <?php echo htmlspecialchars($faq['pregunta']); ?>
-                                </h5>
-                            </div>
-                        </div>
-
-                        <!-- FAQ Modal Details -->
-                        <div class="modal fade" id="faqModal<?php echo $faq['id']; ?>" tabindex="-1">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content glass-card border-0">
-                                    <div class="modal-header border-0 pb-0">
-                                        <h5 class="modal-title fw-bold text-primary">
-                                            <?php echo htmlspecialchars($faq['pregunta']); ?>
-                                        </h5>
-                                        <button type="button" class="btn-close"
-                                            data-bs-target="#faqModal<?php echo $faq['id']; ?>"
-                                            data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body p-4">
-                                        <div class="text-muted leading-relaxed">
-                                            <?php echo nl2br(htmlspecialchars($faq['respuesta'])); ?>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer border-0">
-                                        <button type="button" class="btn btn-light rounded-pill px-4"
-                                            data-bs-dismiss="modal">Entendido</button>
-                                    </div>
-                                </div>
+                            </button>
+                        </h2>
+                        <div id="collapse<?php echo $faq['id']; ?>" class="accordion-collapse collapse"
+                            data-bs-parent="#faqAccordion">
+                            <div class="accordion-body p-4 bg-light-soft text-muted leading-relaxed">
+                                <?php
+                                // Renderizar HTML si detectamos código, de lo contrario nl2br regular
+                                if (strpos($faq['respuesta'], '<') !== false) {
+                                    echo $faq['respuesta'];
+                                } else {
+                                    echo nl2br(htmlspecialchars($faq['respuesta']));
+                                }
+                                ?>
                             </div>
                         </div>
                     </div>
@@ -275,6 +267,33 @@
     #faqSearch:focus {
         box-shadow: none;
         outline: none;
+    }
+
+    /* Accordion Enhancements */
+    .accordion-button:not(.collapsed) {
+        background-color: rgba(var(--bs-primary-rgb), 0.03);
+        color: var(--bs-primary);
+    }
+
+    .accordion-button::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23666'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    }
+
+    .rich-content ol,
+    .rich-content ul {
+        padding-left: 1.25rem;
+    }
+
+    .rich-content li {
+        margin-bottom: 0.5rem;
+    }
+
+    .bg-soft-success {
+        background: rgba(25, 135, 84, 0.1);
+    }
+
+    .bg-soft-warning {
+        background: rgba(255, 193, 7, 0.1);
     }
 </style>
 

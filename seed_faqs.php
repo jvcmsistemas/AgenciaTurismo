@@ -10,34 +10,65 @@ try {
 
     $faqs = [
         [
-            'pregunta' => '¿Cómo creo mi primera reserva?',
-            'respuesta' => 'Para crear una reserva, ve al menú "Reservaciones", haz clic en el botón "Nueva Reserva" y selecciona al cliente y el tour deseado. No olvides completar los datos de los pasajeros.',
+            'pregunta' => '¿Cómo registro mi primera venta/reserva?',
+            'respuesta' => '<div class="rich-content">
+                <p>Sigue este flujo estándar para asegurar que los cupos se descuenten correctamente:</p>
+                <ol class="ps-3 mb-3">
+                    <li>Ve a <strong>Reservas</strong> > <strong>Nueva Venta</strong>.</li>
+                    <li><strong>DNI del Cliente:</strong> Ingrésalo y presiona buscar. Si es nuevo, el sistema te permitirá crearlo al instante.</li>
+                    <li><strong>Carrito de Tours:</strong> Selecciona el tour y la fecha. <span class="badge bg-soft-success text-success">Tip:</span> Verifica que el contador de cupos esté en verde.</li>
+                    <li><strong>Confirmación:</strong> Revisa el total y haz clic en <em>"Confirmar Reserva"</em>.</li>
+                </ol>
+                <div class="alert alert-info py-2 px-3 small border-0 bg-light-dynamic mb-0">
+                    <i class="bi bi-info-circle-fill me-2"></i> Recuerda registrar el abono inicial para que la reserva pase a estado "Confirmada".
+                </div>
+            </div>',
             'categoria' => 'reservas',
             'orden' => 1
         ],
         [
-            'pregunta' => '¿Cómo edito el estado de un colaborador?',
-            'respuesta' => 'Ve a "Gestión de Colaboradores", haz clic en el botón de edición (icono de lápiz) junto al empleado. Allí podrás cambiar su estado a Activo o Inactivo.',
+            'pregunta' => '¿Cómo gestionar mi flota y vehículos?',
+            'respuesta' => '<div class="rich-content">
+                <p>Tus vehículos son la base de los cupos de tus tours. Para configurarlos:</p>
+                <ul class="list-unstyled ps-0 mb-3">
+                    <li class="mb-2"><i class="bi bi-check2-circle text-primary me-2"></i> Ve a <strong>Logística</strong> > <strong>Mi Flota</strong>.</li>
+                    <li class="mb-2"><i class="bi bi-check2-circle text-primary me-2"></i> Haz clic en <strong>"Añadir Vehículo"</strong>.</li>
+                    <li><i class="bi bi-check2-circle text-primary me-2"></i> <strong>Importante:</strong> Ingresa la placa y la "Capacidad Máxima".</li>
+                </ul>
+                <p class="small text-muted mb-0">Esta capacidad define el límite de ventas por salida cuando el vehículo es asignado.</p>
+            </div>',
             'categoria' => 'cuenta',
             'orden' => 2
         ],
         [
-            'pregunta' => '¿Dónde veo el flujo de caja de mis ventas?',
-            'respuesta' => 'Solo el Administrador (Dueño) tiene acceso a "Flujo de Pagos" en el menú principal. Allí verás todos los ingresos registrados por reservas aprobadas.',
+            'pregunta' => '¿Cómo corregir un pago registrado por error?',
+            'respuesta' => '<div class="rich-content">
+                <p>Si te equivocaste en el monto o fecha de un abono:</p>
+                <ol class="ps-3 mb-3">
+                    <li>Entra al <strong>Detalle de la Reserva</strong> (icono de ojo).</li>
+                    <li>Baja hasta la sección <strong>"Historial de Pagos"</strong>.</li>
+                    <li>Haz clic en el icono de <strong>basurero rojo</strong> junto al pago erróneo.</li>
+                </ol>
+                <p class="mb-0">El sistema sumará automáticamente el dinero de vuelta al "Saldo Pendiente" de la reserva.</p>
+            </div>',
             'categoria' => 'pagos',
             'orden' => 3
         ],
         [
-            'pregunta' => '¿Cómo cambio mi contraseña personal?',
-            'respuesta' => 'Haz clic en tu nombre en la barra superior o ve a "Mi Perfil". Verás una sección de Seguridad donde podrás ingresar una nueva contraseña.',
-            'categoria' => 'cuenta',
-            'orden' => 4
-        ],
-        [
-            'pregunta' => '¿Cómo registro un nuevo guía local?',
-            'respuesta' => 'Accede a "Recursos y Logística" > "Mis Guías". Presiona "Nuevo Guía" y completa sus datos incluyendo DNI y especialidad.',
+            'pregunta' => '¿Cómo programar las salidas del mes?',
+            'respuesta' => '<div class="rich-content">
+                <p>Las salidas vinculan tus tours con fechas y recursos:</p>
+                <ol class="ps-3">
+                    <li>Selecciona el tour del catálogo.</li>
+                    <li>Elige <strong>Fecha y Hora</strong>.</li>
+                    <li>Asigna un <strong>Guía</strong> y un <strong>Transporte</strong>.</li>
+                </ol>
+                <div class="p-2 bg-soft-warning rounded-3 small">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Al elegir transporte, los cupos totales se ajustarán a la capacidad del vehículo.
+                </div>
+            </div>',
             'categoria' => 'reservas',
-            'orden' => 5
+            'orden' => 4
         ]
     ];
 
