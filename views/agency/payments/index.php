@@ -72,8 +72,8 @@ if (!function_exists('renderSortIcon')) {
         <div class="card bg-primary text-white border-0 shadow-sm h-100">
             <div class="card-body d-flex flex-column justify-content-center text-center">
                 <h6 class="text-white-50 text-uppercase mb-2">Ingresos Totales (Periodo)</h6>
-                <h2 class="fw-bold mb-0">$
-                    <?php echo number_format($totalIncome, 2); ?>
+                <h2 class="fw-bold mb-0">
+                    <?php echo formatCurrency($totalIncome); ?>
                 </h2>
                 <small class="text-white-50">Solo pagos aprobados</small>
             </div>
@@ -132,8 +132,17 @@ if (!function_exists('renderSortIcon')) {
                             </td>
                         </tr>
                     <?php else: ?>
+                        <?php
+                        // Función interna para generar un color único basado en ID
+                        function getReservaColor($id)
+                        {
+                            $hue = abs(crc32($id) % 360);
+                            return "hsl($hue, 70%, 45%)";
+                        }
+                        ?>
                         <?php foreach ($payments as $p): ?>
-                            <tr>
+                            <?php $groupColor = getReservaColor($p['reserva_id']); ?>
+                            <tr style="border-left: 5px solid <?php echo $groupColor; ?> !important;">
                                 <td class="ps-4">
                                     <div class="fw-bold">
                                         <?php echo date('d/m/Y', strtotime($p['fecha_pago'])); ?>
@@ -149,16 +158,33 @@ if (!function_exists('renderSortIcon')) {
                                     </a>
                                 </td>
                                 <td>
-                                    <span class="badge bg-light text-dark border rounded-pill px-3">
-                                        <?php echo ucfirst($p['metodo_pago']); ?>
+                                    <?php
+                                    $methodClass = match ($p['metodo_pago']) {
+                                        'efectivo' => 'badge-pay-efectivo',
+                                        'yape' => 'badge-pay-yape',
+                                        'transferencia' => 'badge-pay-transferencia',
+                                        'tarjeta' => 'badge-pay-tarjeta',
+                                        default => 'bg-soft-dynamic text-dynamic border'
+                                    };
+                                    ?>
+                                    <span class="badge <?php echo $methodClass; ?> rounded-pill px-3 py-2 shadow-soft">
+                                        <?php
+                                        $label = match ($p['metodo_pago']) {
+                                            'efectivo' => '<i class="bi bi-cash me-1"></i> Efectivo',
+                                            'yape' => '<i class="bi bi-qr-code me-1"></i> Yape / Plin',
+                                            'transferencia' => '<i class="bi bi-bank me-1"></i> Transferencia',
+                                            'tarjeta' => '<i class="bi bi-credit-card me-1"></i> Tarjeta',
+                                            default => ucfirst($p['metodo_pago'])
+                                        };
+                                        echo $label;
+                                        ?>
                                     </span>
                                 </td>
                                 <td class="text-muted small">
                                     <?php echo $p['referencia'] ?: '-'; ?>
                                 </td>
                                 <td class="fw-bold text-primary">
-                                    $
-                                    <?php echo number_format($p['monto'], 2); ?>
+                                    <?php echo formatCurrency($p['monto']); ?>
                                 </td>
                                 <td>
                                     <?php

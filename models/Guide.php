@@ -138,4 +138,46 @@ class Guide
         $stmt = $this->pdo->prepare("DELETE FROM guias WHERE id = :id AND agencia_id = :agencia_id");
         return $stmt->execute(['id' => $id, 'agencia_id' => $agencyId]);
     }
+
+    public function getTopActive($agencyId, $limit = 1)
+    {
+        $sql = "SELECT g.*, COUNT(s.id) as total_salidas 
+                FROM guias g 
+                JOIN salidas s ON g.id = s.guia_id 
+                WHERE g.agencia_id = :agencia_id AND s.estado = 'completada'
+                GROUP BY g.id 
+                ORDER BY total_salidas DESC 
+                LIMIT :limit";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':agencia_id', $agencyId, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $limit == 1 ? $stmt->fetch() : $stmt->fetchAll();
+    }
+
+    /**
+     * Obtiene el ranking de guías basado en salidas completadas en el mes actual
+     */
+    public function getMonthlyRanking($agencyId, $limit = 3)
+    {
+        $sql = "SELECT g.id, g.nombre, g.apellido, COUNT(s.id) as total_salidas 
+                FROM guias g 
+                JOIN salidas s ON g.id = s.guia_id 
+                WHERE g.agencia_id = :agencia_id 
+                AND s.estado = 'completada'
+                AND MONTH(s.fecha_salida) = MONTH(CURRENT_DATE())
+                AND YEAR(s.fecha_salida) = YEAR(CURRENT_DATE())
+                GROUP BY g.id, g.nombre, g.apellido 
+                ORDER BY total_salidas DESC 
+                LIMIT :limit";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':agencia_id', $agencyId, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
 }

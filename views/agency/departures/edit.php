@@ -62,7 +62,7 @@
                         <div class="col-md-6">
                             <label for="precio_actual" class="form-label fw-bold">Precio Especial (Opcional)</label>
                             <div class="input-group">
-                                <span class="input-group-text">S/</span>
+                                <span class="input-group-text"><?php echo CURRENCY_SYMBOL; ?></span>
                                 <input type="number" step="0.01" class="form-control" id="precio_actual" name="precio_actual" 
                                        value="<?php echo $departure['precio_actual']; ?>" placeholder="Original del Tour">
                             </div>

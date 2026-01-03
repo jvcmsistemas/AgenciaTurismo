@@ -116,4 +116,30 @@ class Tour
         $stmt = $this->pdo->prepare("DELETE FROM tours WHERE id = :id AND agencia_id = :agencia_id");
         return $stmt->execute(['id' => $id, 'agencia_id' => $agencyId]);
     }
+
+    /**
+     * Obtiene los lugares (ubicaciones) más populares basados en el número de reservas del mes actual
+     */
+    public function getPopularByAgency($agencyId, $limit = 3)
+    {
+        $sql = "SELECT t.nombre, COUNT(DISTINCT r.id) as total_reservas 
+                FROM tours t 
+                LEFT JOIN salidas s ON t.id = s.tour_id 
+                LEFT JOIN reserva_detalles rd ON s.id = rd.servicio_id AND rd.tipo_servicio = 'tour'
+                LEFT JOIN reservas r ON rd.reserva_id = r.id 
+                    AND r.estado IN ('confirmada', 'completada', 'pendiente')
+                    AND MONTH(r.fecha_hora_reserva) = MONTH(CURRENT_DATE())
+                    AND YEAR(r.fecha_hora_reserva) = YEAR(CURRENT_DATE())
+                WHERE t.agencia_id = :agencia_id 
+                GROUP BY t.id, t.nombre 
+                ORDER BY total_reservas DESC 
+                LIMIT :limit";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':agencia_id', $agencyId, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
 }

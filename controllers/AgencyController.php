@@ -3,6 +3,7 @@
 
 require_once BASE_PATH . '/models/Tour.php';
 require_once BASE_PATH . '/models/Reservation.php';
+require_once BASE_PATH . '/models/Agency.php';
 
 class AgencyController
 {
@@ -33,6 +34,13 @@ class AgencyController
         }
         $agencyId = $_SESSION['agencia_id'];
 
+        // Asegurar que el nombre de la agencia esté en sesión para mostrarlo en el dashboard
+        if (!isset($_SESSION['agencia_nombre'])) {
+            $agencyModel = new Agency($this->pdo);
+            $agency = $agencyModel->getById($agencyId);
+            $_SESSION['agencia_nombre'] = $agency['nombre'] ?? 'Mi Agencia';
+        }
+
         // Fetch KPIs
         $tours = $this->tourModel->getAllByAgency($agencyId);
         $reservations = $this->reservationModel->getAllByAgency($agencyId);
@@ -44,7 +52,10 @@ class AgencyController
         $currentMonth = date('m');
         $currentYear = date('Y');
 
-        $monthlyRevenue = $this->reservationModel->getMonthlyRevenue($agencyId, $currentMonth, $currentYear);
+        $monthlyRevenue = 0;
+        if ($_SESSION['user_role'] === 'dueno_agencia') {
+            $monthlyRevenue = $this->reservationModel->getMonthlyRevenue($agencyId, $currentMonth, $currentYear);
+        }
 
         require_once BASE_PATH . '/models/Client.php';
         $clientModel = new Client($this->pdo);
@@ -54,11 +65,26 @@ class AgencyController
         $ticketModel = new Ticket($this->pdo);
         $pendingRepliesCount = $ticketModel->getPendingRepliesCount($agencyId);
 
-        // Calculate total historical revenue
+        // Fetch Excellent Metrics (Top Guide & Transport)
+        require_once BASE_PATH . '/models/Guide.php';
+        require_once BASE_PATH . '/models/Transport.php';
+        $guideModel = new Guide($this->pdo);
+        $transportModel = new Transport($this->pdo);
+
+        $topGuide = $guideModel->getTopActive($agencyId);
+        $topTransport = $transportModel->getTopUsed($agencyId);
+
+        // Fetch Popular Rankings
+        $popularTours = $this->tourModel->getPopularByAgency($agencyId, 3);
+        $topGuidesRanking = $guideModel->getMonthlyRanking($agencyId, 3);
+
+        // Calculate total historical revenue (Only if Owner)
         $totalRevenue = 0;
-        foreach ($reservations as $res) {
-            if ($res['estado'] === 'confirmada' || $res['estado'] === 'completada') {
-                $totalRevenue += $res['precio_total'];
+        if ($_SESSION['user_role'] === 'dueno_agencia') {
+            foreach ($reservations as $res) {
+                if ($res['estado'] === 'confirmada' || $res['estado'] === 'completada') {
+                    $totalRevenue += $res['precio_total'];
+                }
             }
         }
 

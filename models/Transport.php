@@ -116,4 +116,22 @@ class Transport
         $stmt = $this->pdo->prepare("DELETE FROM transportes WHERE id = :id AND agencia_id = :agencia_id");
         return $stmt->execute(['id' => $id, 'agencia_id' => $agencyId]);
     }
+
+    public function getTopUsed($agencyId, $limit = 1)
+    {
+        $sql = "SELECT t.*, COUNT(s.id) as total_usos 
+                FROM transportes t 
+                JOIN salidas s ON t.id = s.transporte_id 
+                WHERE t.agencia_id = :agencia_id AND s.estado = 'completada'
+                GROUP BY t.id 
+                ORDER BY total_usos DESC 
+                LIMIT :limit";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':agencia_id', $agencyId, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $limit == 1 ? $stmt->fetch() : $stmt->fetchAll();
+    }
 }

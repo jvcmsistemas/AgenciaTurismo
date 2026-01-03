@@ -9,6 +9,7 @@ error_reporting(E_ALL);
 // Define constants
 define('BASE_PATH', __DIR__);
 define('BASE_URL', '/AgenciaTurismo/Sistema_New/');
+define('CURRENCY_SYMBOL', 'S/ ');
 
 // Autoloader (Simple manual require for now, can be upgraded to Composer later)
 require_once BASE_PATH . '/config/db.php';

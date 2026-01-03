@@ -311,7 +311,7 @@ if (!function_exists('renderSortIcon')) {
                                 </td>
                                 <td>
                                     <div class="fw-bold" style="color: var(--brand-primary);">
-                                        S/ <?php echo number_format($tour['precio'], 2); ?>
+                                        <?php echo formatCurrency($tour['precio']); ?>
                                     </div>
                                     <div class="text-muted" style="font-size: 0.7rem;">base por persona</div>
                                 </td>

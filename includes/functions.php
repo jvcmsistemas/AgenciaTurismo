@@ -50,3 +50,11 @@ function is_csrf_valid()
     }
     return hash_equals($_SESSION['csrf_token'], $_POST['csrf_token']);
 }
+
+/**
+ * Formatea un monto con el símbolo de moneda global
+ */
+function formatCurrency($amount)
+{
+    return CURRENCY_SYMBOL . number_format($amount, 2);
+}

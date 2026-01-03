@@ -2,6 +2,26 @@
 
 Registro de mejoras, correcciones y nuevas funcionalidades implementadas en el sistema.
 
+## [2026-01-03] - Estandarización Financiera y Control de Caja
+
+### 🪙 Estandarización de Moneda
+- **Símbolo Global**: Se estableció **"S/ "** como el símbolo de moneda oficial en todo el sistema (PHP y JavaScript).
+- **Formateador Centralizado**: Implementada la función `formatCurrency()` para asegurar que todos los montos en el Dashboard, Tour, Salidas y Reservas tengan el mismo formato profesional.
+- **Iconografía Localizada**: Reemplazados los iconos de dólar (`$`) por el símbolo de Soles en todos los formularios de creación y edición.
+
+### 💳 Gestión de Pagos Estética y Funcional
+- **Badges Semánticos**: Implementadas etiquetas de color para métodos de pago con alto contraste:
+    - **Efectivo**: Verde.
+    - **Yape**: Morado.
+    - **Transferencia**: Azul.
+    - **Tarjeta**: Naranja.
+- **Soporte de Temas**: Optimización cross-theme (Claro/Oscuro) para que las etiquetas sean vibrantes y legibles bajo cualquier preferencia de usuario.
+- **Agrupación Visual (Listón de Identidad)**: Añadido un indicador lateral de color en el Flujo de Pagos que agrupa automáticamente todas las transacciones pertenecientes a una misma reserva.
+
+### 🔄 Sincronización Automática (Control de Auditoría)
+- **Registro en Tiempo Real**: Ahora, cada "Pago Inicial" al crear una reserva se registra automáticamente en la tabla de Pagos, alimentando el flujo de caja sin intervención manual.
+- **Migración Histórica**: Se ejecutó un proceso de sincronización para recuperar pagos iniciales de reservas antiguas, garantizando que el historial de ingresos sea retroactivo y preciso para el dueño.
+
 ## [2026-01-02] - Mejoras en Reservas, Pagos y Salidas
 
 ### 🛡️ Módulo de Pagos
@@ -33,6 +53,17 @@ Registro de mejoras, correcciones y nuevas funcionalidades implementadas en el s
 - **Navegación Directa**: Botones integrados que llevan directamente a la configuración de recursos, catálogo, salidas y ventas.
 - **Mejora en Accesibilidad**: Tarjetas de ayuda con iconos y descripciones claras para facilitar la curva de aprendizaje.
 - **Guías Avanzadas**: Inclusión de manuales específicos sobre organización de tours por **Zonas**, **Rutas** y creación de **Paquetes**.
+
+### 🚀 Dashboard: Command Center (v3.2)
+- **Rediseño Operativo**: Transformación total del dashboard hacia un centro de mando orientado a la acción inmediata.
+- **Calendario Visual de Salidas**: Nuevo widget tipo "Timeline" que permite visualizar las salidas de hoy y mañana de forma secuencial y estilizada.
+- **Privacidad Inteligente**:
+    - Los KPIs financieros (Ingresos Mensuales y Totales) ahora solo son visibles para el **Dueño de la Agencia**.
+    - Para **Empleados**, se han implementado métricas de motivación: **"Guía de Oro"** (más activo) y **"Top Movilidad"** (más utilizada).
+- **Correcciones Técnicas**:
+    - Eliminadas las inconsistencias visuales ("partes blancas") en el modo oscuro mediante el uso de variables CSS dinámicas.
+    - Solucionado el error de deprecación PHP en `substr()` mediante el uso de funciones multibyte (`mb_substr`) y null-checks.
+    - Corregida la visibilidad del icono de "Nueva Venta" que antes se perdía por falta de contraste.
 
 ---
 *Documentado por Antigravity AI.*

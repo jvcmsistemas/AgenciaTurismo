@@ -16,7 +16,8 @@ class Reservation
                        c.nombre as cliente_nombre, c.apellido as cliente_apellido, c.email as cliente_email,
                        (SELECT GROUP_CONCAT(t.nombre SEPARATOR ', ') 
                         FROM reserva_detalles rd 
-                        JOIN tours t ON rd.servicio_id = t.id 
+                        JOIN salidas s ON rd.servicio_id = s.id 
+                        JOIN tours t ON s.tour_id = t.id 
                         WHERE rd.reserva_id = r.id AND rd.tipo_servicio = 'tour') as tours_nombres,
                        (SELECT MIN(s.fecha_salida) 
                         FROM reserva_detalles rd 
@@ -193,6 +194,21 @@ class Reservation
                     'cantidad' => $item['cantidad'],
                     'precio_unit' => $item['precio_unitario'],
                     'subtotal' => $item['cantidad'] * $item['precio_unitario']
+                ]);
+            }
+
+            // 4. Registrar Pago Inicial en la tabla 'pagos' (Auditoría/Flujo de Pagos)
+            if ($pagoInicial > 0) {
+                $sqlPago = "INSERT INTO pagos (reserva_id, monto, metodo_pago, referencia, fecha_pago, estado, agencia_id, notas) 
+                            VALUES (:reserva_id, :monto, :metodo, :referencia, NOW(), 'aprobado', :agencia_id, :notas)";
+                $stmtPago = $this->pdo->prepare($sqlPago);
+                $stmtPago->execute([
+                    'reserva_id' => $reservaId,
+                    'monto' => $pagoInicial,
+                    'metodo' => $data['metodo_pago'] ?? 'efectivo',
+                    'referencia' => $data['referencia_pago'] ?? 'Pago inicial reserva',
+                    'agencia_id' => $data['agencia_id'],
+                    'notas' => 'Registrado automáticamente al crear reserva'
                 ]);
             }
 

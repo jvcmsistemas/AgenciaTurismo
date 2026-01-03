@@ -140,10 +140,10 @@
                                         <?php echo $detail['cantidad']; ?>
                                     </td>
                                     <td class="text-end py-2 border-bottom">
-                                        S/ <?php echo number_format($detail['precio_unitario'], 2); ?>
+                                        <?php echo formatCurrency($detail['precio_unitario']); ?>
                                     </td>
                                     <td class="text-end pe-3 py-2 border-bottom fw-bold text-dark">
-                                        S/ <?php echo number_format($detail['subtotal'], 2); ?>
+                                        <?php echo formatCurrency($detail['subtotal']); ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -166,14 +166,14 @@
                             <!-- Subtotal -->
                             <div class="d-flex justify-content-between mb-2 pb-2 border-bottom">
                                 <span class="fw-bold text-secondary">Subtotal:</span>
-                                <span>S/ <?php echo number_format($reservation['precio_total'], 2); ?></span>
+                                <span><?php echo formatCurrency($reservation['precio_total']); ?></span>
                             </div>
 
                             <!-- Descuento (Solo si existe) -->
                             <?php if (!empty($reservation['descuento']) && $reservation['descuento'] > 0): ?>
                                 <div class="d-flex justify-content-between mb-2 pb-2 border-bottom text-danger">
                                     <span class="fw-bold">Descuento:</span>
-                                    <span>- S/ <?php echo number_format($reservation['descuento'], 2); ?></span>
+                                    <span>- <?php echo formatCurrency($reservation['descuento']); ?></span>
                                 </div>
                             <?php endif; ?>
 
@@ -185,15 +185,15 @@
                             <div
                                 class="d-flex justify-content-between align-items-center bg-white p-2 rounded shadow-sm border mb-2">
                                 <span class="fw-bold text-dark fs-5">TOTAL:</span>
-                                <span class="fw-bold text-primary fs-4">S/
-                                    <?php echo number_format($finalTotal, 2); ?></span>
+                                <span class="fw-bold text-primary fs-4">
+                                    <?php echo formatCurrency($finalTotal); ?></span>
                             </div>
 
                             <!-- Pagado (Calculado visualmente) -->
                             <?php if ($pagado > 0): ?>
                                 <div class="d-flex justify-content-between mb-1 small text-success">
                                     <span class="fw-bold">A cuenta / Pagado:</span>
-                                    <span>S/ <?php echo number_format($pagado, 2); ?></span>
+                                    <span><?php echo formatCurrency($pagado); ?></span>
                                 </div>
                             <?php endif; ?>
 
@@ -202,8 +202,8 @@
                                 <div
                                     class="mt-2 text-end text-danger fw-bold fs-5 border-top pt-2 d-flex align-items-center justify-content-end">
                                     <span class="small text-muted me-2">Saldo Pendiente:</span>
-                                    <span class="me-3">S/
-                                        <?php echo number_format($reservation['saldo_pendiente'], 2); ?></span>
+                                    <span class="me-3">
+                                        <?php echo formatCurrency($reservation['saldo_pendiente']); ?></span>
                                     <button class="btn btn-sm btn-success rounded-pill px-3 no-print" data-bs-toggle="modal"
                                         data-bs-target="#paymentModal">
                                         <i class="bi bi-plus-circle me-1"></i>Pagar Saldo
@@ -290,8 +290,27 @@
                                                 <?php echo date('d/m/Y H:i', strtotime($payment['fecha_pago'])); ?>
                                             </td>
                                             <td>
-                                                <span class="badge bg-soft-dynamic text-dynamic border">
-                                                    <?php echo ucfirst($payment['metodo_pago']); ?>
+                                                <?php
+                                                $methodClass = match ($payment['metodo_pago']) {
+                                                    'efectivo' => 'badge-pay-efectivo',
+                                                    'yape' => 'badge-pay-yape',
+                                                    'transferencia' => 'badge-pay-transferencia',
+                                                    'tarjeta' => 'badge-pay-tarjeta',
+                                                    default => 'bg-soft-dynamic text-dynamic border'
+                                                };
+                                                ?>
+                                                <span
+                                                    class="badge <?php echo $methodClass; ?> px-3 py-2 rounded-pill shadow-soft">
+                                                    <?php
+                                                    $label = match ($payment['metodo_pago']) {
+                                                        'efectivo' => '<i class="bi bi-cash me-1"></i> Efectivo',
+                                                        'yape' => '<i class="bi bi-qr-code me-1"></i> Yape / Plin',
+                                                        'transferencia' => '<i class="bi bi-bank me-1"></i> Transferencia',
+                                                        'tarjeta' => '<i class="bi bi-credit-card me-1"></i> Tarjeta',
+                                                        default => ucfirst($payment['metodo_pago'])
+                                                    };
+                                                    echo $label;
+                                                    ?>
                                                 </span>
                                             </td>
                                             <td class="text-muted-dynamic small">
@@ -301,19 +320,18 @@
                                                 <?php echo $payment['notas'] ? htmlspecialchars($payment['notas']) : '-'; ?>
                                             </td>
                                             <td class="text-end fw-bold text-success">
-                                                S/
-                                                <?php echo number_format($payment['monto'], 2); ?>
+                                                <?php echo formatCurrency($payment['monto']); ?>
                                             </td>
                                             <td class="text-center pe-4">
-                                                    <a href="<?php echo BASE_URL; ?>agency/reservations/payment/delete?id=<?php echo $payment['id']; ?>" 
-                                                           class="btn btn-sm btn-outline-danger border-0 rounded-circle"
-                                                           onclick="return confirm('¿Estás seguro de eliminar este registro de pago? El saldo de la reserva se actualizará automáticamente.')"
-                                                           title="Eliminar pago">
-                                                            <i class="bi bi-trash"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                        <?php endforeach; ?>
+                                                <a href="<?php echo BASE_URL; ?>agency/reservations/payment/delete?id=<?php echo $payment['id']; ?>"
+                                                    class="btn btn-sm btn-outline-danger border-0 rounded-circle"
+                                                    onclick="return confirm('¿Estás seguro de eliminar este registro de pago? El saldo de la reserva se actualizará automáticamente.')"
+                                                    title="Eliminar pago">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
                                 <?php endif; ?>
                             </tbody>
                         </table>
@@ -341,8 +359,8 @@
 
                     <div class="text-center mb-4">
                         <p class="text-muted small mb-1">Saldo Pendiente Actual</p>
-                        <h2 class="fw-bold text-danger">S/
-                            <?php echo number_format($reservation['saldo_pendiente'], 2); ?>
+                        <h2 class="fw-bold text-danger">
+                            <?php echo formatCurrency($reservation['saldo_pendiente']); ?>
                         </h2>
                     </div>
 

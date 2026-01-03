@@ -482,8 +482,8 @@
                     <input type="hidden" name="precios[]" value="${item.price}">
                 </td>
                 <td class="text-center fw-bold">${item.qty}</td>
-                <td class="text-end">S/ ${item.price.toFixed(2)}</td>
-                <td class="text-end fw-bold text-dark">S/ ${itemSubtotal.toFixed(2)}</td>
+                <td class="text-end">${CURRENCY_SYMBOL} ${item.price.toFixed(2)}</td>
+                <td class="text-end fw-bold text-dark">${CURRENCY_SYMBOL} ${itemSubtotal.toFixed(2)}</td>
                 <td class="text-center">
                     <button type="button" class="btn btn-sm text-danger p-0" onclick="removeItem(${idx})"><i class="bi bi-x-circle-fill"></i></button>
                 </td>
@@ -496,7 +496,7 @@
     }
 
     function updateTotals(subtotal) {
-        document.getElementById('lblSubtotal').textContent = 'S/ ' + subtotal.toFixed(2);
+        document.getElementById('lblSubtotal').textContent = CURRENCY_SYMBOL + ' ' + subtotal.toFixed(2);
 
         const discountInput = document.querySelector('input[name="descuento"]');
         let discount = parseFloat(discountInput.value) || 0;
@@ -507,7 +507,7 @@
         }
 
         const total = subtotal - discount;
-        document.getElementById('lblTotal').textContent = 'S/ ' + total.toFixed(2);
+        document.getElementById('lblTotal').textContent = CURRENCY_SYMBOL + ' ' + total.toFixed(2);
 
         // Update Balance
         const paidInput = document.querySelector('input[name="pago_inicial"]');
@@ -516,7 +516,7 @@
 
         const balance = total - paid;
         const balEl = document.getElementById('lblSaldo');
-        balEl.textContent = 'S/ ' + balance.toFixed(2);
+        balEl.textContent = CURRENCY_SYMBOL + ' ' + balance.toFixed(2);
 
         if (balance <= 0) {
             balEl.classList.remove('text-danger');

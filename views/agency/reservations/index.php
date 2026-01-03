@@ -164,13 +164,13 @@ if (!function_exists('renderSortIcon')) {
                                         </span>
                                     </td>
                                     <td class="py-3">
-                                        <div class="fw-bold text-dark fs-6">S/
-                                            <?php echo number_format($res['precio_total'], 2); ?>
+                                        <div class="fw-bold text-dark fs-6">
+                                            <?php echo formatCurrency($res['precio_total']); ?>
                                         </div>
                                         <?php if ($res['saldo_pendiente'] > 0): ?>
                                             <div class="small text-danger fw-bold mt-1">
-                                                <i class="bi bi-exclamation-circle me-1"></i>Debe: S/
-                                                <?php echo number_format($res['saldo_pendiente'], 2); ?>
+                                                <i class="bi bi-exclamation-circle me-1"></i>Debe:
+                                                <?php echo formatCurrency($res['saldo_pendiente']); ?>
                                             </div>
                                         <?php else: ?>
                                             <div class="small text-success fw-bold mt-1">

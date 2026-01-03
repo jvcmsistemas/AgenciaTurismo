@@ -40,6 +40,7 @@ class AuthController
                         $_SESSION['user_name'] = $user['nombre'] . ' ' . $user['apellido'];
                         $_SESSION['user_role'] = $user['rol'];
                         $_SESSION['agencia_id'] = $user['agencia_id'];
+                        $_SESSION['agencia_nombre'] = $user['agencia_nombre'];
 
                         // Regenerar ID de sesión por seguridad
                         session_regenerate_id(true);

@@ -130,8 +130,8 @@
                                 <label class="form-label fw-bold text-dark">Precio Oferta (Opcional)</label>
                                 <div class="input-group">
                                     <span
-                                        class="input-group-text bg-dynamic border-dynamic border-end-0 text-primary"><i
-                                            class="bi bi-currency-dollar"></i></span>
+                                        class="input-group-text bg-dynamic border-dynamic border-end-0 text-primary fw-bold">
+                                        <?php echo CURRENCY_SYMBOL; ?></span>
                                     <input type="number" class="form-control border-start-0 border-dynamic bg-dynamic"
                                         name="precio_actual" min="0" step="0.01"
                                         placeholder="Dejar vacío para usar precio base">

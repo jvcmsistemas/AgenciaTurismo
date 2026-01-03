@@ -12,6 +12,10 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>public/css/style.css?v=<?php echo time() . rand(1, 1000); ?>">
 
+    <script>
+        const CURRENCY_SYMBOL = '<?php echo CURRENCY_SYMBOL; ?>';
+    </script>
+
     <style>
         /* CRITICAL: Force Sidebar Mobile Styles Inline */
         @media (max-width: 768px) {

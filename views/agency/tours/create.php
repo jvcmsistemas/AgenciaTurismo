@@ -93,8 +93,8 @@
                                 <label for="precio" class="form-label fw-semibold text-dark">Precio Base (S/) <span
                                         class="text-danger">*</span></label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0"><i
-                                            class="bi bi-currency-dollar"></i></span>
+                                    <span class="input-group-text bg-light border-end-0 fw-bold">
+                                        <?php echo CURRENCY_SYMBOL; ?></span>
                                     <input type="number" class="form-control border-start-0" id="precio" name="precio"
                                         min="0" step="0.01" required placeholder="0.00">
                                 </div>
