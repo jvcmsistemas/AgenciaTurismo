@@ -24,9 +24,11 @@
                         <div class="mb-4">
                             <label class="form-label fw-semibold text-muted small">SELECCIONA UN TOUR</label>
                             <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i
+                                <span
+                                    class="input-group-text bg-light-dynamic border-end-0 border-dynamic text-primary"><i
                                         class="bi bi-signpost-2"></i></span>
-                                <select class="form-select border-start-0" name="tour_id" required>
+                                <select class="form-select border-start-0 border-dynamic bg-dynamic" name="tour_id"
+                                    required>
                                     <option value="" selected disabled>Elige un tour del catálogo...</option>
                                     <?php foreach ($tours as $tour): ?>
                                         <option value="<?php echo $tour['id']; ?>">
@@ -47,18 +49,21 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold text-muted small">FECHA DE SALIDA</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0"><i
+                                    <span
+                                        class="input-group-text bg-light-dynamic border-end-0 border-dynamic text-primary"><i
                                             class="bi bi-calendar3"></i></span>
-                                    <input type="date" class="form-control border-start-0" name="fecha_salida" required
-                                        min="<?php echo date('Y-m-d'); ?>">
+                                    <input type="date" class="form-control border-start-0 border-dynamic bg-dynamic"
+                                        name="fecha_salida" required min="<?php echo date('Y-m-d'); ?>">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold text-muted small">HORA DE ENCUENTRO</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0"><i
+                                    <span
+                                        class="input-group-text bg-light-dynamic border-end-0 border-dynamic text-primary"><i
                                             class="bi bi-clock"></i></span>
-                                    <input type="time" class="form-control border-start-0" name="hora_salida" required>
+                                    <input type="time" class="form-control border-start-0 border-dynamic bg-dynamic"
+                                        name="hora_salida" required>
                                 </div>
                             </div>
                         </div>
@@ -72,9 +77,10 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold text-muted small">GUÍA RESPONSABLE</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0"><i
+                                    <span
+                                        class="input-group-text bg-light-dynamic border-end-0 border-dynamic text-primary"><i
                                             class="bi bi-person-badge"></i></span>
-                                    <select class="form-select border-start-0" name="guia_id">
+                                    <select class="form-select border-start-0 border-dynamic bg-dynamic" name="guia_id">
                                         <option value="">-- Sin asignar por ahora --</option>
                                         <?php foreach ($guides as $guide): ?>
                                             <option value="<?php echo $guide['id']; ?>">
@@ -87,17 +93,19 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold text-muted small">TRANSPORTE</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0"><i
+                                    <span
+                                        class="input-group-text bg-light-dynamic border-end-0 border-dynamic text-primary"><i
                                             class="bi bi-bus-front"></i></span>
-                                    <select class="form-select border-start-0" name="transporte_id"
-                                        id="selectTransporte" onchange="updateCapacity()">
-                                        <option value="" data-capacidad="0">-- Sin asignar por ahora --</option>
+                                    <select class="form-select border-start-0 border-dynamic bg-dynamic"
+                                        name="transporte_id" id="selectTransporte" onchange="updateCapacity()">
+                                        <option value="" data-capacidad="0">-- Sin transporte (Movilidad externa/propia)
+                                            --</option>
                                         <?php foreach ($transports as $transport): ?>
                                             <option value="<?php echo $transport['id']; ?>"
                                                 data-capacidad="<?php echo $transport['capacidad']; ?>">
-                                                <?php echo htmlspecialchars($transport['modelo']); ?>
-                                                (<?php echo $transport['placa']; ?>) - Cap:
-                                                <?php echo $transport['capacidad']; ?>
+                                                <?php echo htmlspecialchars($transport['placa']); ?> -
+                                                <?php echo htmlspecialchars($transport['chofer_nombre']); ?>
+                                                (<?php echo $transport['capacidad']; ?> asientos)
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -106,24 +114,27 @@
                         </div>
 
                         <!-- Paso 4: Capacidad y Precio -->
-                        <div class="row g-3 bg-light p-3 rounded-3 border">
+                        <div class="row g-3 bg-light-dynamic p-3 rounded-3 border border-dynamic">
                             <div class="col-md-6">
                                 <label class="form-label fw-bold text-dark">Cupos Totales</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0"><i
+                                    <span
+                                        class="input-group-text bg-dynamic border-dynamic border-end-0 text-primary"><i
                                             class="bi bi-people-fill"></i></span>
-                                    <input type="number" class="form-control border-start-0" name="cupos_totales"
-                                        id="cupos_totales" required min="1" value="10">
+                                    <input type="number" class="form-control border-start-0 border-dynamic bg-dynamic"
+                                        name="cupos_totales" id="cupos_totales" required min="1" value="10">
                                 </div>
                                 <div class="form-text small">Se actualiza al elegir transporte.</div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bold text-dark">Precio Oferta (Opcional)</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0"><i
+                                    <span
+                                        class="input-group-text bg-dynamic border-dynamic border-end-0 text-primary"><i
                                             class="bi bi-currency-dollar"></i></span>
-                                    <input type="number" class="form-control border-start-0" name="precio_actual"
-                                        min="0" step="0.01" placeholder="Dejar vacío para usar precio base">
+                                    <input type="number" class="form-control border-start-0 border-dynamic bg-dynamic"
+                                        name="precio_actual" min="0" step="0.01"
+                                        placeholder="Dejar vacío para usar precio base">
                                 </div>
                             </div>
                         </div>

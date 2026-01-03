@@ -22,7 +22,17 @@ class ClientController
         $agencyId = $_SESSION['agencia_id'];
         $search = $_GET['search'] ?? '';
 
-        $clients = $this->clientModel->getAllByAgency($agencyId, $search);
+        // Parámetros de paginación y orden
+        $limit = 10;
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        $offset = ($page - 1) * $limit;
+        $sort = $_GET['sort'] ?? 'nombre';
+        $order = $_GET['order'] ?? 'ASC';
+
+        $clients = $this->clientModel->getAllByAgency($agencyId, $search, $limit, $offset, $sort, $order);
+        $totalClients = $this->clientModel->countAllByAgency($agencyId, $search);
+        $totalPages = ceil($totalClients / $limit);
+
         require_once BASE_PATH . '/views/agency/clients/index.php';
     }
 

@@ -33,6 +33,49 @@
                 left: 0 !important;
             }
         }
+
+        /* PREMIUM SIDEBAR ENHANCEMENTS */
+        .nav-section-label {
+            padding: 20px 25px 10px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.12rem;
+            color: rgba(255, 255, 255, 0.4);
+            cursor: default;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            margin: 10px 25px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 100%);
+            list-style: none;
+        }
+
+        .agency-sidebar .components li a {
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        .agency-sidebar .components li a:hover {
+            background: rgba(255, 255, 255, 0.08) !important;
+            color: #fff !important;
+            padding-left: 30px;
+        }
+
+        .agency-sidebar .components li.active>a {
+            background: rgba(255, 255, 255, 0.15) !important;
+            color: #fff !important;
+            border-left: 4px solid var(--brand-secondary, #34d399);
+        }
+
+        .text-brand {
+            color: #34d399 !important;
+        }
     </style>
 
     <script>
@@ -90,74 +133,96 @@ echo $theme;
                 </div>
 
                 <ul class="list-unstyled components">
+                    <!-- GESTIÓN OPERATIVA -->
+                    <li class="nav-section-label">Gestión Operativa</li>
                     <li class="<?php echo isActive('dashboard'); ?>">
                         <a href="<?php echo BASE_URL; ?>dashboard">
-                            <i class="bi bi-speedometer2 me-2"></i> Inicio
+                            <i class="bi bi-grid-1x2-fill me-2 text-brand"></i> Panel Principal
                         </a>
                     </li>
                     <li class="<?php echo isActive('agency/reservations'); ?>">
                         <a href="<?php echo BASE_URL; ?>agency/reservations">
-                            <i class="bi bi-calendar-check me-2"></i> Reservas
-                        </a>
-                    </li>
-                    <li class="<?php echo isActive('agency/payments'); ?>">
-                        <a href="<?php echo BASE_URL; ?>agency/payments">
-                            <i class="bi bi-cash-coin me-2"></i> Pagos
-                        </a>
-                    </li>
-                    <li class="<?php echo isActive('agency/clients'); ?>">
-                        <a href="<?php echo BASE_URL; ?>agency/clients">
-                            <i class="bi bi-people me-2"></i> Clientes
-                        </a>
-                    </li>
-                    <li class="<?php echo isActive('agency/tours'); ?>">
-                        <a href="<?php echo BASE_URL; ?>agency/tours">
-                            <i class="bi bi-map me-2"></i> Tours
+                            <i class="bi bi-journal-bookmark-fill me-2 text-brand"></i> Reservas
                         </a>
                     </li>
                     <li class="<?php echo isActive('agency/departures'); ?>">
                         <a href="<?php echo BASE_URL; ?>agency/departures">
-                            <i class="bi bi-calendar-week me-2"></i> Salidas
+                            <i class="bi bi-signpost-2-fill me-2 text-brand"></i> Control de Salidas
                         </a>
                     </li>
-                    <li class="<?php echo isActive('agency/guides'); ?>">
-                        <a href="<?php echo BASE_URL; ?>agency/guides">
-                            <i class="bi bi-person-badge me-2"></i> Guías
+                    <li class="<?php echo isActive('agency/tours'); ?>">
+                        <a href="<?php echo BASE_URL; ?>agency/tours">
+                            <i class="bi bi-map-fill me-2 text-brand"></i> Mis Tours
                         </a>
                     </li>
-                    <li class="<?php echo isActive('agency/transports'); ?>">
-                        <a href="<?php echo BASE_URL; ?>agency/transports">
-                            <i class="bi bi-truck me-2"></i> Transportes
+                    <li class="<?php echo isActive('agency/clients'); ?>">
+                        <a href="<?php echo BASE_URL; ?>agency/clients">
+                            <i class="bi bi-people-fill me-2 text-brand"></i> Clientes (CRM)
+                        </a>
+                    </li>
+
+                    <li class="sidebar-divider"></li>
+
+                    <!-- ADMINISTRACIÓN Y LOGÍSTICA -->
+                    <!-- ADMINISTRACIÓN Y FINANZAS -->
+                    <?php if ($_SESSION['user_role'] === 'dueno_agencia'): ?>
+                        <li class="nav-section-label">Administración y Finanzas</li>
+                        <li class="<?php echo isActive('agency/payments'); ?>">
+                            <a href="<?php echo BASE_URL; ?>agency/payments">
+                                <i class="bi bi-cash-stack me-2 text-brand"></i> Flujo de Pagos
+                            </a>
+                        </li>
+                        <li class="sidebar-divider"></li>
+                    <?php endif; ?>
+
+                    <li class="nav-section-label">Recursos y Logística</li>
+                    <li class="<?php echo isActive('agency/resources'); ?> <?php echo isActive('agency/guides'); ?>">
+                        <a href="<?php echo BASE_URL; ?>agency/guides" class="small py-1 ps-4">
+                            <i class="bi bi-person-badge me-2 text-brand"></i> Mis Guías
+                        </a>
+                    </li>
+                    <li class="<?php echo isActive('agency/transport'); ?>">
+                        <a href="<?php echo BASE_URL; ?>agency/transport" class="small py-1 ps-4">
+                            <i class="bi bi-truck-front me-2 text-brand"></i> Flota de Transporte
                         </a>
                     </li>
                     <li class="<?php echo isActive('agency/providers'); ?>">
-                        <a href="<?php echo BASE_URL; ?>agency/providers">
-                            <i class="bi bi-shop me-2"></i> Proveedores
+                        <a href="<?php echo BASE_URL; ?>agency/providers" class="small py-1 ps-4">
+                            <i class="bi bi-shop me-2 text-brand"></i> Proveedores Aliados
                         </a>
                     </li>
-                    <li class="<?php echo isActive('agency/reports'); ?>">
-                        <a href="<?php echo BASE_URL; ?>agency/reports">
-                            <i class="bi bi-bar-chart me-2"></i> Reportes
-                        </a>
-                    </li>
-                    <li class="<?php echo isActive('agency/audit'); ?>">
-                        <a href="<?php echo BASE_URL; ?>agency/audit">
-                            <i class="bi bi-eye me-2"></i> Auditoría
-                        </a>
-                    </li>
-                    <li class="<?php echo isActive('agency/users'); ?>">
-                        <a href="<?php echo BASE_URL; ?>agency/users">
-                            <i class="bi bi-person-gear me-2"></i> Usuarios
-                        </a>
-                    </li>
-                    <li class="<?php echo isActive('agency/settings'); ?>">
-                        <a href="<?php echo BASE_URL; ?>agency/settings">
-                            <i class="bi bi-gear me-2"></i> Configuración
-                        </a>
-                    </li>
+
+                    <li class="sidebar-divider"></li>
+
+                    <!-- CONFIGURACIÓN Y SISTEMA -->
+                    <li class="nav-section-label">Configuración y Sistema</li>
+
+                    <?php if ($_SESSION['user_role'] === 'dueno_agencia'): ?>
+                        <li class="<?php echo isActive('agency/reports'); ?>">
+                            <a href="<?php echo BASE_URL; ?>agency/reports">
+                                <i class="bi bi-bar-chart-steps me-2"></i> Informes y Métricas
+                            </a>
+                        </li>
+                        <li class="<?php echo isActive('agency/users'); ?>">
+                            <a href="<?php echo BASE_URL; ?>agency/users">
+                                <i class="bi bi-person-gear-fill me-2 text-brand"></i> Equipo de Trabajo
+                            </a>
+                        </li>
+                        <li class="<?php echo isActive('agency/audit'); ?>">
+                            <a href="<?php echo BASE_URL; ?>agency/audit">
+                                <i class="bi bi-activity me-2"></i> Registro de Actividad
+                            </a>
+                        </li>
+                        <li class="<?php echo isActive('agency/settings'); ?>">
+                            <a href="<?php echo BASE_URL; ?>agency/settings">
+                                <i class="bi bi-gear-wide-connected me-2"></i> Ajustes Generales
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
                     <li class="<?php echo isActive('agency/support'); ?>">
                         <a href="<?php echo BASE_URL; ?>agency/support">
-                            <i class="bi bi-life-preserver me-2"></i> Soporte
+                            <i class="bi bi-patch-question-fill me-2"></i> Centro de Ayuda
                         </a>
                     </li>
                 </ul>

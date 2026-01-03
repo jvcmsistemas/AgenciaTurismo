@@ -10,7 +10,7 @@ class Reservation
         $this->pdo = $pdo;
     }
 
-    public function getAllByAgency($agencyId)
+    public function getAllByAgency($agencyId, $search = '', $limit = null, $offset = 0, $orderBy = 'fecha_hora_reserva', $orderDir = 'DESC')
     {
         $sql = "SELECT r.*, 
                        c.nombre as cliente_nombre, c.apellido as cliente_apellido, c.email as cliente_email,
@@ -24,12 +24,60 @@ class Reservation
                         WHERE rd.reserva_id = r.id AND rd.tipo_servicio = 'tour') as fecha_inicio_tour
                 FROM reservas r
                 LEFT JOIN clientes c ON r.cliente_id = c.id
-                WHERE r.agencia_id = :agencia_id
-                ORDER BY r.fecha_hora_reserva DESC";
+                WHERE r.agencia_id = :agencia_id";
+
+        $params = ['agencia_id' => $agencyId];
+
+        if (!empty($search)) {
+            $sql .= " AND (r.codigo_reserva LIKE :search1 OR c.nombre LIKE :search2 OR c.apellido LIKE :search3 OR c.email LIKE :search4)";
+            $params['search1'] = "%$search%";
+            $params['search2'] = "%$search%";
+            $params['search3'] = "%$search%";
+            $params['search4'] = "%$search%";
+        }
+
+        // Validar campos de ordenamiento
+        $allowedSort = ['fecha_hora_reserva', 'codigo_reserva', 'precio_total', 'estado', 'cantidad_personas'];
+        if (!in_array($orderBy, $allowedSort))
+            $orderBy = 'fecha_hora_reserva';
+        $orderDir = (strtoupper($orderDir) === 'ASC') ? 'ASC' : 'DESC';
+
+        $sql .= " ORDER BY $orderBy $orderDir";
+
+        if ($limit !== null) {
+            $sql .= " LIMIT :limit OFFSET :offset";
+            $params['limit'] = (int) $limit;
+            $params['offset'] = (int) $offset;
+        }
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['agencia_id' => $agencyId]);
+        foreach ($params as $key => &$val) {
+            $type = is_int($val) ? PDO::PARAM_INT : PDO::PARAM_STR;
+            $stmt->bindParam($key, $val, $type);
+        }
+        $stmt->execute();
         return $stmt->fetchAll();
+    }
+
+    public function countAllByAgency($agencyId, $search = '')
+    {
+        $sql = "SELECT COUNT(*) FROM reservas r
+                LEFT JOIN clientes c ON r.cliente_id = c.id
+                WHERE r.agencia_id = :agencia_id";
+
+        $params = ['agencia_id' => $agencyId];
+
+        if (!empty($search)) {
+            $sql .= " AND (r.codigo_reserva LIKE :search1 OR c.nombre LIKE :search2 OR c.apellido LIKE :search3 OR c.email LIKE :search4)";
+            $params['search1'] = "%$search%";
+            $params['search2'] = "%$search%";
+            $params['search3'] = "%$search%";
+            $params['search4'] = "%$search%";
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchColumn();
     }
 
     public function getById($id)
@@ -157,6 +205,107 @@ class Reservation
         }
     }
 
+    public function update($id, $data)
+    {
+        try {
+            $this->pdo->beginTransaction();
+
+            require_once BASE_PATH . '/models/Departure.php';
+            $departureModel = new Departure($this->pdo);
+
+            // 1. Devolver cupos previos
+            $oldDetails = $this->getDetails($id);
+            foreach ($oldDetails as $detail) {
+                if ($detail['tipo_servicio'] === 'tour') {
+                    $departureModel->restoreSeats($detail['servicio_id'], $detail['cantidad']);
+                }
+            }
+
+            // 2. Limpiar detalles antiguos
+            $stmtDel = $this->pdo->prepare("DELETE FROM reserva_detalles WHERE reserva_id = ?");
+            $stmtDel->execute([$id]);
+
+            // 3. Calcular Totales y Validar Cupos Nuevos
+            $totalPrecio = 0;
+            $items = $data['items'];
+
+            foreach ($items as $item) {
+                if ($item['tipo'] == 'tour') {
+                    if (!$departureModel->updateSeats($item['salida_id'], $item['cantidad'])) {
+                        throw new Exception("No hay suficientes cupos para la nueva salida seleccionada.");
+                    }
+                }
+                $totalPrecio += ($item['cantidad'] * $item['precio_unitario']);
+            }
+
+            // 4. Actualizar Cabecera
+            $descuento = $data['descuento'] ?? 0;
+            $precioFinal = $totalPrecio - $descuento;
+
+            // Recalcular saldo pendiente basado en pagos realizados
+            $stmtPagos = $this->pdo->prepare("SELECT SUM(monto) FROM pagos WHERE reserva_id = ?");
+            $stmtPagos->execute([$id]);
+            $totalPagado = $stmtPagos->fetchColumn() ?: 0;
+
+            $saldoPendiente = $precioFinal - $totalPagado;
+            if ($saldoPendiente < 0)
+                $saldoPendiente = 0;
+
+            $estado = ($saldoPendiente <= 0.01) ? 'confirmada' : 'pendiente';
+
+            $cantidadTotal = array_reduce($items, function ($carry, $item) {
+                return $carry + $item['cantidad'];
+            }, 0);
+
+            $sql = "UPDATE reservas SET 
+                        cliente_id = :cliente_id,
+                        estado = :estado,
+                        cantidad_personas = :cantidad_total,
+                        precio_total = :total,
+                        descuento = :descuento,
+                        saldo_pendiente = :saldo,
+                        notas = :notas,
+                        updated_at = NOW()
+                    WHERE id = :id AND agencia_id = :agencia_id";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([
+                'cliente_id' => $data['cliente_id'],
+                'estado' => $estado,
+                'cantidad_total' => $cantidadTotal,
+                'total' => $totalPrecio,
+                'descuento' => $descuento,
+                'saldo' => $saldoPendiente,
+                'notas' => $data['notas'] ?? '',
+                'id' => $id,
+                'agencia_id' => $data['agencia_id']
+            ]);
+
+            // 5. Insertar Nuevos Detalles
+            $sqlDetalle = "INSERT INTO reserva_detalles (reserva_id, tipo_servicio, servicio_id, cantidad, precio_unitario, subtotal) 
+                           VALUES (:reserva_id, :tipo, :servicio_id, :cantidad, :precio_unit, :subtotal)";
+            $stmtDetalle = $this->pdo->prepare($sqlDetalle);
+
+            foreach ($items as $item) {
+                $stmtDetalle->execute([
+                    'reserva_id' => $id,
+                    'tipo' => $item['tipo'],
+                    'servicio_id' => $item['salida_id'],
+                    'cantidad' => $item['cantidad'],
+                    'precio_unit' => $item['precio_unitario'],
+                    'subtotal' => $item['cantidad'] * $item['precio_unitario']
+                ]);
+            }
+
+            $this->pdo->commit();
+            return true;
+
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
+            throw $e;
+        }
+    }
+
     public function updateStatus($id, $status, $agencyId)
     {
         $sql = "UPDATE reservas SET estado = :estado WHERE id = :id AND agencia_id = :agencia_id";
@@ -216,10 +365,53 @@ class Reservation
 
     public function getPayments($reservaId)
     {
-        $sql = "SELECT * FROM pagos WHERE reserva_id = :id ORDER BY fecha_pago DESC";
+        $sql = "SELECT * FROM pagos WHERE reserva_id = :id AND deleted_at IS NULL ORDER BY fecha_pago DESC";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute(['id' => $reservaId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function deletePayment($paymentId)
+    {
+        try {
+            $this->pdo->beginTransaction();
+
+            // 1. Obtener datos del pago antes de borrar
+            $stmtPay = $this->pdo->prepare("SELECT * FROM pagos WHERE id = ?");
+            $stmtPay->execute([$paymentId]);
+            $payment = $stmtPay->fetch(PDO::FETCH_ASSOC);
+
+            if (!$payment)
+                throw new Exception("Pago no encontrado.");
+
+            // 2. Eliminar físicamente el pago
+            $stmtDel = $this->pdo->prepare("DELETE FROM pagos WHERE id = ?");
+            $stmtDel->execute([$paymentId]);
+
+            // 3. Devolver el monto al saldo_pendiente de la reserva
+            $stmtRes = $this->pdo->prepare("SELECT saldo_pendiente FROM reservas WHERE id = ? FOR UPDATE");
+            $stmtRes->execute([$payment['reserva_id']]);
+            $reserva = $stmtRes->fetch(PDO::FETCH_ASSOC);
+
+            $nuevoSaldo = $reserva['saldo_pendiente'] + $payment['monto'];
+
+            // Determinar nuevo estado (si vuelve a tener saldo, vuelve a 'pendiente')
+            $nuevoEstado = ($nuevoSaldo > 0) ? 'pendiente' : 'confirmada';
+
+            $sqlUpdate = "UPDATE reservas SET saldo_pendiente = :saldo, estado = :estado WHERE id = :id";
+            $this->pdo->prepare($sqlUpdate)->execute([
+                'saldo' => $nuevoSaldo,
+                'estado' => $nuevoEstado,
+                'id' => $payment['reserva_id']
+            ]);
+
+            $this->pdo->commit();
+            return $payment['reserva_id'];
+
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
+            throw $e;
+        }
     }
 
     /**
@@ -237,7 +429,13 @@ class Reservation
                 WHERE r.agencia_id = :agencia_id 
                 AND r.saldo_pendiente > 0 
                 AND r.estado != 'cancelada'
-                HAVING fecha_inicio_tour BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+                AND EXISTS (
+                    SELECT 1 FROM reserva_detalles rd2 
+                    JOIN salidas s2 ON rd2.servicio_id = s2.id 
+                    WHERE rd2.reserva_id = r.id 
+                    AND rd2.tipo_servicio = 'tour'
+                    AND s2.fecha_salida BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+                )
                 ORDER BY fecha_inicio_tour ASC";
 
         $stmt = $this->pdo->prepare($sql);

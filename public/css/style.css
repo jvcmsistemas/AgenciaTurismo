@@ -109,17 +109,23 @@ body.superadmin-light-theme {
 /* 🌿 AGENCY DARK THEME (Emerald - Default) */
 body.agency-theme {
   /* Backgrounds */
-  --bg-primary: #06110a; /* Very Dark Emerald */
-  --bg-secondary: #0a1f14; /* Card Surface */
-  --bg-tertiary: #042f2e; /* Sidebar/Secondary BG */
+  --bg-primary: #040d08;
+  /* Darker Emerald */
+  --bg-secondary: #0a1f14;
+  /* Card Surface */
+  --bg-tertiary: #061f1a;
+  /* Sidebar/Secondary BG */
+  --bg-soft: rgba(16, 185, 129, 0.05);
+  /* Soft background for sections */
 
   /* Text */
-  --text-primary: #ecfdf5;
+  --text-primary: #f0fdf4;
   --text-secondary: #a7f3d0;
   --text-muted: #34d399;
 
   /* Borders */
   --border-color: #064e40;
+  --input-border: #065f46;
 
   /* Brand/Accents */
   --brand-primary: #10b981;
@@ -131,8 +137,7 @@ body.agency-theme {
   --card-bg: #0a1f14;
   --table-bg: #0a1f14;
   --table-header-bg: #064e3b;
-  --input-bg: #042f2e;
-  --input-border: #065f46;
+  --input-bg: #061f1a;
   --hover-bg: rgba(16, 185, 129, 0.15);
 
   /* Status */
@@ -145,17 +150,19 @@ body.agency-theme {
 /* ☀️ AGENCY LIGHT THEME */
 body.agency-light-theme {
   /* Backgrounds */
-  --bg-primary: #f0fdf4;
+  --bg-primary: #f8fafc;
   --bg-secondary: #ffffff;
   --bg-tertiary: #f1f5f9;
+  --bg-soft: #f8fafc;
 
   /* Text */
-  --text-primary: #064e3b;
-  --text-secondary: #166534;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
   --text-muted: #64748b;
 
   /* Borders */
-  --border-color: #d1fae5;
+  --border-color: #e2e8f0;
+  --input-border: #cbd5e1;
 
   /* Brand/Accents */
   --brand-primary: #10b981;
@@ -166,9 +173,8 @@ body.agency-light-theme {
   --navbar-bg: #ffffff;
   --card-bg: #ffffff;
   --table-bg: #ffffff;
-  --table-header-bg: #f1f5f9;
+  --table-header-bg: #f8fafc;
   --input-bg: #ffffff;
-  --input-border: #cbd5e1;
   --hover-bg: rgba(16, 185, 129, 0.1);
 
   /* Status */
@@ -469,6 +475,36 @@ body:not(.agency-theme) #sidebar ul li a.active {
 }
 
 /* Utils */
+.bg-dynamic {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.bg-surface-dynamic {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.text-dynamic {
+  color: var(--text-primary) !important;
+}
+
+.text-secondary-dynamic {
+  color: var(--text-secondary) !important;
+}
+
+.text-muted-dynamic {
+  color: var(--text-muted) !important;
+}
+
+.bg-soft-dynamic {
+  background-color: var(--bg-soft) !important;
+}
+
+.border-dynamic {
+  border-color: var(--border-color) !important;
+}
+
 .text-muted {
   color: var(--text-muted) !important;
 }
@@ -543,7 +579,14 @@ input:checked+.theme-toggle-slider:before {
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
-body.superadmin-light-theme .glass-card {
+body.agency-theme .glass-card {
+  background: rgba(4, 13, 8, 0.9);
+  /* Dark emerald for agency */
+  border: 1px solid rgba(16, 185, 129, 0.1);
+}
+
+body.superadmin-light-theme .glass-card,
+body.agency-light-theme .glass-card {
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(0, 0, 0, 0.05);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);

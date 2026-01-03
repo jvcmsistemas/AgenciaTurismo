@@ -10,44 +10,52 @@ class Tour
         $this->pdo = $pdo;
     }
 
-    public function getAllByAgency($agencyId, $search = '', $order = 'newest')
+    public function getAllByAgency($agencyId, $search = '', $limit = null, $offset = 0, $orderBy = 'id', $orderDir = 'DESC')
     {
         $sql = "SELECT * FROM tours WHERE agencia_id = :agencia_id";
         $params = ['agencia_id' => $agencyId];
 
         if (!empty($search)) {
-            $sql .= " AND (nombre LIKE :search OR descripcion LIKE :search OR ubicacion LIKE :search)";
+            $sql .= " AND (nombre LIKE :search OR descripcion LIKE :search OR ubicacion LIKE :search OR tags LIKE :search)";
             $params['search'] = "%$search%";
         }
 
-        switch ($order) {
-            case 'name_asc':
-                $sql .= " ORDER BY nombre ASC";
-                break;
-            case 'name_desc':
-                $sql .= " ORDER BY nombre DESC";
-                break;
-            case 'price_asc':
-                $sql .= " ORDER BY precio ASC";
-                break;
-            case 'price_desc':
-                $sql .= " ORDER BY precio DESC";
-                break;
-            case 'duration_asc':
-                $sql .= " ORDER BY duracion ASC";
-                break;
-            case 'duration_desc':
-                $sql .= " ORDER BY duracion DESC";
-                break;
-            case 'newest':
-            default:
-                $sql .= " ORDER BY id DESC";
-                break;
+        // Validar campos de ordenamiento
+        $allowedSort = ['nombre', 'precio', 'duracion', 'nivel_dificultad', 'ubicacion', 'id'];
+        if (!in_array($orderBy, $allowedSort))
+            $orderBy = 'id';
+        $orderDir = (strtoupper($orderDir) === 'ASC') ? 'ASC' : 'DESC';
+
+        $sql .= " ORDER BY $orderBy $orderDir";
+
+        if ($limit !== null) {
+            $sql .= " LIMIT :limit OFFSET :offset";
+            $params['limit'] = (int) $limit;
+            $params['offset'] = (int) $offset;
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        foreach ($params as $key => &$val) {
+            $type = is_int($val) ? PDO::PARAM_INT : PDO::PARAM_STR;
+            $stmt->bindParam($key, $val, $type);
+        }
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function countAllByAgency($agencyId, $search = '')
+    {
+        $sql = "SELECT COUNT(*) FROM tours WHERE agencia_id = :agencia_id";
+        $params = ['agencia_id' => $agencyId];
+
+        if (!empty($search)) {
+            $sql .= " AND (nombre LIKE :search OR descripcion LIKE :search OR ubicacion LIKE :search OR tags LIKE :search)";
+            $params['search'] = "%$search%";
         }
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
-        return $stmt->fetchAll();
+        return $stmt->fetchColumn();
     }
 
     public function getById($id)

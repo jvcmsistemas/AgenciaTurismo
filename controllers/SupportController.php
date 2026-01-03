@@ -91,10 +91,56 @@ class SupportController
         }
     }
 
+    public function agencyIndex()
+    {
+        $agencyId = $_SESSION['agencia_id'];
+
+        // Obtener mis tickets
+        $tickets = $this->ticketModel->getAll(['agencia_id' => $agencyId]);
+
+        // Obtener FAQs
+        $faqs = $this->ticketModel->getFaqs();
+
+        require_once BASE_PATH . '/views/agency/support/index.php';
+    }
+
+    public function storeTicket()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'agencia_id' => $_SESSION['agencia_id'],
+                'usuario_id' => $_SESSION['user_id'],
+                'asunto' => $_POST['subject'],
+                'prioridad' => $_POST['priority'] ?? 'media',
+                'categoria' => $_POST['category'] ?? 'tecnico'
+            ];
+
+            $newId = $this->ticketModel->createTicket($data);
+
+            // Agregar mensaje inicial
+            $this->ticketModel->addMessage($newId, $_SESSION['user_id'], $_POST['message']);
+
+            redirect('agency/support?success=1');
+        }
+    }
+
     public function close()
     {
         $id = $_GET['id'];
+        // Verificar que el ticket pertenezca a la agencia si no es admin
+        if ($_SESSION['user_role'] !== 'administrador_general') {
+            $ticket = $this->ticketModel->getById($id);
+            if ($ticket['agencia_id'] != $_SESSION['agencia_id']) {
+                redirect('agency/support');
+            }
+        }
+
         $this->ticketModel->updateStatus($id, 'cerrado');
-        redirect("admin/support/show?id=$id");
+
+        if ($_SESSION['user_role'] === 'administrador_general') {
+            redirect("admin/support/show?id=$id");
+        } else {
+            redirect("agency/support");
+        }
     }
 }

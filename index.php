@@ -227,6 +227,18 @@ switch ($path) {
         $controller->close();
         break;
 
+    // --- CENTRO DE AYUDA (AGENCIA) ---
+    case 'agency/support':
+        require_once BASE_PATH . '/controllers/SupportController.php';
+        $controller = new SupportController($pdo);
+        $controller->agencyIndex();
+        break;
+    case 'agency/support/store':
+        require_once BASE_PATH . '/controllers/SupportController.php';
+        $controller = new SupportController($pdo);
+        $controller->storeTicket();
+        break;
+
     // RUTAS DE AGENCIA
     case 'agency/tours':
         require_once BASE_PATH . '/controllers/TourController.php';
@@ -285,6 +297,16 @@ switch ($path) {
         $resController = new ReservationController($pdo);
         $resController->updateStatus();
         break;
+    case 'agency/reservations/edit':
+        require_once BASE_PATH . '/controllers/ReservationController.php';
+        $resController = new ReservationController($pdo);
+        $resController->edit();
+        break;
+    case 'agency/reservations/update':
+        require_once BASE_PATH . '/controllers/ReservationController.php';
+        $resController = new ReservationController($pdo);
+        $resController->update();
+        break;
     case 'agency/reservations/show':
         require_once BASE_PATH . '/controllers/ReservationController.php';
         $resController = new ReservationController($pdo);
@@ -294,6 +316,11 @@ switch ($path) {
         require_once BASE_PATH . '/controllers/ReservationController.php';
         $resController = new ReservationController($pdo);
         $resController->addPayment();
+        break;
+    case 'agency/reservations/payment/delete':
+        require_once BASE_PATH . '/controllers/ReservationController.php';
+        $resController = new ReservationController($pdo);
+        $resController->deletePayment();
         break;
 
     // RUTAS DE SALIDAS (DEPARTURES)
@@ -386,27 +413,87 @@ switch ($path) {
         $controller = new ResourceController($pdo);
         $controller->deleteGuide();
         break;
-    case 'agency/resources/store-transport':
-        require_once BASE_PATH . '/controllers/ResourceController.php';
-        $controller = new ResourceController($pdo);
-        $controller->storeTransport();
-        break;
-    case 'agency/resources/delete-transport':
-        require_once BASE_PATH . '/controllers/ResourceController.php';
     case 'agency/resources/update-guide':
         require_once BASE_PATH . '/controllers/ResourceController.php';
         $controller = new ResourceController($pdo);
         $controller->updateGuide();
         break;
-    case 'agency/resources/update-transport':
-        require_once BASE_PATH . '/controllers/ResourceController.php';
-        $controller = new ResourceController($pdo);
-        $controller->updateTransport();
+    case 'agency/transport':
+        require_once BASE_PATH . '/controllers/TransportController.php';
+        $controller = new TransportController($pdo);
+        $controller->index();
         break;
-    case 'agency/resources/update-provider':
+    case 'agency/transport/create':
+        require_once BASE_PATH . '/controllers/TransportController.php';
+        $controller = new TransportController($pdo);
+        $controller->create();
+        break;
+    case 'agency/transport/store':
+        require_once BASE_PATH . '/controllers/TransportController.php';
+        $controller = new TransportController($pdo);
+        $controller->store();
+        break;
+    case 'agency/transport/edit':
+        require_once BASE_PATH . '/controllers/TransportController.php';
+        $controller = new TransportController($pdo);
+        $controller->edit($_GET['id'] ?? null);
+        break;
+    case 'agency/transport/update':
+        require_once BASE_PATH . '/controllers/TransportController.php';
+        $controller = new TransportController($pdo);
+        $controller->update();
+        break;
+    case 'agency/transport/delete':
+        require_once BASE_PATH . '/controllers/TransportController.php';
+        $controller = new TransportController($pdo);
+        $controller->delete($_GET['id'] ?? null);
+        break;
+
+    // --- MEJORAS DE NAVEGACIÓN Y PAGOS ---
+    case 'agency/payments':
+        require_once BASE_PATH . '/controllers/AgencyPaymentsController.php';
+        $controller = new AgencyPaymentsController($pdo);
+        $controller->index();
+        break;
+
+    // Rutas semánticas (Redirigir a Staff de Guías)
+    case 'agency/guides':
         require_once BASE_PATH . '/controllers/ResourceController.php';
         $controller = new ResourceController($pdo);
-        $controller->updateProvider();
+        $controller->index();
+        break;
+    case 'agency/transports':
+        header('Location: ' . BASE_URL . 'agency/transport');
+        exit;
+    case 'agency/providers/create':
+        require_once BASE_PATH . '/controllers/ProviderController.php';
+        $controller = new ProviderController($pdo);
+        $controller->create();
+        break;
+    case 'agency/providers/store':
+        require_once BASE_PATH . '/controllers/ProviderController.php';
+        $controller = new ProviderController($pdo);
+        $controller->store();
+        break;
+    case 'agency/providers/edit':
+        require_once BASE_PATH . '/controllers/ProviderController.php';
+        $controller = new ProviderController($pdo);
+        $controller->edit($_GET['id'] ?? null);
+        break;
+    case 'agency/providers/update':
+        require_once BASE_PATH . '/controllers/ProviderController.php';
+        $controller = new ProviderController($pdo);
+        $controller->update();
+        break;
+    case 'agency/providers/delete':
+        require_once BASE_PATH . '/controllers/ProviderController.php';
+        $controller = new ProviderController($pdo);
+        $controller->delete($_GET['id'] ?? null);
+        break;
+    case 'agency/providers':
+        require_once BASE_PATH . '/controllers/ProviderController.php';
+        $controller = new ProviderController($pdo);
+        $controller->index();
         break;
 
     // RUTAS DE PERFIL
@@ -419,6 +506,39 @@ switch ($path) {
         require_once BASE_PATH . '/controllers/AgencyController.php';
         $agencyController = new AgencyController($pdo);
         $agencyController->updateProfile();
+        break;
+
+    // --- GESTIÓN DE COLABORADORES (AGENCIA) ---
+    case 'agency/users':
+        require_once BASE_PATH . '/controllers/AgencyUserController.php';
+        $agencyUsers = new AgencyUserController($pdo);
+        $agencyUsers->index();
+        break;
+    case 'agency/users/create':
+        require_once BASE_PATH . '/controllers/AgencyUserController.php';
+        $agencyUsers = new AgencyUserController($pdo);
+        $agencyUsers->create();
+        break;
+    case 'agency/users/edit':
+        require_once BASE_PATH . '/controllers/AgencyUserController.php';
+        $agencyUsers = new AgencyUserController($pdo);
+        $agencyUsers->edit();
+        break;
+    case 'agency/users/store':
+        require_once BASE_PATH . '/controllers/AgencyUserController.php';
+        $agencyUsers = new AgencyUserController($pdo);
+        $agencyUsers->store();
+        break;
+    case 'agency/users/update':
+        require_once BASE_PATH . '/controllers/AgencyUserController.php';
+        $agencyUsers = new AgencyUserController($pdo);
+        $agencyUsers->update();
+        break;
+    case 'agency/users/delete':
+        require_once BASE_PATH . '/controllers/AgencyUserController.php';
+        $agencyUsers = new AgencyUserController($pdo);
+        $id = $_GET['id'] ?? null;
+        $agencyUsers->delete($id);
         break;
 
     default:

@@ -31,9 +31,18 @@ class DepartureController
         $agencyId = $_SESSION['agencia_id'];
         $search = $_GET['search'] ?? '';
         $status = $_GET['status'] ?? '';
+
+        // Paginación
+        $limit = 10;
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        $offset = ($page - 1) * $limit;
+
         $sort = $_GET['sort'] ?? 'fecha_asc';
 
-        $departures = $this->departureModel->getAllByAgency($agencyId, $search, $status, $sort);
+        $departures = $this->departureModel->getAllByAgency($agencyId, $search, $status, $sort, $limit, $offset);
+        $totalDepartures = $this->departureModel->countByAgency($agencyId, $search, $status);
+        $totalPages = ceil($totalDepartures / $limit);
+
         require_once BASE_PATH . '/views/agency/departures/index.php';
     }
 

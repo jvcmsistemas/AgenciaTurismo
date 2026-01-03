@@ -2,26 +2,22 @@
 // Sistema_New/controllers/ResourceController.php
 
 require_once BASE_PATH . '/models/Guide.php';
-require_once BASE_PATH . '/models/Transport.php';
 require_once BASE_PATH . '/models/Provider.php';
 
 class ResourceController
 {
     private $pdo;
     private $guideModel;
-    private $transportModel;
-    private $providerModel;
 
     public function __construct($pdo)
     {
-        if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'dueno_agencia') {
+        // Verificar acceso (Dueño o Empleado de Agencia)
+        if (!isset($_SESSION['user_role']) || !in_array($_SESSION['user_role'], ['dueno_agencia', 'empleado_agencia'])) {
             redirect('login');
         }
 
         $this->pdo = $pdo;
         $this->guideModel = new Guide($pdo);
-        $this->transportModel = new Transport($pdo);
-        $this->providerModel = new Provider($pdo);
     }
 
     public function index()
@@ -30,9 +26,18 @@ class ResourceController
         $search = $_GET['search'] ?? '';
         $tab = $_GET['tab'] ?? 'guides';
 
-        $guides = $this->guideModel->getAllByAgency($agencyId, ($tab === 'guides') ? $search : '');
-        $transports = $this->transportModel->getAllByAgency($agencyId, ($tab === 'transport') ? $search : '');
-        $providers = $this->providerModel->getAllByAgency($agencyId, ($tab === 'providers') ? $search : '');
+        // Parámetros de paginación y orden
+        $limit = 10;
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        $offset = ($page - 1) * $limit;
+
+        $sort = $_GET['sort'] ?? 'nombre';
+        $order = $_GET['order'] ?? 'ASC';
+
+        // Solo el tab activo (que ahora es el único: Guías) usa búsqueda, paginación y orden avanzado
+        $guides = $this->guideModel->getAllByAgency($agencyId, $search, $limit, $offset, $sort, $order);
+        $totalGuides = $this->guideModel->countAllByAgency($agencyId, $search);
+        $totalPages = ceil($totalGuides / $limit);
 
         require_once BASE_PATH . '/views/agency/resources/index.php';
     }
@@ -44,10 +49,15 @@ class ResourceController
             $data = [
                 'agencia_id' => $_SESSION['agencia_id'],
                 'nombre' => $_POST['nombre'],
+                'apellido' => $_POST['apellido'],
                 'dni' => $_POST['dni'],
-                'telefono' => $_POST['telefono'],
+                'fecha_nacimiento' => $_POST['fecha_nacimiento'],
+                'genero' => $_POST['genero'],
                 'email' => $_POST['email'],
-                'idiomas' => $_POST['idiomas']
+                'telefono' => $_POST['telefono'],
+                'direccion' => $_POST['direccion'],
+                'ciudad_region' => $_POST['ciudad_region'],
+                'notas' => $_POST['notas']
             ];
             $this->guideModel->create($data);
             redirect('agency/resources?tab=guides');
@@ -56,62 +66,17 @@ class ResourceController
 
     public function deleteGuide()
     {
+        // Solo Dueño puede borrar guías
+        if ($_SESSION['user_role'] !== 'dueno_agencia') {
+            redirect('agency/resources?tab=guides&error=nopermission');
+        }
+
         if (isset($_GET['id'])) {
             $this->guideModel->delete($_GET['id'], $_SESSION['agencia_id']);
             redirect('agency/resources?tab=guides');
         }
     }
 
-    // --- TRANSPORTES ---
-    public function storeTransport()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = [
-                'agencia_id' => $_SESSION['agencia_id'],
-                'placa' => $_POST['placa'],
-                'modelo' => $_POST['modelo'],
-                'capacidad' => $_POST['capacidad'],
-                'chofer_nombre' => $_POST['chofer_nombre'],
-                'chofer_telefono' => $_POST['chofer_telefono']
-            ];
-            $this->transportModel->create($data);
-            redirect('agency/resources?tab=transport');
-        }
-    }
-
-    public function deleteTransport()
-    {
-        if (isset($_GET['id'])) {
-            $this->transportModel->delete($_GET['id'], $_SESSION['agencia_id']);
-            redirect('agency/resources?tab=transport');
-        }
-    }
-
-    // --- PROVEEDORES ---
-    public function storeProvider()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = [
-                'agencia_id' => $_SESSION['agencia_id'],
-                'nombre' => $_POST['nombre'],
-                'tipo' => $_POST['tipo'],
-                'contacto_nombre' => $_POST['contacto_nombre'],
-                'telefono' => $_POST['telefono'],
-                'ubicacion' => $_POST['ubicacion']
-            ];
-            $this->providerModel->create($data);
-            redirect('agency/resources?tab=providers');
-        }
-    }
-
-    public function deleteProvider()
-    {
-        if (isset($_GET['id'])) {
-            $this->providerModel->delete($_GET['id'], $_SESSION['agencia_id']);
-            redirect('agency/resources?tab=providers');
-        }
-    }
-    // --- UPDATE METHODS ---
     public function updateGuide()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -119,10 +84,15 @@ class ResourceController
             $data = [
                 'agencia_id' => $_SESSION['agencia_id'],
                 'nombre' => $_POST['nombre'],
+                'apellido' => $_POST['apellido'],
                 'dni' => $_POST['dni'],
-                'telefono' => $_POST['telefono'],
+                'fecha_nacimiento' => $_POST['fecha_nacimiento'],
+                'genero' => $_POST['genero'],
                 'email' => $_POST['email'],
-                'idiomas' => $_POST['idiomas'],
+                'telefono' => $_POST['telefono'],
+                'direccion' => $_POST['direccion'],
+                'ciudad_region' => $_POST['ciudad_region'],
+                'notas' => $_POST['notas'],
                 'estado' => $_POST['estado'] ?? 'activo'
             ];
             $this->guideModel->update($id, $data);
@@ -130,41 +100,6 @@ class ResourceController
         }
     }
 
-    public function updateTransport()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['id'];
-            $data = [
-                'agencia_id' => $_SESSION['agencia_id'],
-                'placa' => $_POST['placa'],
-                'modelo' => $_POST['modelo'],
-                'capacidad' => $_POST['capacidad'],
-                'chofer_nombre' => $_POST['chofer_nombre'],
-                'chofer_telefono' => $_POST['chofer_telefono'],
-                'estado' => $_POST['estado'] ?? 'activo'
-            ];
-            $this->transportModel->update($id, $data);
-            redirect('agency/resources?tab=transport');
-        }
-    }
-
-    public function updateProvider()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['id'];
-            $data = [
-                'agencia_id' => $_SESSION['agencia_id'],
-                'nombre' => $_POST['nombre'],
-                'tipo' => $_POST['tipo'],
-                'contacto_nombre' => $_POST['contacto_nombre'],
-                'telefono' => $_POST['telefono'],
-                'ubicacion' => $_POST['ubicacion'],
-                'estado' => $_POST['estado'] ?? 'activo'
-            ];
-            $this->providerModel->update($id, $data);
-            redirect('agency/resources?tab=providers');
-        }
-    }
 
     // --- API JSON Methods ---
     public function getByTypeApi()

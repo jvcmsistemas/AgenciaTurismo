@@ -9,7 +9,7 @@ class Client
         $this->pdo = $pdo;
     }
 
-    public function getAllByAgency($agencyId, $search = '')
+    public function getAllByAgency($agencyId, $search = '', $limit = null, $offset = 0, $orderBy = 'nombre', $orderDir = 'ASC')
     {
         $sql = "SELECT * FROM clientes WHERE agencia_id = :agencia_id";
         $params = ['agencia_id' => $agencyId];
@@ -22,11 +22,47 @@ class Client
             $params['search4'] = "%$search%";
         }
 
-        $sql .= " ORDER BY nombre ASC, apellido ASC";
+        // Validar campos de ordenamiento
+        $allowedSort = ['nombre', 'apellido', 'dni', 'email', 'fecha_registro'];
+        if (!in_array($orderBy, $allowedSort))
+            $orderBy = 'nombre';
+        $orderDir = (strtoupper($orderDir) === 'DESC') ? 'DESC' : 'ASC';
+
+        $sql .= " ORDER BY $orderBy $orderDir";
+
+        if ($limit !== null) {
+            $sql .= " LIMIT :limit OFFSET :offset";
+            $params['limit'] = (int) $limit;
+            $params['offset'] = (int) $offset;
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+
+        foreach ($params as $key => &$val) {
+            $type = is_int($val) ? PDO::PARAM_INT : PDO::PARAM_STR;
+            $stmt->bindParam($key, $val, $type);
+        }
+
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function countAllByAgency($agencyId, $search = '')
+    {
+        $sql = "SELECT COUNT(*) FROM clientes WHERE agencia_id = :agencia_id";
+        $params = ['agencia_id' => $agencyId];
+
+        if (!empty($search)) {
+            $sql .= " AND (nombre LIKE :search1 OR apellido LIKE :search2 OR email LIKE :search3 OR dni LIKE :search4)";
+            $params['search1'] = "%$search%";
+            $params['search2'] = "%$search%";
+            $params['search3'] = "%$search%";
+            $params['search4'] = "%$search%";
+        }
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
-        return $stmt->fetchAll();
+        return $stmt->fetchColumn();
     }
 
     public function getById($id)

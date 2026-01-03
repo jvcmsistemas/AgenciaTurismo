@@ -105,12 +105,14 @@
                     <div class="mb-3">
                         <label for="transporte_id" class="form-label fw-bold">Transporte</label>
                         <select class="form-select" id="transporte_id" name="transporte_id" onchange="updateCapacity()">
-                            <option value="" data-capacidad="0">-- Sin asignar --</option>
+                            <option value="" data-capacidad="0">-- Sin transporte (Movilidad externa/propia) --</option>
                             <?php foreach ($transports as $transport): ?>
                                 <option value="<?php echo $transport['id']; ?>" 
                                     data-capacidad="<?php echo $transport['capacidad']; ?>"
                                     <?php echo ($departure['transporte_id'] == $transport['id']) ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($transport['placa'] . ' - ' . $transport['chofer_nombre']); ?>
+                                    <?php echo htmlspecialchars($transport['placa']); ?> - 
+                                    <?php echo htmlspecialchars($transport['chofer_nombre']); ?> 
+                                    (<?php echo $transport['capacidad']; ?> asientos)
                                 </option>
                             <?php endforeach; ?>
                         </select>

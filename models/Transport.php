@@ -10,7 +10,7 @@ class Transport
         $this->pdo = $pdo;
     }
 
-    public function getAllByAgency($agencyId, $search = '')
+    public function getAllByAgency($agencyId, $search = '', $limit = null, $offset = 0, $orderBy = 'placa', $orderDir = 'ASC')
     {
         $sql = "SELECT * FROM transportes WHERE agencia_id = :agencia_id";
         $params = ['agencia_id' => $agencyId];
@@ -22,11 +22,44 @@ class Transport
             $params['search3'] = "%$search%";
         }
 
-        $sql .= " ORDER BY placa ASC";
+        // Validar campos de ordenamiento
+        $allowedSort = ['placa', 'modelo', 'capacidad', 'chofer_nombre', 'estado'];
+        if (!in_array($orderBy, $allowedSort))
+            $orderBy = 'placa';
+        $orderDir = (strtoupper($orderDir) === 'DESC') ? 'DESC' : 'ASC';
+
+        $sql .= " ORDER BY $orderBy $orderDir";
+
+        if ($limit !== null) {
+            $sql .= " LIMIT :limit OFFSET :offset";
+            $params['limit'] = (int) $limit;
+            $params['offset'] = (int) $offset;
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        foreach ($params as $key => &$val) {
+            $type = is_int($val) ? PDO::PARAM_INT : PDO::PARAM_STR;
+            $stmt->bindParam($key, $val, $type);
+        }
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function countAllByAgency($agencyId, $search = '')
+    {
+        $sql = "SELECT COUNT(*) FROM transportes WHERE agencia_id = :agencia_id";
+        $params = ['agencia_id' => $agencyId];
+
+        if (!empty($search)) {
+            $sql .= " AND (placa LIKE :search1 OR modelo LIKE :search2 OR chofer_nombre LIKE :search3)";
+            $params['search1'] = "%$search%";
+            $params['search2'] = "%$search%";
+            $params['search3'] = "%$search%";
+        }
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
-        return $stmt->fetchAll();
+        return $stmt->fetchColumn();
     }
 
     public function getById($id)

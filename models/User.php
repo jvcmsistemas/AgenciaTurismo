@@ -61,11 +61,12 @@ class User
 
     public function update($id, $data)
     {
-        $sql = "UPDATE usuarios SET nombre = :nombre, apellido = :apellido, email = :email";
+        $sql = "UPDATE usuarios SET nombre = :nombre, apellido = :apellido, email = :email, es_activo = :es_activo";
         $params = [
             'nombre' => $data['nombre'],
             'apellido' => $data['apellido'],
             'email' => $data['email'],
+            'es_activo' => $data['es_activo'] ?? 1,
             'id' => $id
         ];
 

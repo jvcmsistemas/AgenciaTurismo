@@ -14,6 +14,10 @@
                 class="btn btn-outline-secondary rounded-pill px-4 me-2">
                 <i class="bi bi-arrow-left me-2"></i>Volver
             </a>
+            <a href="<?php echo BASE_URL; ?>agency/reservations/edit?id=<?php echo $reservation['id']; ?>"
+                class="btn btn-info rounded-pill px-4 me-2 text-white shadow-sm">
+                <i class="bi bi-pencil-square me-2"></i>Editar
+            </a>
             <button onclick="downloadPDF()" class="btn btn-danger rounded-pill px-4 shadow-sm">
                 <i class="bi bi-file-earmark-pdf me-2"></i>Descargar PDF
             </button>
@@ -31,11 +35,11 @@
                 <div style="position: absolute; top: 0; left: 0; width: 100%; height: 10px; background: #00695c;"></div>
 
                 <!-- Encabezado con Logo y Título -->
-                <div class="d-flex justify-content-between align-items-start mb-5 mt-3">
+                <div class="d-flex justify-content-between align-items-start mb-4 mt-2">
                     <div>
                         <!-- Logo Placeholder / Nombre Agencia Grande -->
-                        <h1 class="fw-bold text-uppercase mb-2"
-                            style="color: #00695c; font-size: 24pt; letter-spacing: 1px;">
+                        <h1 class="fw-bold text-uppercase mb-1"
+                            style="color: #00695c; font-size: 22pt; letter-spacing: 1px;">
                             <?php echo htmlspecialchars($agency['nombre']); ?>
                         </h1>
                         <div class="text-secondary small" style="font-size: 10pt; line-height: 1.5;">
@@ -63,9 +67,10 @@
                 </div>
 
                 <!-- Sección: Cliente -->
-                <div class="mb-5 pb-3 border-bottom">
-                    <h6 class="text-uppercase fw-bold text-secondary mb-3"
-                        style="font-size: 9pt; letter-spacing: 1px; color: #00695c !important;">Información del Cliente
+                <div class="mb-4 pb-2 border-bottom">
+                    <h6 class="text-uppercase fw-bold text-secondary mb-2"
+                        style="font-size: 8.5pt; letter-spacing: 1px; color: #00695c !important;">Información del
+                        Cliente
                     </h6>
                     <div class="row">
                         <div class="col-7">
@@ -97,46 +102,47 @@
                 </div>
 
                 <!-- Tabla de Servicios -->
-                <div class="mb-5">
-                    <table class="table table-borderless table-striped"
+                <div class="mb-4">
+                    <table class="table table-borderless table-striped mb-0"
                         style="border-collapse: separate; border-spacing: 0;">
                         <thead style="background-color: #00695c; color: white;">
                             <tr>
-                                <th class="py-3 ps-3 rounded-start" style="font-weight: 500; font-size: 10pt;">
+                                <th class="py-2 ps-3 rounded-start" style="font-weight: 500; font-size: 9.5pt;">
                                     DESCRIPCIÓN</th>
-                                <th class="py-3 text-center" style="font-weight: 500; font-size: 10pt;">FECHA</th>
-                                <th class="py-3 text-center" style="font-weight: 500; font-size: 10pt;">CANT.</th>
-                                <th class="py-3 text-end" style="font-weight: 500; font-size: 10pt;">PRECIO UNIT.</th>
-                                <th class="py-3 pe-3 text-end rounded-end" style="font-weight: 500; font-size: 10pt;">
+                                <th class="py-2 text-center" style="font-weight: 500; font-size: 9.5pt;">FECHA</th>
+                                <th class="py-2 text-center" style="font-weight: 500; font-size: 9.5pt;">CANT.</th>
+                                <th class="py-2 text-end" style="font-weight: 500; font-size: 9.5pt;">PRECIO UNIT.</th>
+                                <th class="py-2 pe-3 text-end rounded-end" style="font-weight: 500; font-size: 9.5pt;">
                                     IMPORTE</th>
                             </tr>
                         </thead>
                         <tbody style="font-size: 10pt;">
                             <?php foreach ($details as $index => $detail): ?>
                                 <tr>
-                                    <td class="ps-3 py-3 border-bottom">
+                                    <td class="ps-3 py-2 border-bottom">
                                         <div class="fw-bold text-dark">
                                             <?php echo htmlspecialchars($detail['servicio_nombre']); ?>
                                         </div>
-                                        <div class="text-muted small">Tour / Servicio Turístico</div>
+                                        <div class="text-muted small" style="font-size: 8pt;">Tour / Servicio Turístico
+                                        </div>
                                     </td>
-                                    <td class="text-center py-3 border-bottom">
+                                    <td class="text-center py-2 border-bottom">
                                         <?php if (!empty($detail['fecha_salida'])): ?>
                                             <?php echo date('d/m/Y', strtotime($detail['fecha_salida'])); ?><br>
-                                            <span class="text-muted small">
+                                            <span class="text-muted small" style="font-size: 8pt;">
                                                 <?php echo date('H:i', strtotime($detail['hora_salida'])); ?> hs
                                             </span>
                                         <?php else: ?>
                                             <span class="text-muted small">-</span>
                                         <?php endif; ?>
                                     </td>
-                                    <td class="text-center py-3 border-bottom text-dark fw-bold">
+                                    <td class="text-center py-2 border-bottom text-dark fw-bold">
                                         <?php echo $detail['cantidad']; ?>
                                     </td>
-                                    <td class="text-end py-3 border-bottom">
+                                    <td class="text-end py-2 border-bottom">
                                         S/ <?php echo number_format($detail['precio_unitario'], 2); ?>
                                     </td>
-                                    <td class="text-end pe-3 py-3 border-bottom fw-bold text-dark">
+                                    <td class="text-end pe-3 py-2 border-bottom fw-bold text-dark">
                                         S/ <?php echo number_format($detail['subtotal'], 2); ?>
                                     </td>
                                 </tr>
@@ -146,7 +152,7 @@
                 </div>
 
                 <!-- Totales y Notas -->
-                <div class="row mb-5">
+                <div class="row mb-4">
                     <div class="col-7">
                         <?php if (!empty($reservation['notas'])): ?>
                             <div class="bg-light p-3 rounded" style="font-size: 9pt; border-left: 4px solid #00695c;">
@@ -193,13 +199,32 @@
 
                             <!-- Saldo -->
                             <?php if ($reservation['saldo_pendiente'] > 0.01): ?>
-                                <div class="mt-2 text-end text-danger fw-bold fs-5 border-top pt-2">
+                                <div
+                                    class="mt-2 text-end text-danger fw-bold fs-5 border-top pt-2 d-flex align-items-center justify-content-end">
                                     <span class="small text-muted me-2">Saldo Pendiente:</span>
-                                    S/ <?php echo number_format($reservation['saldo_pendiente'], 2); ?>
+                                    <span class="me-3">S/
+                                        <?php echo number_format($reservation['saldo_pendiente'], 2); ?></span>
+                                    <button class="btn btn-sm btn-success rounded-pill px-3 no-print" data-bs-toggle="modal"
+                                        data-bs-target="#paymentModal">
+                                        <i class="bi bi-plus-circle me-1"></i>Pagar Saldo
+                                    </button>
                                 </div>
                             <?php else: ?>
-                                <div class="mt-2 text-end text-success fw-bold small border-top pt-2">
-                                    <i class="bi bi-check-circle-fill me-1"></i>TOTALMENTE PAGADO
+                                <div class="mt-2 text-end text-success fw-bold fs-4 border-top pt-2">
+                                    <span class="badge bg-success rounded-pill px-3 py-2">
+                                        <i class="bi bi-check-circle-fill me-1"></i>TOTALMENTE PAGADO
+                                    </span>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if ($reservation['saldo_pendiente'] <= 0.01): ?>
+                                <!-- Stamp for the PDF -->
+                                <div class="position-absolute"
+                                    style="top: 140mm; right: 25mm; transform: rotate(-15deg); opacity: 0.12; pointer-events: none;">
+                                    <div
+                                        style="border: 6px solid #198754; color: #198754; font-size: 36pt; font-weight: 900; padding: 5px 25px; border-radius: 12px; text-transform: uppercase; letter-spacing: 4px;">
+                                        PAGADO
+                                    </div>
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -225,21 +250,29 @@
             </div>
 
             <!-- SECCIÓN: Historial de Pagos (Fuera del área de impresión principal, pero visible en web) -->
-            <div class="card border-0 shadow-sm mt-4 mb-5 no-print">
-                <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
-                    <h5 class="fw-bold text-dark mb-0"><i class="bi bi-cash-coin me-2 text-success"></i>Historial de
+            <div class="card border-0 shadow-sm mt-4 mb-5 no-print bg-surface-dynamic">
+                <div
+                    class="card-header bg-transparent border-bottom py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold text-dynamic mb-0"><i class="bi bi-cash-coin me-2 text-success"></i>Historial de
                         Pagos</h5>
+                    <?php if ($reservation['saldo_pendiente'] > 0): ?>
+                        <button class="btn btn-sm btn-success rounded-pill px-3" data-bs-toggle="modal"
+                            data-bs-target="#paymentModal">
+                            <i class="bi bi-plus-lg me-1"></i>Registrar Nuevo Abono
+                        </button>
+                    <?php endif; ?>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
-                            <thead class="bg-light text-secondary small text-uppercase">
+                            <thead class="bg-soft-dynamic text-secondary-dynamic small text-uppercase">
                                 <tr>
                                     <th class="ps-4 py-3">Fecha</th>
                                     <th class="py-3">Método</th>
                                     <th class="py-3">Referencia</th>
                                     <th class="py-3">Nota</th>
-                                    <th class="text-end pe-4 py-3">Monto</th>
+                                    <th class="text-end py-3">Monto</th>
+                                    <th class="text-center pe-4 py-3">Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -252,26 +285,35 @@
                                     </tr>
                                 <?php else: ?>
                                     <?php foreach ($payments as $payment): ?>
-                                        <tr>
-                                            <td class="ps-4 fw-medium text-dark">
+                                        <tr class="text-dynamic">
+                                            <td class="ps-4 fw-medium">
                                                 <?php echo date('d/m/Y H:i', strtotime($payment['fecha_pago'])); ?>
                                             </td>
                                             <td>
-                                                <span class="badge bg-light text-dark border">
+                                                <span class="badge bg-soft-dynamic text-dynamic border">
                                                     <?php echo ucfirst($payment['metodo_pago']); ?>
                                                 </span>
                                             </td>
-                                            <td class="text-muted small">
+                                            <td class="text-muted-dynamic small">
                                                 <?php echo $payment['referencia'] ? htmlspecialchars($payment['referencia']) : '-'; ?>
                                             </td>
-                                            <td class="text-muted small">
+                                            <td class="text-muted-dynamic small">
                                                 <?php echo $payment['notas'] ? htmlspecialchars($payment['notas']) : '-'; ?>
                                             </td>
-                                            <td class="text-end pe-4 fw-bold text-success">
-                                                S/ <?php echo number_format($payment['monto'], 2); ?>
+                                            <td class="text-end fw-bold text-success">
+                                                S/
+                                                <?php echo number_format($payment['monto'], 2); ?>
                                             </td>
-                                        </tr>
-                                    <?php endforeach; ?>
+                                            <td class="text-center pe-4">
+                                                    <a href="<?php echo BASE_URL; ?>agency/reservations/payment/delete?id=<?php echo $payment['id']; ?>" 
+                                                           class="btn btn-sm btn-outline-danger border-0 rounded-circle"
+                                                           onclick="return confirm('¿Estás seguro de eliminar este registro de pago? El saldo de la reserva se actualizará automáticamente.')"
+                                                           title="Eliminar pago">
+                                                            <i class="bi bi-trash"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                        <?php endforeach; ?>
                                 <?php endif; ?>
                             </tbody>
                         </table>
@@ -364,6 +406,30 @@
         // Generar y descargar
         html2pdf().set(opt).from(element).save();
     }
+
+    // Auto-abrir modal de pago si viene el parámetro ?pay=1
+    window.addEventListener('DOMContentLoaded', (event) => {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('pay')) {
+            const myModal = new bootstrap.Modal(document.getElementById('paymentModal'));
+            myModal.show();
+        }
+    });
+
+    // Auto-completar el monto cuando se abre el modal
+    const paymentModal = document.getElementById('paymentModal');
+    paymentModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const inputMonto = paymentModal.querySelector('[name="monto"]');
+        const saldoPendiente = <?php echo (float) $reservation['saldo_pendiente']; ?>;
+
+        // Si el botón tiene la clase de "Pagar Saldo", seteamos el monto total
+        if (button && button.innerText.includes('Pagar Saldo')) {
+            inputMonto.value = saldoPendiente.toFixed(2);
+        } else {
+            inputMonto.value = '';
+        }
+    });
 </script>
 
 <?php include BASE_PATH . '/views/layouts/footer.php'; ?>

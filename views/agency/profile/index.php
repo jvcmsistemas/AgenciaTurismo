@@ -2,8 +2,12 @@
 
 <div class="row mb-4 fade-in">
     <div class="col-12">
-        <h2 class="fw-bold text-primary"><i class="bi bi-person-gear me-2"></i>Mi Perfil</h2>
-        <p class="text-muted">Gestiona la información de tu agencia y tu cuenta personal.</p>
+        <h2 class="fw-bold text-primary"><i
+                class="bi bi-person-gear me-2"></i><?php echo ($_SESSION['user_role'] === 'dueno_agencia') ? 'Panel de Agencia' : 'Mi Cuenta'; ?>
+        </h2>
+        <p class="text-muted">
+            <?php echo ($_SESSION['user_role'] === 'dueno_agencia') ? 'Gestiona la información de tu agencia y tu cuenta personal.' : 'Administra tus datos personales y contraseña.'; ?>
+        </p>
     </div>
 </div>
 
@@ -21,63 +25,66 @@
     <input type="hidden" name="fecha_vencimiento" value="<?php echo $agency['fecha_vencimiento']; ?>">
 
     <div class="row g-4">
-        <!-- Columna Agencia -->
-        <div class="col-md-6">
-            <div class="card glass-card h-100 border-0">
-                <div class="card-header glass-header bg-transparent border-0 pt-4 pb-2">
-                    <h4 class="card-title fw-bold text-primary"><i class="bi bi-building me-2"></i>Datos de la Agencia
-                    </h4>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <label for="nombre_agencia" class="form-label fw-bold text-muted">Nombre Comercial</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-0"><i
-                                    class="bi bi-shop text-primary"></i></span>
-                            <input type="text" class="form-control bg-light border-0" id="nombre_agencia"
-                                name="nombre_agencia" value="<?php echo htmlspecialchars($agency['nombre']); ?>"
-                                required>
-                        </div>
+        <!-- Columna Agencia (Solo Dueño) -->
+        <?php if ($_SESSION['user_role'] === 'dueno_agencia'): ?>
+            <div class="col-md-6">
+                <div class="card glass-card h-100 border-0">
+                    <div class="card-header glass-header bg-transparent border-0 pt-4 pb-2">
+                        <h4 class="card-title fw-bold text-primary"><i class="bi bi-building me-2"></i>Datos de la Agencia
+                        </h4>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="email_agencia" class="form-label fw-bold text-muted">Email Corporativo</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-0"><i
-                                    class="bi bi-envelope-at text-primary"></i></span>
-                            <input type="email" class="form-control bg-light border-0" id="email_agencia"
-                                name="email_agencia" value="<?php echo htmlspecialchars($agency['email']); ?>" required>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="nombre_agencia" class="form-label fw-bold text-muted">Nombre Comercial</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0"><i
+                                        class="bi bi-shop text-primary"></i></span>
+                                <input type="text" class="form-control bg-light border-0" id="nombre_agencia"
+                                    name="nombre_agencia" value="<?php echo htmlspecialchars($agency['nombre']); ?>"
+                                    required>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <label for="telefono" class="form-label fw-bold text-muted">Teléfono / WhatsApp</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-0"><i
-                                    class="bi bi-whatsapp text-primary"></i></span>
-                            <input type="text" class="form-control bg-light border-0" id="telefono" name="telefono"
-                                value="<?php echo htmlspecialchars($agency['telefono']); ?>">
+                        <div class="mb-3">
+                            <label for="email_agencia" class="form-label fw-bold text-muted">Email Corporativo</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0"><i
+                                        class="bi bi-envelope-at text-primary"></i></span>
+                                <input type="email" class="form-control bg-light border-0" id="email_agencia"
+                                    name="email_agencia" value="<?php echo htmlspecialchars($agency['email']); ?>" required>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <label for="direccion" class="form-label fw-bold text-muted">Dirección Fiscal</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-0"><i
-                                    class="bi bi-geo-alt text-primary"></i></span>
-                            <input type="text" class="form-control bg-light border-0" id="direccion" name="direccion"
-                                value="<?php echo htmlspecialchars($agency['direccion']); ?>">
+                        <div class="mb-3">
+                            <label for="telefono" class="form-label fw-bold text-muted">Teléfono / WhatsApp</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0"><i
+                                        class="bi bi-whatsapp text-primary"></i></span>
+                                <input type="text" class="form-control bg-light border-0" id="telefono" name="telefono"
+                                    value="<?php echo htmlspecialchars($agency['telefono']); ?>">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="direccion" class="form-label fw-bold text-muted">Dirección Fiscal</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0"><i
+                                        class="bi bi-geo-alt text-primary"></i></span>
+                                <input type="text" class="form-control bg-light border-0" id="direccion" name="direccion"
+                                    value="<?php echo htmlspecialchars($agency['direccion']); ?>">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        <?php endif; ?>
 
-        <!-- Columna Dueño -->
-        <div class="col-md-6">
-            <div class="card glass-card h-100 border-0">
+        <!-- Columna Usuario -->
+        <div class="<?php echo ($_SESSION['user_role'] === 'dueno_agencia') ? 'col-md-6' : 'col-md-12'; ?>">
+            <div class="card glass-card h-100 border-0 shadow-sm">
                 <div class="card-header glass-header bg-transparent border-0 pt-4 pb-2">
-                    <h4 class="card-title fw-bold text-secondary"><i class="bi bi-person-badge me-2"></i>Datos del Dueño
+                    <h4 class="card-title fw-bold text-secondary"><i class="bi bi-person-badge me-2"></i>Mis Datos
+                        Personales
                     </h4>
                 </div>
                 <div class="card-body">
@@ -88,8 +95,8 @@
                                 <span class="input-group-text bg-light border-0"><i
                                         class="bi bi-person text-secondary"></i></span>
                                 <input type="text" class="form-control bg-light border-0" id="nombre_usuario"
-                                    name="nombre_usuario"
-                                    value="<?php echo htmlspecialchars($agency['dueno_nombre']); ?>" required>
+                                    name="nombre_usuario" value="<?php echo htmlspecialchars($currUser['nombre']); ?>"
+                                    required>
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -99,7 +106,7 @@
                                         class="bi bi-person text-secondary"></i></span>
                                 <input type="text" class="form-control bg-light border-0" id="apellido_usuario"
                                     name="apellido_usuario"
-                                    value="<?php echo htmlspecialchars($agency['dueno_apellido']); ?>" required>
+                                    value="<?php echo htmlspecialchars($currUser['apellido']); ?>" required>
                             </div>
                         </div>
                     </div>
@@ -110,7 +117,7 @@
                             <span class="input-group-text bg-light border-0"><i
                                     class="bi bi-envelope text-secondary"></i></span>
                             <input type="email" class="form-control bg-light border-0" id="email_usuario"
-                                name="email_usuario" value="<?php echo htmlspecialchars($agency['dueno_email']); ?>"
+                                name="email_usuario" value="<?php echo htmlspecialchars($currUser['email']); ?>"
                                 required>
                         </div>
                     </div>

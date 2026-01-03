@@ -66,8 +66,13 @@ class AgencyController
         require_once BASE_PATH . '/models/Agency.php';
         $agencyModel = new Agency($this->pdo);
 
-        // Obtener datos de la agencia y del dueño
+        // Obtener datos de la agencia
         $agency = $agencyModel->getById($_SESSION['agencia_id']);
+
+        // Si es empleado, necesitamos sus datos específicos de usuario
+        require_once BASE_PATH . '/models/User.php';
+        $userModel = new User($this->pdo);
+        $currUser = $userModel->getById($_SESSION['user_id']);
 
         require_once BASE_PATH . '/views/agency/profile/index.php';
     }
@@ -84,23 +89,25 @@ class AgencyController
             $agencyId = $_SESSION['agencia_id'];
             $userId = $_SESSION['user_id'];
 
-            // 1. Actualizar Datos de Agencia
-            $agencyData = [
-                'nombre' => $_POST['nombre_agencia'],
-                'direccion' => $_POST['direccion'],
-                'telefono' => $_POST['telefono'],
-                'email' => $_POST['email_agencia'],
-                'tipo_suscripcion' => $_POST['tipo_suscripcion'], // Mantener valor hidden o actual
-                'fecha_vencimiento' => $_POST['fecha_vencimiento'] // Mantener valor hidden o actual
-            ];
+            // 1. Actualizar Datos de Agencia (SOLO DUEÑO)
+            if ($_SESSION['user_role'] === 'dueno_agencia') {
+                $agencyData = [
+                    'nombre' => $_POST['nombre_agencia'],
+                    'direccion' => $_POST['direccion'],
+                    'telefono' => $_POST['telefono'],
+                    'email' => $_POST['email_agencia'],
+                    'tipo_suscripcion' => $_POST['tipo_suscripcion'],
+                    'fecha_vencimiento' => $_POST['fecha_vencimiento']
+                ];
+                $agencyModel->update($agencyId, $agencyData);
+            }
 
-            $agencyModel->update($agencyId, $agencyData);
-
-            // 2. Actualizar Datos de Usuario (Dueño)
+            // 2. Actualizar Datos de Usuario (Cualquier rol para su propia cuenta)
             $userData = [
                 'nombre' => $_POST['nombre_usuario'],
                 'apellido' => $_POST['apellido_usuario'],
-                'email' => $_POST['email_usuario']
+                'email' => $_POST['email_usuario'],
+                'es_activo' => 1 // Siempre activo si está editando
             ];
 
             // Solo actualizar password si se escribió algo

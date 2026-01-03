@@ -22,7 +22,20 @@ class ReservationController
     public function index()
     {
         $agencyId = $_SESSION['agencia_id'];
-        $reservations = $this->reservationModel->getAllByAgency($agencyId);
+        $search = $_GET['search'] ?? '';
+
+        // Parámetros de paginación y orden
+        $limit = 10;
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        $offset = ($page - 1) * $limit;
+
+        $sort = $_GET['sort'] ?? 'fecha_hora_reserva';
+        $order = $_GET['order'] ?? 'DESC';
+
+        $reservations = $this->reservationModel->getAllByAgency($agencyId, $search, $limit, $offset, $sort, $order);
+        $totalReservations = $this->reservationModel->countAllByAgency($agencyId, $search);
+        $totalPages = ceil($totalReservations / $limit);
+
         require_once BASE_PATH . '/views/agency/reservations/index.php';
     }
 
@@ -152,12 +165,98 @@ class ReservationController
 
                 $reservaId = $this->reservationModel->create($data); // Ahora devuelve ID
 
-                redirect('agency/reservations/show?id=' . $reservaId . '&success=created'); // Redirigir al detalle creado
+                redirect('agency/reservations/show?id=' . $reservaId . '&success=created');
 
             } catch (Exception $e) {
-                // En producción: redirect con mensaje de error
-                // Por ahora mostramos el error para depurar si falla
-                die("Error al crear reserva: " . $e->getMessage());
+                redirect('agency/reservations/create?error=' . urlencode($e->getMessage()));
+            }
+        }
+    }
+
+    public function edit()
+    {
+        if (!isset($_GET['id'])) {
+            redirect('agency/reservations');
+        }
+
+        $id = $_GET['id'];
+        $agencyId = $_SESSION['agencia_id'];
+        $reservation = $this->reservationModel->getById($id);
+
+        if (!$reservation || $reservation['agencia_id'] != $agencyId) {
+            redirect('agency/reservations');
+        }
+
+        $details = $this->reservationModel->getDetails($id);
+
+        require_once BASE_PATH . '/models/Tour.php';
+        $tourModel = new Tour($this->pdo);
+        $tours = $tourModel->getAllByAgency($agencyId);
+
+        require_once BASE_PATH . '/views/agency/reservations/edit.php';
+    }
+
+    public function update()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                $id = $_POST['id'];
+                $agencyId = $_SESSION['agencia_id'];
+
+                // Validar pertenencia
+                $reservation = $this->reservationModel->getById($id);
+                if (!$reservation || $reservation['agencia_id'] != $agencyId) {
+                    throw new Exception("No tienes permiso para editar esta reserva.");
+                }
+
+                // 1. Gestión del Cliente
+                $clienteId = $_POST['cliente_id'] ?? null;
+                if (empty($clienteId)) {
+                    throw new Exception("Debes seleccionar un cliente válido.");
+                }
+
+                // 2. Procesar Items del Formulario
+                $items = [];
+                $tipos = $_POST['tipos'] ?? [];
+                $servicios = $_POST['servicios'] ?? [];
+                $detalles = $_POST['detalles'] ?? [];
+                $cantidades = $_POST['cantidades'] ?? [];
+                $precios = $_POST['precios'] ?? [];
+
+                if (is_array($tipos)) {
+                    for ($i = 0; $i < count($tipos); $i++) {
+                        $tipo = $tipos[$i];
+                        $servicioId = ($tipo === 'tour') ? ($detalles[$i] ?? 0) : ($servicios[$i] ?? 0);
+
+                        if ($servicioId > 0) {
+                            $items[] = [
+                                'tipo' => $tipo,
+                                'salida_id' => $servicioId,
+                                'cantidad' => $cantidades[$i] ?? 1,
+                                'precio_unitario' => $precios[$i] ?? 0
+                            ];
+                        }
+                    }
+                }
+
+                if (empty($items)) {
+                    throw new Exception("Debes agregar al menos un servicio válido.");
+                }
+
+                $data = [
+                    'cliente_id' => $clienteId,
+                    'agencia_id' => $agencyId,
+                    'items' => $items,
+                    'notas' => $_POST['notas'] ?? '',
+                    'descuento' => $_POST['descuento'] ?? 0
+                ];
+
+                $this->reservationModel->update($id, $data);
+
+                redirect('agency/reservations/show?id=' . $id . '&success=updated');
+
+            } catch (Exception $e) {
+                redirect('agency/reservations/edit?id=' . ($_POST['id'] ?? '') . '&error=' . urlencode($e->getMessage()));
             }
         }
     }
@@ -202,6 +301,22 @@ class ReservationController
                 // En un caso real, manejaríamos mejor el error (flash message)
                 redirect('agency/reservations/show?id=' . $_POST['reserva_id'] . '&error=' . urlencode($e->getMessage()));
             }
+        }
+    }
+
+    public function deletePayment()
+    {
+        try {
+            $id = $_GET['id'] ?? null;
+            if (!$id)
+                throw new Exception("ID de pago no válido.");
+
+            $reservaId = $this->reservationModel->deletePayment($id);
+
+            redirect('agency/reservations/show?id=' . $reservaId . '&success=payment_deleted');
+
+        } catch (Exception $e) {
+            redirect('agency/reservations?error=' . urlencode($e->getMessage()));
         }
     }
 }

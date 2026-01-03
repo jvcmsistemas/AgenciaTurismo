@@ -10,23 +10,54 @@ class Provider
         $this->pdo = $pdo;
     }
 
-    public function getAllByAgency($agencyId, $search = '')
+    public function getAllByAgency($agencyId, $search = '', $limit = null, $offset = 0, $orderBy = 'nombre', $orderDir = 'ASC')
     {
         $sql = "SELECT * FROM proveedores WHERE agencia_id = :agencia_id";
         $params = ['agencia_id' => $agencyId];
 
         if (!empty($search)) {
-            $sql .= " AND (nombre LIKE :search1 OR tipo LIKE :search2 OR contacto_nombre LIKE :search3)";
+            $sql .= " AND (nombre LIKE :search1 OR tipo LIKE :search2)";
             $params['search1'] = "%$search%";
             $params['search2'] = "%$search%";
-            $params['search3'] = "%$search%";
         }
 
-        $sql .= " ORDER BY nombre ASC";
+        // Validar campos de ordenamiento
+        $allowedSort = ['nombre', 'tipo', 'estado'];
+        if (!in_array($orderBy, $allowedSort))
+            $orderBy = 'nombre';
+        $orderDir = (strtoupper($orderDir) === 'DESC') ? 'DESC' : 'ASC';
+
+        $sql .= " ORDER BY $orderBy $orderDir";
+
+        if ($limit !== null) {
+            $sql .= " LIMIT :limit OFFSET :offset";
+            $params['limit'] = (int) $limit;
+            $params['offset'] = (int) $offset;
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        foreach ($params as $key => &$val) {
+            $type = is_int($val) ? PDO::PARAM_INT : PDO::PARAM_STR;
+            $stmt->bindParam($key, $val, $type);
+        }
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function countAllByAgency($agencyId, $search = '')
+    {
+        $sql = "SELECT COUNT(*) FROM proveedores WHERE agencia_id = :agencia_id";
+        $params = ['agencia_id' => $agencyId];
+
+        if (!empty($search)) {
+            $sql .= " AND (nombre LIKE :search1 OR tipo LIKE :search2)";
+            $params['search1'] = "%$search%";
+            $params['search2'] = "%$search%";
+        }
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
-        return $stmt->fetchAll();
+        return $stmt->fetchColumn();
     }
 
     public function getById($id)
@@ -38,17 +69,18 @@ class Provider
 
     public function create($data)
     {
-        $sql = "INSERT INTO proveedores (agencia_id, nombre, tipo, contacto_nombre, telefono, ubicacion) 
-                VALUES (:agencia_id, :nombre, :tipo, :contacto_nombre, :telefono, :ubicacion)";
+        $sql = "INSERT INTO proveedores (agencia_id, nombre, tipo, telefono, email, ubicacion, notas) 
+                VALUES (:agencia_id, :nombre, :tipo, :telefono, :email, :ubicacion, :notas)";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
             'agencia_id' => $data['agencia_id'],
             'nombre' => $data['nombre'],
             'tipo' => $data['tipo'],
-            'contacto_nombre' => $data['contacto_nombre'] ?? null,
             'telefono' => $data['telefono'] ?? null,
-            'ubicacion' => $data['ubicacion'] ?? null
+            'email' => $data['email'] ?? null,
+            'ubicacion' => $data['direccion'] ?? null,
+            'notas' => $data['notas'] ?? null
         ]);
 
         return $this->pdo->lastInsertId();
@@ -59,9 +91,10 @@ class Provider
         $sql = "UPDATE proveedores SET 
                 nombre = :nombre, 
                 tipo = :tipo, 
-                contacto_nombre = :contacto_nombre, 
                 telefono = :telefono, 
+                email = :email,
                 ubicacion = :ubicacion,
+                notas = :notas,
                 estado = :estado
                 WHERE id = :id AND agencia_id = :agencia_id";
 
@@ -69,9 +102,10 @@ class Provider
         return $stmt->execute([
             'nombre' => $data['nombre'],
             'tipo' => $data['tipo'],
-            'contacto_nombre' => $data['contacto_nombre'],
             'telefono' => $data['telefono'],
-            'ubicacion' => $data['ubicacion'],
+            'email' => $data['email'] ?? null,
+            'ubicacion' => $data['direccion'] ?? null,
+            'notas' => $data['notas'] ?? null,
             'estado' => $data['estado'] ?? 'activo',
             'id' => $id,
             'agencia_id' => $data['agencia_id']

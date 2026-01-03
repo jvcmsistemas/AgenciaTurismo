@@ -22,10 +22,22 @@ class TourController
     public function index()
     {
         $agencyId = $_SESSION['agencia_id'];
-        $search = $_GET['search'] ?? '';
-        $order = $_GET['order'] ?? 'newest';
 
-        $tours = $this->tourModel->getAllByAgency($agencyId, $search, $order);
+        // Parámetros de búsqueda y orden
+        $search = $_GET['search'] ?? '';
+        $sort = $_GET['sort'] ?? 'id';
+        $order = $_GET['order'] ?? 'DESC';
+
+        // Parámetros de paginación
+        $limit = 10;
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        $offset = ($page - 1) * $limit;
+
+        // Obtener datos
+        $tours = $this->tourModel->getAllByAgency($agencyId, $search, $limit, $offset, $sort, $order);
+        $totalTours = $this->tourModel->countAllByAgency($agencyId, $search);
+        $totalPages = ceil($totalTours / $limit);
+
         require_once BASE_PATH . '/views/agency/tours/index.php';
     }
 

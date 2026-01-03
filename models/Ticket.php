@@ -26,6 +26,11 @@ class Ticket
             $params['estado'] = $filters['estado'];
         }
 
+        if (!empty($filters['agencia_id'])) {
+            $sql .= " AND t.agencia_id = :agencia_id";
+            $params['agencia_id'] = $filters['agencia_id'];
+        }
+
         $sql .= " ORDER BY t.created_at DESC";
 
         $stmt = $this->pdo->prepare($sql);
