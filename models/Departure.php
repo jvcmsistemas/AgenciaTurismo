@@ -225,4 +225,23 @@ class Departure
         $stmt->execute(['agencia_id' => $agencyId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Calcula la tasa de ocupación promedio de las próximas N salidas
+     */
+    public function getAverageOccupancy($agencyId, $limit = 10)
+    {
+        $sql = "SELECT AVG((cupos_totales - cupos_disponibles) / cupos_totales * 100)
+                FROM salidas 
+                WHERE agencia_id = :aid 
+                AND estado != 'cancelada'
+                AND fecha_salida >= CURDATE()
+                ORDER BY fecha_salida ASC, hora_salida ASC
+                LIMIT :limit";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':aid', $agencyId, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return round($stmt->fetchColumn() ?: 0, 1);
+    }
 }

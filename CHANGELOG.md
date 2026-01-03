@@ -32,6 +32,7 @@ Registro de mejoras, correcciones y nuevas funcionalidades implementadas en el s
 - **Ruta del Éxito**: Implementación de una guía visual paso a paso para nuevos empleados con ilustraciones 3D personalizadas.
 - **Navegación Directa**: Botones integrados que llevan directamente a la configuración de recursos, catálogo, salidas y ventas.
 - **Mejora en Accesibilidad**: Tarjetas de ayuda con iconos y descripciones claras para facilitar la curva de aprendizaje.
+- **Guías Avanzadas**: Inclusión de manuales específicos sobre organización de tours por **Zonas**, **Rutas** y creación de **Paquetes**.
 
 ---
 *Documentado por Antigravity AI.*

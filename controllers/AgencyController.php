@@ -40,7 +40,21 @@ class AgencyController
         $totalTours = count($tours);
         $totalReservations = count($reservations);
 
-        // Calculate total revenue from confirmed/completed reservations
+        // --- NEW KPIs ---
+        $currentMonth = date('m');
+        $currentYear = date('Y');
+
+        $monthlyRevenue = $this->reservationModel->getMonthlyRevenue($agencyId, $currentMonth, $currentYear);
+
+        require_once BASE_PATH . '/models/Client.php';
+        $clientModel = new Client($this->pdo);
+        $monthlyNewClients = $clientModel->getMonthlyCount($agencyId, $currentMonth, $currentYear);
+
+        require_once BASE_PATH . '/models/Ticket.php';
+        $ticketModel = new Ticket($this->pdo);
+        $pendingRepliesCount = $ticketModel->getPendingRepliesCount($agencyId);
+
+        // Calculate total historical revenue
         $totalRevenue = 0;
         foreach ($reservations as $res) {
             if ($res['estado'] === 'confirmada' || $res['estado'] === 'completada') {
@@ -57,6 +71,7 @@ class AgencyController
 
         $upcomingDepartures = $departureModel->getUpcoming($agencyId);
         $pendingPaymentAlerts = $this->reservationModel->getPendingAlerts($agencyId);
+        $avgOccupancy = $departureModel->getAverageOccupancy($agencyId);
 
         require_once BASE_PATH . '/views/dashboard/index.php';
     }

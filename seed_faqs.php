@@ -69,6 +69,22 @@ try {
             </div>',
             'categoria' => 'reservas',
             'orden' => 4
+        ],
+        [
+            'pregunta' => '¿Cómo organizar mi catálogo de tours (Zonas, Rutas y Paquetes)?',
+            'respuesta' => '<div class="rich-content">
+                <p>Para un catálogo ordenado y fácil de vender, utiliza estas estrategias:</p>
+                <ul class="ps-3 mb-3">
+                    <li><strong>Por Zonas/Rutas:</strong> Agrupa tus tours (Ej: <em>Ruta del Café, Zona Selva Central</em>). Esto ayuda al cliente a decidir según la ubicación.</li>
+                    <li><strong>Creación de Paquetes:</strong> Registra un tour que incluya varios itinerarios en la descripción y asígnale un precio especial de paquete.</li>
+                    <li><strong>Precios Diferenciados:</strong> Recuerda que puedes establecer precios base que luego puedes ajustar en el carrito al crear la reserva.</li>
+                </ul>
+                <div class="alert alert-success py-2 px-3 small border-0 bg-light-dynamic">
+                    <i class="bi bi-lightbulb-fill me-2 text-warning"></i> <strong>Tip:</strong> Usa nombres claros como "[PAQUETE] Oxapampa 3D/2N" para diferenciarlos de los tours de un solo día.
+                </div>
+            </div>',
+            'categoria' => 'reservas',
+            'orden' => 5
         ]
     ];
 

@@ -65,6 +65,25 @@ class Client
         return $stmt->fetchColumn();
     }
 
+    /**
+     * Obtiene el conteo de nuevos clientes registrados este mes
+     */
+    public function getMonthlyCount($agencyId, $month, $year)
+    {
+        $sql = "SELECT COUNT(*) 
+                FROM clientes 
+                WHERE agencia_id = :aid 
+                AND MONTH(created_at) = :month 
+                AND YEAR(created_at) = :year";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            'aid' => $agencyId,
+            'month' => $month,
+            'year' => $year
+        ]);
+        return $stmt->fetchColumn() ?: 0;
+    }
+
     public function getById($id)
     {
         $stmt = $this->pdo->prepare("SELECT * FROM clientes WHERE id = :id LIMIT 1");

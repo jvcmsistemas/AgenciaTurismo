@@ -442,4 +442,24 @@ class Reservation
         $stmt->execute(['agencia_id' => $agencyId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Obtiene los ingresos totales del mes actual para una agencia
+     */
+    public function getMonthlyRevenue($agencyId, $month, $year)
+    {
+        $sql = "SELECT SUM(precio_total) 
+                FROM reservas 
+                WHERE agencia_id = :aid 
+                AND (estado = 'confirmada' OR estado = 'completada')
+                AND MONTH(fecha_hora_reserva) = :month 
+                AND YEAR(fecha_hora_reserva) = :year";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            'aid' => $agencyId,
+            'month' => $month,
+            'year' => $year
+        ]);
+        return $stmt->fetchColumn() ?: 0;
+    }
 }

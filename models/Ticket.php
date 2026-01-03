@@ -105,4 +105,22 @@ class Ticket
     {
         return $this->pdo->query("SELECT * FROM faqs WHERE visible = 1 ORDER BY orden ASC")->fetchAll();
     }
+
+    /**
+     * Obtiene el número de tickets que tienen respuestas nuevas de parte de la administración
+     * (Estado = 'abierto' y el último mensaje no es del usuario de la agencia)
+     */
+    public function getPendingRepliesCount($agencyId)
+    {
+        $sql = "SELECT COUNT(DISTINCT t.id) 
+                FROM tickets t
+                JOIN ticket_mensajes tm ON t.id = tm.ticket_id
+                WHERE t.agencia_id = :aid 
+                AND t.estado != 'cerrado'
+                AND tm.id = (SELECT MAX(id) FROM ticket_mensajes WHERE ticket_id = t.id)
+                AND tm.usuario_id IN (SELECT id FROM usuarios WHERE rol = 'admin')";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['aid' => $agencyId]);
+        return $stmt->fetchColumn();
+    }
 }
