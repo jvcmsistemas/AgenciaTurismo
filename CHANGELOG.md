@@ -28,5 +28,10 @@ Registro de mejoras, correcciones y nuevas funcionalidades implementadas en el s
     - Se muestra la capacidad de asientos de cada vehículo en el selector.
     - Inclusión de la opción **"-- Sin transporte (Movilidad externa/propia) --"** para dar flexibilidad a la operación.
 
+### 💡 Centro de Ayuda (Onboarding Visual)
+- **Ruta del Éxito**: Implementación de una guía visual paso a paso para nuevos empleados con ilustraciones 3D personalizadas.
+- **Navegación Directa**: Botones integrados que llevan directamente a la configuración de recursos, catálogo, salidas y ventas.
+- **Mejora en Accesibilidad**: Tarjetas de ayuda con iconos y descripciones claras para facilitar la curva de aprendizaje.
+
 ---
 *Documentado por Antigravity AI.*

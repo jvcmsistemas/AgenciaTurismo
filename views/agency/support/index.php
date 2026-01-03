@@ -23,6 +23,81 @@
     </div>
 </div>
 
+<!-- Ruta del Éxito: Guía Visual para Empleados -->
+<div class="row mb-5 fade-in">
+    <div class="col-12">
+        <div class="card glass-card border-0 shadow-lg overflow-hidden">
+            <div class="card-body p-0">
+                <div class="row g-0">
+                    <div
+                        class="col-lg-3 d-none d-lg-flex bg-primary align-items-center justify-content-center p-4 text-center text-white">
+                        <div>
+                            <i class="bi bi-rocket-takeoff display-4 mb-3"></i>
+                            <h3 class="fw-bold">Ruta del Éxito</h3>
+                            <p class="small mb-0 opacity-75">Sigue estos pasos para dominar la plataforma en minutos.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 p-4 bg-surface-dynamic">
+                        <div class="row g-4">
+                            <!-- Paso 1 -->
+                            <div class="col-md-3">
+                                <div
+                                    class="text-center h-100 p-3 rounded-4 hover-up transition-base border border-dynamic border-opacity-10">
+                                    <img src="<?php echo BASE_URL; ?>public/img/help/recursos.png"
+                                        class="img-fluid mb-3 rounded-3" alt="Recursos">
+                                    <h6 class="fw-bold text-primary mb-2">1. Recursos</h6>
+                                    <p class="small text-muted mb-3">Registra tus guías, vehículos y proveedores
+                                        aliados.</p>
+                                    <a href="<?php echo BASE_URL; ?>agency/resources"
+                                        class="btn btn-sm btn-outline-primary rounded-pill w-100">Configurar</a>
+                                </div>
+                            </div>
+                            <!-- Paso 2 -->
+                            <div class="col-md-3">
+                                <div
+                                    class="text-center h-100 p-3 rounded-4 hover-up transition-base border border-dynamic border-opacity-10">
+                                    <img src="<?php echo BASE_URL; ?>public/img/help/catalogo.png"
+                                        class="img-fluid mb-3 rounded-3" alt="Catálogo">
+                                    <h6 class="fw-bold text-primary mb-2">2. Catálogo</h6>
+                                    <p class="small text-muted mb-3">Diseña tus tours con itinerarios y precios base.
+                                    </p>
+                                    <a href="<?php echo BASE_URL; ?>agency/tours"
+                                        class="btn btn-sm btn-outline-primary rounded-pill w-100">Crear Menu</a>
+                                </div>
+                            </div>
+                            <!-- Paso 3 -->
+                            <div class="col-md-3">
+                                <div
+                                    class="text-center h-100 p-3 rounded-4 hover-up transition-base border border-dynamic border-opacity-10">
+                                    <img src="<?php echo BASE_URL; ?>public/img/help/salidas.png"
+                                        class="img-fluid mb-3 rounded-3" alt="Salidas">
+                                    <h6 class="fw-bold text-primary mb-2">3. Salidas</h6>
+                                    <p class="small text-muted mb-3">Programa fechas y asigna recursos a tus tours.</p>
+                                    <a href="<?php echo BASE_URL; ?>agency/departures"
+                                        class="btn btn-sm btn-outline-primary rounded-pill w-100">Programar</a>
+                                </div>
+                            </div>
+                            <!-- Paso 4 -->
+                            <div class="col-md-3">
+                                <div
+                                    class="text-center h-100 p-3 rounded-4 hover-up transition-base border border-dynamic border-opacity-10">
+                                    <img src="<?php echo BASE_URL; ?>public/img/help/ventas.png"
+                                        class="img-fluid mb-3 rounded-3" alt="Reservas">
+                                    <h6 class="fw-bold text-primary mb-2">4. Ventas</h6>
+                                    <p class="small text-muted mb-3">¡Listo! Empieza a registrar reservas y cobros.</p>
+                                    <a href="<?php echo BASE_URL; ?>agency/reservations/create"
+                                        class="btn btn-sm btn-primary rounded-pill w-100 shadow-sm">Nueva Venta</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row g-4 mb-5">
     <!-- Columna Izquierda: FAQs por Categorías -->
     <div class="col-lg-8">
