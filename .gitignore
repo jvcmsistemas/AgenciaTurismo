@@ -5,12 +5,14 @@
 # System
 .DS_Store
 Thumbs.db
+Desktop.ini
 
 # Backups
 /Backups/
 *.zip
 *.sql
 *.log
+backup_*.sql
 
 # IDE
 .vscode/
@@ -18,3 +20,4 @@ Thumbs.db
 
 # Config (Optional: usually we don't commit real credentials)
 # config/db.php
+.env
