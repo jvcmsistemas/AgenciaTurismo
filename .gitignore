@@ -1,0 +1,11 @@
+# Backups y archivos SQL grandes
+*.sql
+Backups/
+backup_*.sql
+
+# Archivos de SO
+Thumbs.db
+Desktop.ini
+
+# Archivos de entorno
+.env
