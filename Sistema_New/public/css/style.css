@@ -1,0 +1,873 @@
+/* ========================================
+   SISTEMA DE GESTIÓN TURÍSTICA V2
+   Design System Implementation - Variable Architecture
+   Fecha: 8 Diciembre 2025
+   ======================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Roboto:wght@400;500;700&display=swap');
+
+/* ========================================
+   THEME VARIABLES
+   ======================================== */
+:root {
+  /* Common Dimensions */
+  --sidebar-width: 280px;
+  --navbar-height: 64px;
+  --border-radius: 8px;
+  --border-radius-sm: 6px;
+  --border-radius-lg: 12px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --font-primary: 'Inter', sans-serif;
+}
+
+/* 🌙 SUPERADMIN DARK THEME (Default) */
+body.superadmin-theme {
+  /* Backgrounds */
+  --bg-primary: #1a1a2e;
+  /* Deep Blue Background */
+  --bg-secondary: #16213e;
+  /* Surface/Card Background */
+  --bg-tertiary: #0f3460;
+  /* Sidebar/Input Background */
+
+  /* Text */
+  --text-primary: #ffffff;
+  --text-secondary: #a8a8a8;
+  --text-muted: #6b7280;
+
+  /* Borders */
+  --border-color: #2d3561;
+
+  /* Brand/Accents */
+  --brand-primary: #e94560;
+  /* Pink/Red Accent */
+  --brand-secondary: #00d4ff;
+  /* Cyan Accent */
+
+  /* Components Specific */
+  --sidebar-bg: #0f3460;
+  --navbar-bg: #16213e;
+  --card-bg: #16213e;
+  --table-bg: #16213e;
+  --table-header-bg: #0f3460;
+  --input-bg: #0f3460;
+  --input-border: #2d3561;
+  --hover-bg: #1a5490;
+
+  /* Status */
+  --status-success-bg: rgba(16, 185, 129, 0.1);
+  --status-success-text: #34d399;
+  --status-warning-bg: rgba(245, 158, 11, 0.1);
+  --status-warning-text: #fbbf24;
+}
+
+/* ☀️ SUPERADMIN LIGHT THEME */
+body.superadmin-light-theme {
+  /* Backgrounds */
+  --bg-primary: #f3f4f6;
+  /* Light Gray Background */
+  --bg-secondary: #ffffff;
+  /* Surface/Card Background */
+  --bg-tertiary: #f9fafb;
+  /* Sidebar/Input Background */
+
+  /* Text */
+  --text-primary: #1f2937;
+  /* Dark Gray Text */
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
+
+  /* Borders */
+  --border-color: #e5e7eb;
+
+  /* Brand/Accents */
+  --brand-primary: #e94560;
+  --brand-secondary: #00d4ff;
+
+  /* Components Specific */
+  --sidebar-bg: #ffffff;
+  --navbar-bg: #ffffff;
+  --card-bg: #ffffff;
+  --table-bg: #ffffff;
+  --table-header-bg: #f9fafb;
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --hover-bg: #f3f4f6;
+
+  /* Status */
+  --status-success-bg: #ecfdf5;
+  --status-success-text: #059669;
+  --status-warning-bg: #fffbeb;
+  --status-warning-text: #d97706;
+}
+
+/* 🌿 AGENCY DARK THEME (Emerald - Default) */
+body.agency-theme {
+  /* Backgrounds */
+  --bg-primary: #040d08;
+  /* Darker Emerald */
+  --bg-secondary: #0a1f14;
+  /* Card Surface */
+  --bg-tertiary: #061f1a;
+  /* Sidebar/Secondary BG */
+  --bg-soft: rgba(16, 185, 129, 0.05);
+  /* Soft background for sections */
+
+  /* Text */
+  --text-primary: #f0fdf4;
+  --text-secondary: #a7f3d0;
+  --text-muted: #34d399;
+
+  /* Borders */
+  --border-color: #064e40;
+  --input-border: #065f46;
+
+  /* Brand/Accents */
+  --brand-primary: #10b981;
+  --brand-secondary: #34d399;
+
+  /* Components Specific */
+  --sidebar-bg: #064e3b;
+  --navbar-bg: #0a1f14;
+  --card-bg: #0a1f14;
+  --table-bg: #0a1f14;
+  --table-header-bg: #064e3b;
+  --input-bg: #061f1a;
+  --hover-bg: rgba(16, 185, 129, 0.15);
+
+  /* Status */
+  --status-success-bg: rgba(16, 185, 129, 0.1);
+  --status-success-text: #34d399;
+  --status-warning-bg: rgba(245, 158, 11, 0.1);
+  --status-warning-text: #fbbf24;
+}
+
+/* ☀️ AGENCY LIGHT THEME */
+body.agency-light-theme {
+  /* Backgrounds */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f5f9;
+  --bg-soft: #f8fafc;
+
+  /* Text */
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+
+  /* Borders */
+  --border-color: #e2e8f0;
+  --input-border: #cbd5e1;
+
+  /* Brand/Accents */
+  --brand-primary: #10b981;
+  --brand-secondary: #059669;
+
+  /* Components Specific */
+  --sidebar-bg: #10b981;
+  --navbar-bg: #ffffff;
+  --card-bg: #ffffff;
+  --table-bg: #ffffff;
+  --table-header-bg: #f8fafc;
+  --input-bg: #ffffff;
+  --hover-bg: rgba(16, 185, 129, 0.1);
+
+  /* Status */
+  --status-success-bg: #ecfdf5;
+  --status-success-text: #047857;
+  --status-warning-bg: #fffbeb;
+  --status-warning-text: #b45309;
+}
+
+/* ========================================
+   BASE STYLES
+   ======================================== */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Wrapper Layout */
+.wrapper {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+}
+
+#content {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s;
+}
+
+/* ========================================
+   COMPONENTS - USING VARIABLES ONLY
+   ======================================== */
+
+/* Sidebar Toggle Logic */
+/* Desktop: Sidebar is visible by default. .active hides it (collapses left). */
+#sidebar {
+  min-width: var(--sidebar-width);
+  max-width: var(--sidebar-width);
+  background-color: var(--sidebar-bg);
+  color: var(--text-primary);
+  border-right: 1px solid var(--border-color);
+  transition: all 0.3s;
+  margin-left: 0;
+  /* Visible by default on desktop */
+}
+
+#sidebar.active {
+  margin-left: calc(var(--sidebar-width) * -1);
+  /* Collapsed on desktop */
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  #sidebar {
+    margin-left: calc(var(--sidebar-width) * -1);
+    /* Hidden by default on mobile */
+    position: fixed;
+    z-index: 1000;
+    height: 100vh;
+  }
+
+  #sidebar.active {
+    margin-left: 0;
+    /* Visible on mobile when active */
+  }
+
+  /* Overlay effect when sidebar is open on mobile */
+  #sidebar.active::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: var(--sidebar-width);
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+
+  .navbar-custom {
+    padding: 0 12px;
+  }
+}
+
+
+/* Agency Special Case for Sidebar Text */
+body.agency-theme #sidebar {
+  color: #ffffff;
+  /* Always white on green sidebar */
+  border-right: none;
+}
+
+body.agency-theme #sidebar .sidebar-header h4,
+body.agency-theme #sidebar .sidebar-header small {
+  color: #ffffff;
+}
+
+body.agency-theme #sidebar ul li a {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+body.agency-theme #sidebar ul li a:hover,
+body.agency-theme #sidebar ul li a.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+/* Normal Theme Sidebar Items */
+body:not(.agency-theme) #sidebar .sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border-color);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+body:not(.agency-theme) #sidebar ul li a {
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-secondary);
+  border-left: 4px solid transparent;
+}
+
+body:not(.agency-theme) #sidebar ul li a:hover {
+  background-color: var(--hover-bg);
+  color: var(--text-primary);
+  border-left-color: var(--brand-primary);
+}
+
+body:not(.agency-theme) #sidebar ul li a.active {
+  background-color: var(--hover-bg);
+  color: var(--brand-primary);
+  border-left-color: var(--brand-primary);
+  font-weight: 600;
+}
+
+/* Navbar */
+.navbar-custom {
+  background-color: var(--navbar-bg);
+  border-bottom: 1px solid var(--border-color);
+  height: var(--navbar-height);
+  padding: 0 24px;
+}
+
+.navbar-custom .nav-link,
+.navbar-custom .btn {
+  color: var(--text-primary);
+}
+
+.navbar-custom .dropdown-menu {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.navbar-custom .dropdown-item {
+  color: var(--text-primary);
+}
+
+.navbar-custom .dropdown-item:hover {
+  background-color: var(--hover-bg);
+}
+
+/* Cards */
+.card {
+  background-color: var(--bg-secondary) !important;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.card-body {
+  padding: 20px;
+  background-color: transparent !important;
+}
+
+/* Tables - THE CRITICAL FIX */
+.table {
+  color: var(--text-primary) !important;
+  background-color: var(--table-bg) !important;
+  border-color: var(--border-color);
+}
+
+.table thead {
+  background-color: var(--table-header-bg) !important;
+}
+
+.table thead th {
+  color: var(--text-primary) !important;
+  border-bottom: 2px solid var(--border-color) !important;
+  font-weight: 600;
+  background-color: var(--table-header-bg) !important;
+}
+
+.table tbody td {
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  vertical-align: middle;
+  background-color: var(--table-bg) !important;
+}
+
+/* Ensure rows don't get white background from bootstrap */
+.table tbody tr {
+  background-color: transparent !important;
+}
+
+.table tbody tr:hover {
+  background-color: var(--hover-bg) !important;
+}
+
+.table-responsive {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+/* Forms */
+.form-label {
+  color: var(--text-primary) !important;
+  font-weight: 500;
+}
+
+.form-control {
+  background-color: var(--input-bg) !important;
+  border: 1px solid var(--input-border);
+  color: var(--text-primary) !important;
+}
+
+.form-control::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 0.8;
+}
+
+.form-control:focus {
+  background-color: var(--input-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 2px rgba(233, 69, 96, 0.2);
+}
+
+.form-text {
+  color: var(--text-muted) !important;
+}
+
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--brand-primary);
+  border-color: var(--brand-primary);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  filter: brightness(110%);
+  background-color: var(--brand-primary);
+  border-color: var(--brand-primary);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border: 2px solid var(--brand-secondary);
+  color: var(--brand-secondary);
+}
+
+/* Badges */
+.badge {
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.bg-success,
+.badge-success {
+  background-color: var(--status-success-bg) !important;
+  color: var(--status-success-text) !important;
+}
+
+.bg-warning,
+.badge-warning {
+  background-color: var(--status-warning-bg) !important;
+  color: var(--status-warning-text) !important;
+}
+
+/* Utils */
+.bg-dynamic {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.bg-surface-dynamic {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.text-dynamic {
+  color: var(--text-primary) !important;
+}
+
+.text-secondary-dynamic {
+  color: var(--text-secondary) !important;
+}
+
+.text-muted-dynamic {
+  color: var(--text-muted) !important;
+}
+
+.bg-soft-dynamic {
+  background-color: var(--bg-soft) !important;
+}
+
+.border-dynamic {
+  border-color: var(--border-color) !important;
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+.text-dark {
+  color: var(--text-primary) !important;
+}
+
+/* Theme Toggle */
+.theme-toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theme-toggle-switch {
+  position: relative;
+  width: 48px;
+  height: 24px;
+}
+
+.theme-toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.theme-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  border-radius: 34px;
+  transition: .4s;
+}
+
+.theme-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: .4s;
+}
+
+input:checked+.theme-toggle-slider {
+  background-color: var(--brand-secondary);
+}
+
+input:checked+.theme-toggle-slider:before {
+  transform: translateX(24px);
+}
+
+/* Mobile Responsive */
+
+
+/* ========================================
+   UTILITY CLASSES & LOGIN
+   ======================================== */
+.glass-card {
+  background: rgba(15, 23, 42, 0.85);
+  /* Much darker/opaque for visibility */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+body.agency-theme .glass-card {
+  background: rgba(4, 13, 8, 0.9);
+  /* Dark emerald for agency */
+  border: 1px solid rgba(16, 185, 129, 0.1);
+}
+
+body.superadmin-light-theme .glass-card,
+body.agency-light-theme .glass-card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+}
+
+.login-page-admin {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background animated circles for premium feel */
+.login-page-admin::before {
+  content: '';
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 50%;
+  height: 50%;
+  background: radial-gradient(circle, rgba(233, 69, 96, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+  border-radius: 50%;
+  z-index: 0;
+  animation: float 10s infinite ease-in-out;
+}
+
+.login-page-admin::after {
+  content: '';
+  position: absolute;
+  bottom: -10%;
+  right: -10%;
+  width: 50%;
+  height: 50%;
+  background: radial-gradient(circle, rgba(0, 212, 255, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+  border-radius: 50%;
+  z-index: 0;
+  animation: float 15s infinite ease-in-out reverse;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(20px, 30px);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  /* Constrain width */
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  border-radius: 24px;
+  z-index: 10;
+  position: relative;
+}
+
+.login-title {
+  letter-spacing: 1px;
+  font-weight: 800;
+}
+
+/* Custom Input Styles for Login */
+.login-input-group {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50px;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.login-input-group:focus-within {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 15px rgba(233, 69, 96, 0.3);
+}
+
+.login-input-group input {
+  background: transparent !important;
+  border: none;
+  color: white !important;
+  padding-left: 10px;
+}
+
+.login-input-group input:focus {
+  box-shadow: none;
+}
+
+.login-input-group i {
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.3s;
+}
+
+.login-input-group:focus-within i {
+  color: var(--brand-secondary);
+}
+
+.hover-scale {
+  transition: transform 0.2s;
+}
+
+.hover-scale:hover {
+  transform: translateY(-5px);
+}
+
+/* ========================================
+   SIDEBAR TOGGLE LOGIC (BODY CLASS)
+   ======================================== */
+
+/* DESKTOP (Default: Visible) */
+#sidebar {
+  min-width: var(--sidebar-width);
+  max-width: var(--sidebar-width);
+  background-color: var(--sidebar-bg);
+  color: var(--text-primary);
+  border-right: 1px solid var(--border-color);
+  transition: all 0.3s;
+  margin-left: 0;
+}
+
+/* Hide Sidebar on Desktop when toggled */
+body.sidebar-toggled #sidebar {
+  margin-left: calc(var(--sidebar-width) * -1) !important;
+}
+
+/* MOBILE (Default: Hidden) */
+@media (max-width: 768px) {
+  #sidebar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 9999 !important;
+    margin-left: 0 !important;
+    left: -100% !important;
+    transform: none !important;
+    transition: left 0.3s ease-in-out;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.5);
+    background-color: #0f3460 !important;
+    color: #ffffff !important;
+    overflow-y: auto;
+  }
+
+  /* Show Sidebar when mobile-sidebar-active class is present */
+  body.mobile-sidebar-active #sidebar {
+    left: 0 !important;
+  }
+
+
+
+  .navbar-custom {
+    position: relative;
+    z-index: 1050;
+  }
+}
+
+/* ========================================
+   PAYMENT METHOD BADGES - THEME AWARE
+   ======================================== */
+.badge-pay-efectivo {
+  background-color: #dcfce7 !important;
+  color: #166534 !important;
+  border: 1px solid #bbf7d0 !important;
+}
+
+.badge-pay-yape {
+  background-color: #f3e8ff !important;
+  color: #6b21a8 !important;
+  border: 1px solid #e9d5ff !important;
+}
+
+.badge-pay-transferencia {
+  background-color: #dbeafe !important;
+  color: #1e40af !important;
+  border: 1px solid #bfdbfe !important;
+}
+
+.badge-pay-tarjeta {
+  background-color: #ffedd5 !important;
+  color: #9a3412 !important;
+  border: 1px solid #fed7aa !important;
+}
+
+/* Dark Mode Overrides */
+[data-bs-theme="dark"] .badge-pay-efectivo,
+body.superadmin-theme .badge-pay-efectivo {
+  background-color: rgba(16, 185, 129, 0.2) !important;
+  color: #34d399 !important;
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+}
+
+[data-bs-theme="dark"] .badge-pay-yape,
+body.superadmin-theme .badge-pay-yape {
+  background-color: rgba(168, 85, 247, 0.2) !important;
+  color: #d8b4fe !important;
+  border: 1px solid rgba(168, 85, 247, 0.4) !important;
+}
+
+[data-bs-theme="dark"] .badge-pay-transferencia,
+body.superadmin-theme .badge-pay-transferencia {
+  background-color: rgba(59, 130, 246, 0.2) !important;
+  color: #93c5fd !important;
+  border: 1px solid rgba(59, 130, 246, 0.4) !important;
+}
+
+[data-bs-theme="dark"] .badge-pay-tarjeta,
+body.superadmin-theme .badge-pay-tarjeta {
+  background-color: rgba(249, 115, 22, 0.2) !important;
+  color: #fdba74 !important;
+  border: 1px solid rgba(249, 115, 22, 0.4) !important;
+}
+
+/* ========================================
+   TRANSACTION STATUS BADGES - THEME AWARE
+   ======================================== */
+.badge-status-aprobado {
+  background-color: #dcfce7 !important;
+  color: #166534 !important;
+  border: 1px solid #bbf7d0 !important;
+}
+
+.badge-status-pendiente {
+  background-color: #fef9c3 !important;
+  color: #854d0e !important;
+  border: 1px solid #fef08a !important;
+}
+
+.badge-status-rechazado {
+  background-color: #fee2e2 !important;
+  color: #991b1b !important;
+  border: 1px solid #fecaca !important;
+}
+
+/* Dark Mode Overrides */
+[data-bs-theme="dark"] .badge-status-aprobado,
+body.superadmin-theme .badge-status-aprobado {
+  background-color: rgba(16, 185, 129, 0.2) !important;
+  color: #34d399 !important;
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+}
+
+[data-bs-theme="dark"] .badge-status-pendiente,
+body.superadmin-theme .badge-status-pendiente {
+  background-color: rgba(245, 158, 11, 0.2) !important;
+  color: #fbbf24 !important;
+  border: 1px solid rgba(245, 158, 11, 0.4) !important;
+}
+
+[data-bs-theme="dark"] .badge-status-rechazado,
+body.superadmin-theme .badge-status-rechazado {
+  background-color: rgba(239, 68, 68, 0.2) !important;
+  color: #f87171 !important;
+  border: 1px solid rgba(239, 68, 68, 0.4) !important;
+}
+
+/* ========================================
+   CODE BADGES (Reservations, etc)
+   ======================================== */
+.badge-code {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+  border: 1px solid #e2e8f0 !important;
+  font-family: monospace;
+  font-weight: 600;
+  padding: 5px 10px;
+}
+
+[data-bs-theme="dark"] .badge-code,
+body.superadmin-theme .badge-code {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #e2e8f0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}

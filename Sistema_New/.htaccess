@@ -1,0 +1,7 @@
+RewriteEngine On
+RewriteBase /AgenciaTurismo/Sistema_New/
+
+# Redirect everything to index.php unless it's a file or directory
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
